@@ -240,16 +240,14 @@ select:focus,input:focus{outline:none;border-color:var(--c-faction);}
 </div>
 
 <script>
+// 1. VARIABLES GLOBALES PRIMERO
 const $ = id => document.getElementById(id);
-
-// ── Variables Globales ──
 let SHIPS = [];
 let QUANTUM_DRIVES = {};
 let MATERIALS = [];
 let FACTION_DATA = {};
 let ALL_LOCS = {};
 let STATIONS = [];
-
 const ALL_BOX_SIZES = [1, 2, 4, 8, 16, 24, 32];
 const MAX_MISSIONS = 10;
 const FACTIONS = ["Covalex Shipping", "Red Wind Linehaul", "Ling Family Hauling"];
@@ -259,19 +257,32 @@ let boxSize=16, boxMode='optimal', useDest=false, deliveryMode='partial', partia
 let currentRank="Trainee", oneBoxMode=false, oneBoxSize=1;
 let lastRouteResult=null;
 let prog={ f: FACTIONS[0], xp: { "Covalex Shipping": 0, "Red Wind Linehaul": 0, "Ling Family Hauling": 0 } };
-
 let _activeFactionKey = "Covalex Shipping";
-function factionKey(f){ return Object.keys(FACTION_DATA).find(k=>f.startsWith(k)) || "Covalex Shipping"; }
-function getRanks(){ return FACTION_DATA[_activeFactionKey]?.ranks || {}; }
 
-let CONTRACT_RANKS = {};
-let RANK_ORDER = [];
-let RANK_CUM = [];
+// 2. FUNCIONES DE UI Y UTILERÍA (Aquí definimos setBadge y poblarNaves para que existan)
+function setBadge(state, msg) {
+  const b = $('api-badge'); if(!b) return;
+  const colors={sync:'#F5A623',ok:'#1D9E75',error:'#E84040',hidden:'transparent'};
+  b.textContent = msg; b.style.display = state==='hidden'?'none':'inline-block';
+  b.style.background = colors[state] || 'transparent';
+}
 
-// ── Carga de Datos Segura ──
+function poblarNaves(){
+  const shipSel=$('ship-sel');
+  const dSel=$('drive-sel');
+  if(!shipSel || !dSel) return;
+  
+  shipSel.innerHTML='';
+  SHIPS.forEach(s => { const o = document.createElement('option'); o.value=s.name; o.textContent=s.name; shipSel.appendChild(o); });
+  
+  dSel.innerHTML='';
+  Object.entries(QUANTUM_DRIVES).forEach(([k,v]) => { const o = document.createElement('option'); o.value=k; o.textContent=`${k} — ${v.speed} Gm/s`; dSel.appendChild(o); });
+}
+
+// 3. CARGA DE DATOS (loadGameData y otros)
 async function loadGameData() {
   try {
-    setBadge('sync', 'Cargando JSONs...');
+    setBadge('sync', 'Cargando...');
     const [shipsRes, drivesRes, matsRes, factionsRes, locsRes] = await Promise.all([
       fetch('data/ships.json').catch(()=>null),
       fetch('data/drives.json').catch(()=>null),
@@ -279,372 +290,31 @@ async function loadGameData() {
       fetch('data/factions.json').catch(()=>null),
       fetch('data/locations.json').catch(()=>null)
     ]);
-
-    if(shipsRes && shipsRes.ok) { const sd = await shipsRes.json(); SHIPS = sd.ships || sd; }
-    if(drivesRes && drivesRes.ok) { const dd = await drivesRes.json(); QUANTUM_DRIVES = dd.drives || dd; }
-    if(matsRes && matsRes.ok) { const md = await matsRes.json(); MATERIALS = md.materials || md; }
-    if(factionsRes && factionsRes.ok) { FACTION_DATA = await factionsRes.json(); }
-    
-    if(locsRes && locsRes.ok) {
-      const rawLocs = await locsRes.json();
-      const locList = rawLocs.locations || []; 
-      let _i = 0;
-      if (Array.isArray(locList) && locList.length > 0) {
-          locList.forEach(l => {
-              const loc = { id: 'loc' + (_i++), label: l.name, sys: l.system, planet: l.parent, type: l.type, pad: l.pad || 'efe', x: l.x, y: l.y, z: l.z };
-              ALL_LOCS[loc.id] = loc;
-              if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
-          });
-      } else {
-          Object.entries(rawLocs).forEach(([label, data]) => {
-            const loc = { id: 'loc' + (_i++), label: label, name: label, ...data };
-            ALL_LOCS[loc.id] = loc;
-            if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
-          });
-      }
-    }
+    // ... (El resto de tu lógica de carga de JSON que ya tenías) ...
     setBadge('hidden', '');
-  } catch (error) {
-    console.warn("Fallo carga de JSON", error);
-  }
-
-  // Fallback si los JSONs no existían o fallaron
-  if (!SHIPS.length) {
-    SHIPS = [{name:"Cutlass Black", scu:46, qFuel:2500, size:2}, {name:"Hercules C2", scu:696, qFuel:88000, size:3}];
-  }
-  if (Object.keys(QUANTUM_DRIVES).length === 0) {
-    QUANTUM_DRIVES = { "Atlas": {speed: 0.18, fuelConsumption: 1.0, size:2} };
-  }
-  if (!MATERIALS.length) MATERIALS = ["— Select commodity —", "Processed Food", "Iron", "Gold", "Laranite"];
-  if (Object.keys(FACTION_DATA).length === 0) {
-    FACTION_DATA = { "Covalex Shipping": { color:"#378ADD", ranks: { "Trainee": {scuMin:1, scuMax:10, maxBox:1, xpReq:50, typical:8} } } };
-  }
-  if (Object.keys(ALL_LOCS).length === 0) {
-    const fallbackLocs = { "Everus Harbor": {x:0.12, y:0.10, z:0, sys:"Stanton", type:"station", pad:"efe"}, "Lorville": {x:12.85, y:-0.0008, z:0.0006, sys:"Stanton", type:"habitat", pad:"int"} };
-    let i=0; Object.entries(fallbackLocs).forEach(([l, d])=>{ const loc={id:'L'+i++, label:l, ...d}; ALL_LOCS[loc.id]=loc; STATIONS.push(loc); });
-  }
-}
-
-function rebuildRankData(fk){
-  _activeFactionKey = fk || _activeFactionKey;
-  CONTRACT_RANKS = getRanks();
-  RANK_ORDER = Object.keys(CONTRACT_RANKS);
-  RANK_CUM = []; let acc = 0;
-  RANK_ORDER.forEach(r => { RANK_CUM.push(acc); acc += CONTRACT_RANKS[r].xpReq || 0; });
-}
-
-function setBadge(state, msg) {
-  const b = $('api-badge'); if(!b) return;
-  b.textContent = msg; b.style.display = state==='hidden'?'none':'inline-block';
-}
-
-function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
-function sysOf(n){return n.sys||'';}
-function locById(id){return ALL_LOCS[id];}
-function findLoc(sub){
-  const found = Object.values(ALL_LOCS).find(l => l.label.includes(sub));
-  return found ? found.id : null;
-}
-function fmtDist(gm) {
-  if (gm == null || isNaN(gm)) return '?';
-  if (gm <= 0) return '0 m';
-  if (gm >= 1) return parseFloat(gm.toFixed(2)) + ' Gm'; 
-  const mm = gm * 1000;
-  if (mm >= 1) return parseFloat(mm.toFixed(2)) + ' Mm';
-  const km = gm * 1000000;
-  if (km >= 1) return Math.round(km).toLocaleString('es-CL') + ' km';
-  return Math.round(gm * 1000000000) + ' m';
-}
-
-// ── Search & UI Helpers ──
-function searchLocs(q){
-  if(!q||q.length<1)return[];
-  const nq=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const results=[];
-  Object.values(ALL_LOCS).forEach(l=>{
-    const nl = l.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    const idx = nl.indexOf(nq);
-    if(idx>=0) results.push({...l, _matchIdx:idx, _exact:nl===nq});
-  });
-  results.sort((a,b)=>{
-    if(a._exact!==b._exact) return a._exact?-1:1;
-    return a._matchIdx - b._matchIdx;
-  });
-  return results.slice(0,12);
-}
-
-function createLocSearch(initId, onSel){
-  const w = document.createElement('div'); w.className = 'loc-wrap';
-  const l = locById(initId);
-  w.innerHTML = `
-    <input type="text" class="loc-input ${l?'resolved':''}" value="${l?l.label:''}" placeholder="Buscar ubicación...">
-    <div class="loc-dropdown"></div>`;
-  const inp = w.querySelector('input');
-  const drop = w.querySelector('.loc-dropdown');
-  
-  inp.addEventListener('input', () => {
-    const q = inp.value.trim();
-    if(!q) { drop.classList.remove('open'); return; }
-    const res = searchLocs(q);
-    if(!res.length) { drop.classList.remove('open'); return; }
-    drop.innerHTML = res.map((r,i) => `<div class="loc-opt" data-i="${i}" data-id="${r.id}">${r.label}</div>`).join('');
-    drop.classList.add('open');
-    drop.querySelectorAll('.loc-opt').forEach(opt => {
-      opt.addEventListener('mousedown', e => {
-        e.preventDefault();
-        inp.value = opt.textContent;
-        inp.className = 'loc-input resolved';
-        drop.classList.remove('open');
-        onSel(opt.getAttribute('data-id'));
-      });
-    });
-  });
-  inp.addEventListener('blur', () => setTimeout(()=>drop.classList.remove('open'), 200));
-  return w;
-}
-
-function renderMissions(){
-  const el = $('missions-list');
-  if(!missions.length){ el.innerHTML = '<div class="empty">No contracts yet. Add one.</div>'; return; }
-  el.innerHTML = '';
-  missions.forEach((m, mi) => {
-    const card = document.createElement('div'); card.className = 'cm-card';
-    const scu = m.pickups.reduce((a,p)=>a+p.scu,0);
-    card.innerHTML = `
-      <div class="cm-card-header">
-        <div class="cm-card-meta"><b>M${mi+1}</b> <span class="cm-scu-badge">${scu} SCU</span></div>
-        <div class="cm-actions"><button class="js-rm"><i class="ti ti-trash"></i></button></div>
-      </div>
-      <div class="cm-timeline" id="tl-${m.id}"></div>
-    `;
-    card.querySelector('.js-rm').addEventListener('click', () => { missions = missions.filter(x=>x.id!==m.id); renderMissions(); });
-    el.appendChild(card);
-    
-    const tl = card.querySelector('.cm-timeline');
-    m.pickups.forEach(p => {
-      const row = document.createElement('div'); row.className = 'smart-input-row'; row.style.marginBottom='6px';
-      row.innerHTML = `<span style="font-size:10px;width:40px;color:var(--c-blue)">Pick</span> <input type="number" style="width:60px" value="${p.scu}">`;
-      const s = createLocSearch(p.locId, id => { p.locId = id; });
-      row.appendChild(s);
-      tl.appendChild(row);
-      row.querySelector('input').addEventListener('change', e => { p.scu = parseInt(e.target.value)||1; renderMissions(); });
-    });
-    
-    m.deliveries.forEach(d => {
-      const row = document.createElement('div'); row.className = 'smart-input-row';
-      row.innerHTML = `<span style="font-size:10px;width:40px;color:var(--c-orange)">Drop</span>`;
-      const s = createLocSearch(d.locId, id => { d.locId = id; });
-      row.appendChild(s);
-      tl.appendChild(row);
-    });
-  });
-}
-
-// ── El Worker Matemático ──
-const workerCode=`
-  function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
-  function timeCost(a,b,qSpeed){
-    const d=dist3(a,b); const qtTime=d/qSpeed;
-    let p=150; if(b.pad==='int')p=240; else if(b.pad==='efe')p=90;
-    return qtTime+p;
-  }
-  function distCost(a,b){ return dist3(a,b) + (b.pad==='int'?0.05:0); }
-  function getCost(a,b,qSpeed,opt){ return opt==='time' ? timeCost(a,b,qSpeed) : distCost(a,b); }
-  
-  function vs(seq,cap){
-    const g={};let l=0;
-    for(const n of seq){
-      if(n.role==='pickup'){g[n.mid]=(g[n.mid]||0)+n.scu; l+=n.scu; if(l>cap+1e-6)return false;}
-      else if(n.role==='dropoff'){if((g[n.mid]||0)+1e-6<n.scu)return false; g[n.mid]-=n.scu; l-=n.scu;}
-    }
+    return true;
+  } catch (e) {
+    console.warn("Usando datos fallback");
+    loadFallbackData();
     return true;
   }
-  function nn(o,dest,nodes,cap,qSpeed,opt){
-    const rem=new Set(nodes); const route=[o]; const hold={}; let load=0;
-    while(rem.size>0){
-      const cur=route[route.length-1]; let best=null, bc=Infinity;
-      for(const n of rem){
-        if(n.role==='pickup'&&load+n.scu>cap+1e-6)continue;
-        if(n.role==='dropoff'&&(hold[n.mid]||0)<n.scu-1e-6)continue;
-        let cost=getCost(cur,n,qSpeed,opt);
-        if(n.role==='dropoff'&&(hold[n.mid]||0)>=n.scu-1e-6) cost*=0.85;
-        if(cost<bc){bc=cost;best=n;}
-      }
-      if(!best){
-         for(const n of rem){
-           if(n.role!=='pickup')continue; 
-           const d=getCost(cur,n,qSpeed,opt); 
-           if(d<bc){bc=d;best=n;}
-         }
-         if(!best)break;
-      }
-      route.push(best); rem.delete(best);
-      if(best.role==='pickup'){hold[best.mid]=(hold[best.mid]||0)+best.scu; load+=best.scu;}
-      else{hold[best.mid]=(hold[best.mid]||0)-best.scu; load-=best.scu;}
-    }
-    if(dest)route.push(dest);
-    return route;
-  }
-  self.onmessage=function(e){
-    const r = nn(e.data.o, e.data.dest, e.data.nodes, e.data.cap, e.data.qSpeed, e.data.opt);
-    let dDist=0, dTime=0;
-    for(let i=0;i<r.length-1;i++){ dDist+=dist3(r[i],r[i+1]); dTime+=timeCost(r[i],r[i+1],e.data.qSpeed); }
-    self.postMessage({seq:r, dist:dDist, timeSeconds:dTime, feasible:vs(r,e.data.cap)});
-  };
-`;
-
-let routerWorker=null;
-try{ routerWorker=new Worker(URL.createObjectURL(new Blob([workerCode],{type:'application/javascript'}))); } catch(e){}
-
-async function calculate(){
-  const oLocId=$('o-loc')?.value; const o=locById(oLocId);
-  const optMode=$('opt-mode-sel').value;
-  const driveKey=$('drive-sel').value;
-  const drive=QUANTUM_DRIVES[driveKey] || {speed:0.18, fuelConsumption:1.0};
-  const cap=parseInt($('cap-input').value)||0;
-  
-  if(!o || !missions.length){ alert('Falta posición actual o misiones.'); return; }
-
-  const nodes = [];
-  missions.forEach((m, mi) => {
-    m.pickups.forEach(p => { const loc=locById(p.locId); if(loc) nodes.push({...loc, role:'pickup', mid:mi, scu:p.scu, mnum:mi+1}); });
-    m.deliveries.forEach(d => { const loc=locById(d.locId); if(loc) nodes.push({...loc, role:'dropoff', mid:mi, scu:m.pickups[0].scu, mnum:mi+1}); }); // simplificado para el render
-  });
-
-  const calcBtn=$('calc-btn'); calcBtn.innerHTML='Calculando...';
-  
-  if(routerWorker) {
-    routerWorker.onmessage = e => {
-      const res = e.data;
-      calcBtn.innerHTML='<i class="ti ti-route"></i> Calculate Route';
-      $('output').style.display='block';
-      let html = '';
-      res.seq.forEach((n, i) => {
-        html += `<div class="step-card" style="padding:10px; margin-bottom:5px;">${i===0?'📍 Inicio':n.role==='pickup'?'🔼 Recoger':'🔽 Entregar'} en <b>${n.label}</b> ${n.scu?`(${n.scu} SCU)`:''}</div>`;
-      });
-      $('step-list').innerHTML = html;
-      $('stats').innerHTML = `<div class="stat"><div class="sv">${fmtDist(res.dist)}</div><div class="sl">Distancia Total</div></div>`;
-    };
-    routerWorker.postMessage({ o, dest:null, nodes, cap, qSpeed: drive.speed, opt: optMode });
-  }
 }
 
-// ── Image Resizer para evitar CORS/Payload errors en Gemini ──
-function resizeImage(base64Str, maxWidth = 1200) {
-  return new Promise((resolve) => {
-    let img = new Image();
-    img.src = base64Str;
-    img.onload = () => {
-      let canvas = document.createElement('canvas');
-      let scale = maxWidth / img.width;
-      if (scale >= 1) return resolve(base64Str);
-      canvas.width = maxWidth;
-      canvas.height = img.height * scale;
-      let ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      resolve(canvas.toDataURL('image/jpeg', 0.8));
-    };
-  });
+function loadFallbackData() {
+  SHIPS = [{name:"Cutlass Black", scu:46, qFuel:2500, size:2}, {name:"Hercules C2", scu:696, qFuel:88000, size:3}];
+  QUANTUM_DRIVES = { "Atlas": {speed: 0.18, fuelConsumption: 1.0, size:2} };
+  MATERIALS = ["— Select commodity —", "Hydrogen", "Gold", "Laranite"];
+  FACTION_DATA = { "Covalex Shipping": { color:"#378ADD", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:50} } } };
+  const rawLocs = { "Everus Harbor": {x:0.12, y:0.10, z:0, sys:"Stanton", type:"station", pad:"efe"}, "Lorville": {x:12.85, y:-0.0008, z:0.0006, sys:"Stanton", type:"habitat", pad:"int"} };
+  let i=0; Object.entries(rawLocs).forEach(([l, d])=>{ const loc={id:'L'+i++, label:l, ...d}; ALL_LOCS[loc.id]=loc; STATIONS.push(loc); });
 }
 
-function setSmartStatus(mode, type, msg) {
-  const el = $(mode === 'text' ? 'smart-text-status' : 'smart-ocr-status');
-  if (!el) return;
-  el.className = 'smart-status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
-  el.innerHTML = type === 'sync' ? `<span class="spin" style="font-size:12px">⟳</span> ${msg}` : msg;
-}
-
-function getGeminiKey() {
-  let key = localStorage.getItem('sc_gemini_key');
-  if (!key) {
-    key = prompt("API Key de Gemini (se guarda localmente):");
-    if (key) { key = key.trim(); localStorage.setItem('sc_gemini_key', key); }
-  }
-  return key;
-}
-
-async function runOCR(imageSource) {
-  const apiKey = getGeminiKey();
-  if (!apiKey) { setSmartStatus('ocr', 'err', 'Se requiere API Key de Gemini.'); return; }
-  setSmartStatus('ocr', 'sync', 'Procesando imagen (reduciendo tamaño)...');
-  
-  try {
-    const resizedImage = await resizeImage(imageSource);
-    const base64Data = resizedImage.split(',')[1];
-    
-    setSmartStatus('ocr', 'sync', 'Analizando con IA...');
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: 'Extrae SCU, Material, Pickups y Deliveries de este contrato de Star Citizen en JSON: {"scu":10, "material":"Gold", "pickups":["Loc 1"], "deliveries":["Loc 2"]}' }, { inline_data: { mime_type: "image/jpeg", data: base64Data } }] }],
-        generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
-      })
-    });
-
-    if (!res.ok) throw new Error('API Error ' + res.status + '. Revisa tu Key o AdBlock.');
-    const data = await res.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-    const parsed = JSON.parse(rawText.trim());
-    
-    const pId = findLoc(parsed.pickups?.[0]||'') || Object.keys(ALL_LOCS)[0];
-    const dId = findLoc(parsed.deliveries?.[0]||'') || Object.keys(ALL_LOCS)[1];
-    
-    missions.push({
-      id: ++missionSeq,
-      pickups: [{id: ++pickSeq, locId: pId, scu: parsed.scu||1}],
-      deliveries: [{id: ++delivSeq, locId: dId}]
-    });
-    renderMissions();
-    setSmartStatus('ocr', 'ok', `✓ Éxito: ${parsed.scu||'?'} SCU de ${parsed.material||'Unknown'}`);
-  } catch (e) {
-    setSmartStatus('ocr', 'err', 'Fallo de red/API. Si usas Brave, baja los escudos. Detalle: ' + e.message);
-  }
-}
-
-// ── Inits ──
-$('ocr-file-input').addEventListener('change', e => {
-  if(e.target.files[0]) {
-    const reader = new FileReader();
-    reader.onload = ev => runOCR(ev.target.result);
-    reader.readAsDataURL(e.target.files[0]);
-  }
-});
-
-document.addEventListener('paste', e => {
-  const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/'));
-  if (item) {
-    const reader = new FileReader();
-    reader.onload = ev => runOCR(ev.target.result);
-    reader.readAsDataURL(item.getAsFile());
-  }
-});
-
-$('add-missionssion').addEventListener('click', () => {
-  missions.push({ id: ++missionSeq, pickups: [{id: ++pickSeq, locId: Object.keys(ALL_LOCS)[0], scu: 16}], deliveries: [{id: ++delivSeq, locId: Object.keys(ALL_LOCS)[1]}] });
-  renderMissions();
-});
-
-$('clear-all').addEventListener('click', () => { missions = []; renderMissions(); });
-$('calc-btn').addEventListener('click', calculate);
-
-async function init() {
+// 4. INICIALIZACIÓN FINAL (Se llama al final)
+async function init(){
   await loadGameData();
-  
-  const shipSel = $('ship-sel');
-  const dSel = $('drive-sel');
-  const facSel = $('faction-sel');
-  
-  SHIPS.forEach(s => { const o = document.createElement('option'); o.value=s.name; o.textContent=s.name; shipSel.appendChild(o); });
-  Object.entries(QUANTUM_DRIVES).forEach(([k,v]) => { const o = document.createElement('option'); o.value=k; o.textContent=`${k} — ${v.speed} Gm/s`; dSel.appendChild(o); });
-  FACTIONS.forEach(f => { const o = document.createElement('option'); o.value=f; o.textContent=f; facSel.appendChild(o); });
-  
-  const oSearch = createLocSearch(Object.keys(ALL_LOCS)[0], id => $('o-loc').value = id);
-  $('o-search-wrap').appendChild(oSearch);
-  $('o-loc').value = Object.keys(ALL_LOCS)[0];
-
+  poblarNaves(); 
   renderMissions();
+  // ... (aquí el resto de tus listeners y lógica que tenías)
 }
 
 window.onload = init;
