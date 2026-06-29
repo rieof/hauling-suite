@@ -86,10 +86,10 @@ select:focus,input:focus{outline:none;border-color:var(--c-faction);}
 /* ── Ship bar ─────────────────────────────────────────── */
 .ship-bar{
   background:var(--c-bg-2);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:10px;
-  display:grid;grid-template-columns:1fr 110px 1fr;gap:10px;align-items:end;
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;
   border:1px solid var(--c-border-2);
 }
-.sg{display:flex;flex-direction:column;gap:5px;}
+.sg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:140px;}
 .sg label{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;}
 .cap-display{
   text-align:center;background:var(--c-bg-1);border-radius:var(--r-md);padding:7px;
@@ -567,7 +567,7 @@ html.force-light{
 /* ── Responsive */
 /* ── Responsive ───────────────────────────────────────── */
 @media(max-width:580px){
-  .ship-bar{grid-template-columns:1fr;}
+  .ship-bar{flex-direction:column;align-items:stretch;}
   .row2{grid-template-columns:1fr;}
   .stats-row{grid-template-columns:repeat(2,1fr);}
   .op-grid{grid-template-columns:1fr;}
@@ -688,31 +688,40 @@ html.force-light{
   <div class="ship-bar">
     <div class="sg">
       <label><i class="ti ti-rocket" aria-hidden="true" style="font-size:12px"></i> Ship</label>
-      <div style="display:flex;gap:6px;align-items:center">
-        <div id="ship-search-wrap" style="position:relative;flex:1">
-          <input id="ship-search-inp" type="text" autocomplete="off" spellcheck="false"
-            placeholder="Search ship…"
-            style="width:100%;font-family:var(--font-mono);font-size:12px;padding:6px 8px;
-            border-radius:var(--r-sm);border:1px solid var(--c-border-2);
-            background:var(--c-bg-1);color:var(--c-text-1);transition:border-color .15s;">
-          <div id="ship-dropdown" style="display:none;position:absolute;top:calc(100%+3px);left:0;right:0;
-            z-index:999;background:var(--c-bg-2);border:1px solid var(--c-border-1);
-            border-radius:var(--r-md);box-shadow:0 8px 24px rgba(0,0,0,.35);
-            max-height:200px;overflow-y:auto;"></div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <div id="ship-search-wrap" style="position:relative;flex:1;min-width:160px">
+          <input id="ship-search-inp" type="text" autocomplete="off" spellcheck="false" placeholder="Search ship…" style="width:100%;font-family:var(--font-mono);font-size:12px;padding:6px 8px;border-radius:var(--r-sm);border:1px solid var(--c-border-2);background:var(--c-bg-1);color:var(--c-text-1);transition:border-color .15s;">
+          <div id="ship-dropdown" style="display:none;position:absolute;top:calc(100%+3px);left:0;right:0;z-index:999;background:var(--c-bg-2);border:1px solid var(--c-border-1);border-radius:var(--r-md);box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:200px;overflow-y:auto;"></div>
           <select id="ship-sel" style="display:none"></select>
         </div>
-        <button id="btn-refresh" title="Forzar actualización de naves y commodities desde la API"
-          style="flex-shrink:0;padding:5px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);
-          background:transparent;color:var(--c-text-3);cursor:pointer;font-size:13px;
-          display:flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;
-          transition:all .15s">
+        <button id="btn-refresh" title="Forzar actualización de naves y commodities desde la API" style="flex-shrink:0;padding:5px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);background:transparent;color:var(--c-text-3);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;transition:all .15s">
           <i class="ti ti-refresh" id="refresh-icon"></i>
           <span>Update</span>
         </button>
       </div>
     </div>
-    <div class="cap-display"><div class="cv" id="cap-show">696</div><div class="cl">SCU hold</div></div>
-    <div class="sg"><label>Cargo Capacity SCU (editable)</label><input type="number" id="cap-input" value="696" min="1"></div>
+    
+    <div class="sg">
+      <label><i class="ti ti-dashboard" aria-hidden="true" style="font-size:12px"></i> Q. Drive</label>
+      <select id="drive-sel" title="Quantum Drive — affects estimated travel time" style="font-size:11px;padding:4px 6px;border:1px solid var(--c-border-2);border-radius:var(--r-sm);background:var(--c-bg-1);color:var(--c-text-1);font-family:var(--font-mono);height:27px;">
+        <!-- populated by poblarNaves() -->
+      </select>
+    </div>
+
+    <div class="sg">
+      <label><i class="ti ti-route" aria-hidden="true" style="font-size:12px"></i> Optimizar por</label>
+      <select id="opt-mode-sel" style="font-size:11px;padding:4px 6px;border:1px solid var(--c-border-2);border-radius:var(--r-sm);background:var(--c-bg-1);color:var(--c-text-1);font-family:var(--font-mono);height:27px;">
+        <option value="time">⏳ Menor Tiempo</option>
+        <option value="dist">📏 Menor Distancia</option>
+      </select>
+    </div>
+
+    <div class="sg" style="justify-content:flex-end;">
+      <div class="cap-display" title="Cargo Capacity SCU (editable)" style="height:27px;padding:2px 8px;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;" onclick="const v=prompt('Capacidad SCU:', $('cap-input').value); if(v){$('cap-input').value=v;$('cap-show').textContent=v;}">
+        <div class="cv" id="cap-show" style="font-size:14px;line-height:1">696</div><div class="cl" style="font-size:10px">SCU</div>
+      </div>
+      <input type="number" id="cap-input" value="696" min="1" style="display:none">
+    </div>
   </div>
 
   <div class="rank-bar">
@@ -1011,389 +1020,121 @@ html.force-light{
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-const SYS={Stanton:{cx:0,cy:0},Pyro:{cx:50000,cy:0},Nyx:{cx:-42000,cy:30000}};
-function deg2rad(d){return d*Math.PI/180;}
-const PLAN={
-  Hurston:{s:'Stanton',r:12.85,a:20},Crusader:{s:'Stanton',r:19.15,a:115},ArcCorp:{s:'Stanton',r:28.91,a:205},microTech:{s:'Stanton',r:43.44,a:300},
-  'Pyro I':{s:'Pyro',r:9,a:25},Monox:{s:'Pyro',r:15,a:80},Bloom:{s:'Pyro',r:22,a:150},'Pyro V':{s:'Pyro',r:31,a:235},Terminus:{s:'Pyro',r:39,a:310},
-  'Nyx I':{s:'Nyx',r:12,a:40},'Nyx II':{s:'Nyx',r:20,a:150},Delamar:{s:'Nyx',r:16,a:250},
-};
-function pPos(name){const p=PLAN[name];const c=SYS[p.s];return{x:c.cx+p.r*Math.cos(deg2rad(p.a)),y:c.cy+p.r*Math.sin(deg2rad(p.a)),z:0};}
-function lagP(name,which){const p=PLAN[name];const c=SYS[p.s];const a=deg2rad(p.a);const r=p.r;const off=r*0.10;let rr=r,aa=a;if(which==='L1')rr=r-off;else if(which==='L2')rr=r+off;else if(which==='L3')aa=a+Math.PI;else if(which==='L4')aa=a+deg2rad(60);else if(which==='L5')aa=a-deg2rad(60);return{x:c.cx+rr*Math.cos(aa),y:c.cy+rr*Math.sin(aa),z:0};}
-function near(name,dx,dy,dz){const pp=pPos(name);return{x:pp.x+(dx||0),y:pp.y+(dy||0),z:dz||0};}
-function sysEdge(sys,dx,dy){const c=SYS[sys];return{x:c.cx+dx,y:c.cy+dy,z:0};}
-function L(label,pos,type,pad){
-  // pad types:
-  //   'efe' = External Freight Elevator — dock ship outside, load directly (fastest)
-  //   'int' = Interior hangar — fly in, walk to elevator (slowest)
-  //   undefined = unknown
-  //
-  // Rules from SC 4.4+:
-  //   outpost → always 'efe' (exterior pad)
-  //   station → 'efe' if it has cargo deck (Ruin, Gaslight, Everus, Baijini, distribution centers)
-  //             'int' otherwise (lagrange generic stations)
-  //   lagrange → 'int' (hangar inside)
-  //   habitat  → 'int' (city hangar)
-  const autoPad=pad||(type==='outpost'?'efe':type==='lagrange'?'int':type==='station'?'int':undefined);
-  return{label,x:pos.x,y:pos.y,z:pos.z,type,pad:autoPad};
+// ── VARIABLES GLOBALES VACÍAS (Se llenan al iniciar) ──
+let SHIPS = [];
+let QUANTUM_DRIVES = {};
+let MATERIALS = [];
+let FACTION_DATA = {};
+let ALL_LOCS = {};
+let STATIONS = [];
+
+// ── CARGA ASÍNCRONA DE DATOS (Arquitectura Limpia JSON) ──
+async function loadGameData() {
+  try {
+    setBadge('sync', 'Cargando base de datos...');
+    
+    // Descargamos todos los archivos en paralelo desde la carpeta /data/
+    const [shipsRes, drivesRes, matsRes, factionsRes, locsRes] = await Promise.all([
+      fetch('data/ships.json'),
+      fetch('data/drives.json'),
+      fetch('data/materials.json'),
+      fetch('data/factions.json'),
+      fetch('data/locations.json')
+    ]);
+
+    // Parseo de los JSON
+    if(shipsRes.ok) { const sd = await shipsRes.json(); SHIPS = sd.ships || sd; }
+    if(drivesRes.ok) { const dd = await drivesRes.json(); QUANTUM_DRIVES = dd.drives || dd; }
+    if(matsRes.ok) { const md = await matsRes.json(); MATERIALS = md.materials || md; }
+    if(factionsRes.ok) { FACTION_DATA = await factionsRes.json(); }
+    
+    if(locsRes.ok) {
+      const rawLocs = await locsRes.json();
+      const locList = rawLocs.locations || []; // Soporta el formato de sc-data si lo pegas tal cual
+      let _i = 0;
+      
+      // Si el JSON es un Array (como SC-Data)
+      if (Array.isArray(locList) && locList.length > 0) {
+          locList.forEach(l => {
+              const loc = { id: 'loc' + (_i++), label: l.name, sys: l.system, planet: l.parent, type: l.type, pad: l.pad || 'efe', x: l.x, y: l.y, z: l.z };
+              ALL_LOCS[loc.id] = loc;
+              if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
+          });
+      } 
+      // Si el JSON es un Diccionario (Formato que usamos en el paso anterior)
+      else {
+          Object.entries(rawLocs).forEach(([label, data]) => {
+            const loc = { id: 'loc' + (_i++), label: label, name: label, ...data };
+            ALL_LOCS[loc.id] = loc;
+            if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
+          });
+      }
+    }
+
+    console.log("[Data] Archivos JSON cargados correctamente.");
+    setBadge('hidden', '');
+    return true;
+
+  } catch (error) {
+    console.warn("[Data] No se encontraron archivos JSON locales en /data/. Usando base de datos interna.", error);
+    // Si falla el fetch (porque no creaste la carpeta), llamará a una función de Fallback para no romper la web.
+    loadFallbackData(); 
+    return false;
+  }
 }
 
-// --- AUTOGEN LOCS START ---
-const DATA={
-  "Stanton":{
-    "Hurston":{locs:[
-      L('Lorville',near('Hurston',0.10,-0.05),'habitat'),
-      L('Everus Harbor',near('Hurston',0.12,0.10),'station'),
-      L('HUR-L1 Green Glade',lagP('Hurston','L1'),'lagrange'),
-      L('HUR-L2 Faithful Dream',lagP('Hurston','L2'),'lagrange'),
-      L('HUR-L3 Thundering Express',lagP('Hurston','L3'),'lagrange'),
-      L('HUR-L4 Melodic Fields',lagP('Hurston','L4'),'lagrange'),
-      L('HUR-L5 High Course',lagP('Hurston','L5'),'lagrange'),
-      L('HDMS-Edmond',near('Hurston',0.11,-0.04),'outpost'),
-      L('HDMS-Hadley',near('Hurston',0.10,-0.07),'outpost'),
-      L('HDMS-Oparei',near('Hurston',0.09,-0.02),'outpost'),
-      L('HDMS-Pinewood',near('Hurston',0.12,-0.03),'outpost'),
-      L('HDMS-Stanhope',near('Hurston',0.13,-0.06),'outpost'),
-      L('HDMS-Thedus',near('Hurston',0.10,-0.08),'outpost'),
-      L('Covalex Distribution Centre',near('Hurston',0.08,-0.03),'outpost'),
-      L('HDPC-Cassillo',near('Hurston',0.07,-0.05),'outpost'),
-      L('Teasa Spaceport',near('Hurston',0.09,0.03),'station'),
-      L('Reclamation & Disposal Ortego',near('Hurston',0.08,0.02),'outpost'),
-      L('Red Wind Distribution Hub',near('Hurston',0.13,-0.05),'outpost'),
-      L('Red Wind Relay Post Alpha',near('Hurston',0.14,-0.03),'outpost'),
-      L('Red Wind Relay Post Bravo',near('Hurston',0.14,0.01),'outpost'),
-      L('CBD Lorville',near('Hurston',0.10,-0.04),'habitat'),
-      L('Devlin Scrap & Salvage',near('Hurston',0.09,-0.03),'outpost'),
-      L('HDMS-Anderson (Aberdeen)',near('Hurston',0.29,-0.17),'outpost'),
-      L('HDMS-Norgaard (Aberdeen)',near('Hurston',0.27,-0.19),'outpost'),
-      L('HDMS-Bezdek (Arial)',near('Hurston',0.31,0.14),'outpost'),
-      L('HDMS-Lathan (Arial)',near('Hurston',0.32,0.16),'outpost'),
-      L('HDMS-Hahn (Magda)',near('Hurston',-0.24,0.21),'outpost'),
-      L('HDMS-Perlman (Magda)',near('Hurston',-0.26,0.19),'outpost'),
-      L('HDMS-Ryder (Ita)',near('Hurston',-0.31,-0.14),'outpost'),
-      L('HDMS-Woodruff (Ita)',near('Hurston',-0.29,-0.16),'outpost'),
-    ]},
-    "Crusader":{locs:[
-      L('Orison',near('Crusader',0.1,0.1),'habitat'),
-      L('Grim HEX',near('Crusader',-0.1,-0.5),'station'),
-      L('Seraphim Station',near('Crusader',0.18,0.13),'station'),
-      L('CRU-L1 Ambitious Dream',lagP('Crusader','L1'),'lagrange'),
-      L('CRU-L4 Shallow Fields',lagP('Crusader','L4'),'lagrange'),
-      L('CRU-L5 Beautiful Glen',lagP('Crusader','L5'),'lagrange'),
-      L('Tram & Myers Mining (Cellin)',near('Crusader',0.36,0.19),'outpost'),
-      L('Gallete Family Farms (Cellin)',near('Crusader',0.34,0.21),'outpost'),
-      L('Hickes Research (Cellin)',near('Crusader',0.35,0.18),'outpost'),
-      L('Shubin Mining SCD-1 (Daymar)',near('Crusader',-0.31,0.34),'outpost'),
-      L('ArcCorp Mining Area 141 (Daymar)',near('Crusader',-0.29,0.36),'outpost'),
-      L('ArcCorp Mining Area 157 (Daymar)',near('Crusader',-0.31,0.32),'outpost'),
-      L('Brio\'s Breaker Yard (Daymar)',near('Crusader',-0.32,0.35),'outpost'),
-      L('Kudre Ore (Daymar)',near('Crusader',-0.30,0.33),'outpost'),
-      L('Bountiful Harvest Hydroponics (Daymar)',near('Crusader',-0.29,0.37),'outpost'),
-      L('Nuen Waste Management (Daymar)',near('Crusader',-0.28,0.34),'outpost'),
-      L('ArcCorp Mining Area 157 (Yela)',near('Crusader',-0.11,-0.49),'outpost'),
-      L('Benson Mining (Yela)',near('Crusader',-0.09,-0.51),'outpost'),
-      L('Deakins Research (Yela)',near('Crusader',-0.12,-0.48),'outpost'),
-      L("Brio's Breaker Yard (Yela)",near('Crusader',-0.09,-0.51),'outpost'),
-      L("Dumper's Depot (GrimHEX)",near('Crusader',-0.1,-0.5),'outpost'),
-    ]},
-    "ArcCorp":{locs:[
-      L('Area 18',near('ArcCorp',0.12,0.08),'habitat'),
-      L('Baijini Point',near('ArcCorp',0.15,0.12),'station'),
-      L('ARC-L1 Wide Forest',lagP('ArcCorp','L1'),'lagrange'),
-      L('ARC-L2 Lively Pathway',lagP('ArcCorp','L2'),'lagrange'),
-      L('Riker Memorial',lagP('ArcCorp','L2'),'station'),
-      L('ARC-L3 Modern Express',lagP('ArcCorp','L3'),'lagrange'),
-      L('ARC-L4 Faint Glen',lagP('ArcCorp','L4'),'lagrange'),
-      L('ARC-L5 Yellow Core',lagP('ArcCorp','L5'),'lagrange'),
-      L('ArcCorp Mining Area 045 (Wala)',near('ArcCorp',0.26,0.17),'outpost'),
-      L('ArcCorp Mining Area 048 (Wala)',near('ArcCorp',0.24,0.19),'outpost'),
-      L('ArcCorp Mining Area 056 (Wala)',near('ArcCorp',0.255,0.175),'outpost'),
-      L('ArcCorp Mining Area 061 (Wala)',near('ArcCorp',0.245,0.185),'outpost'),
-      L('Shubin Processing SPAL-3 (Wala)',near('ArcCorp',0.26,0.15),'outpost'),
-      L('Shubin Processing SPAL-7 (Wala)',near('ArcCorp',0.255,0.155),'outpost'),
-      L('Shubin Processing SPAL-9 (Wala)',near('ArcCorp',0.25,0.16),'outpost'),
-      L('Shubin Processing SPAL-12 (Wala)',near('ArcCorp',0.245,0.175),'outpost'),
-      L('Shady Glen Farms (Wala)',near('ArcCorp',0.22,0.185),'outpost'),
-      L('Shubin Mining SAL-2 (Lyria)',near('ArcCorp',-0.23,0.11),'outpost'),
-      L('Shubin Mining SAL-5 (Lyria)',near('ArcCorp',-0.21,0.13),'outpost'),
-      L('Paradise Cove (Lyria)',near('ArcCorp',-0.24,0.10),'outpost'),
-      L('ArcCorp Mining Area 141 (Lyria)',near('ArcCorp',-0.22,0.09),'outpost'),
-      L('ArcCorp Mining Area 157 (Lyria)',near('ArcCorp',-0.20,0.14),'outpost'),
-      L("Dumper's Depot (Area 18)",near('ArcCorp',0.12,0.08),'habitat'),
-      L("Samson & Son's Salvage Center (Wala)",near('ArcCorp',0.235,0.20),'outpost'),
-    ]},
-    "microTech":{locs:[
-      L('New Babbage',near('microTech',0.12,0.09),'habitat'),
-      L('Port Tressler',near('microTech',0.16,0.13),'station'),
-      L('MIC-L1 Shallow Frontier',lagP('microTech','L1'),'lagrange'),
-      L('MIC-L2 Long Forest',lagP('microTech','L2'),'lagrange'),
-      L('MIC-L3 Endless Odyssey',lagP('microTech','L3'),'lagrange'),
-      L('MIC-L4 Red Crossroads',lagP('microTech','L4'),'lagrange'),
-      L('MIC-L5 Modern Icarus',lagP('microTech','L5'),'lagrange'),
-      L('Covalex Distribution Hub',near('microTech',0.08,0.07),'outpost'),
-      L('Shubin Mining SM0-10 (microTech)',near('microTech',0.08,0.09),'outpost'),
-      L('Shubin Mining SM0-13 (microTech)',near('microTech',0.07,0.10),'outpost'),
-      L('Shubin Mining SM0-18 (microTech)',near('microTech',0.09,0.11),'outpost'),
-      L('Shubin Mining SM0-22 (microTech)',near('microTech',0.10,0.12),'outpost'),
-      L('Rayari Deltana Research (microTech)',near('microTech',0.13,0.08),'outpost'),
-      L('Sakura Sun Goldenrod Workcenter',near('microTech',0.14,0.10),'outpost'),
-      L('Rayari Anvik Research (Calliope)',near('microTech',0.31,0.19),'outpost'),
-      L('Shubin Mining SMCa-6 (Calliope)',near('microTech',0.28,0.22),'outpost'),
-      L('Shubin Mining SMCa-8 (Calliope)',near('microTech',0.29,0.21),'outpost'),
-      L('Rayari Cantwell Research (Clio)',near('microTech',-0.24,0.14),'outpost'),
-      L('Rayari Kunjeng Research (Clio)',near('microTech',-0.26,0.16),'outpost'),
-      L('Rayari Kaltag Research (Clio)',near('microTech',-0.25,0.17),'outpost'),
-      L('Rayari McGrath Research (Euterpe)',near('microTech',0.09,-0.31),'outpost'),
-      L('Shubin Mining SPMC-1 (Euterpe)',near('microTech',0.10,-0.30),'outpost'),
-      L('Shubin Mining SPMC-10 (Euterpe)',near('microTech',0.12,-0.28),'outpost'),
-      L('CRU-L4 Locker (Crusader L4)',lagP('Crusader','L4'),'lagrange'),
-      L('CRU-L5 Maintenance (Crusader L5)',lagP('Crusader','L5'),'lagrange'),
-      L('MTP New Babbage',near('microTech',0.12,0.09),'habitat'),
-      L('Orison Providence',near('Crusader',0.1,0.1),'habitat'),
-      L('Platinum Bay (ARC-L1)',lagP('ArcCorp','L1'),'lagrange'),
-      L('Platinum Bay (Baijini Point)',near('ArcCorp',0.15,0.12),'station'),
-      L('Platinum Bay (CRU-L1)',lagP('Crusader','L1'),'lagrange'),
-      L('Platinum Bay (CRU-L4)',lagP('Crusader','L4'),'lagrange'),
-      L('Platinum Bay (CRU-L5)',lagP('Crusader','L5'),'lagrange'),
-      L('Platinum Bay (Everus Harbor)',near('Hurston',0.12,0.10),'station'),
-      L('Platinum Bay (HUR-L2)',lagP('Hurston','L2'),'lagrange'),
-      L('IO Tower (Area 18)',near('ArcCorp',0.12,0.08),'habitat'),
-    ]},
-    "Puertas (jump points)":{locs:[
-      L('Pyro Gateway (Stanton)',sysEdge('Stanton',15,-12),'station'),
-      L('Nyx Gateway (Stanton)',sysEdge('Stanton',-18,14),'station'),
-      L('Terra Gateway (Stanton)',sysEdge('Stanton',20,10),'station'),
-      L('Starlight Service Station (Stanton Gateway)',sysEdge('Stanton',15,-12),'station'),
-      L('UEX Station (Terra Gateway)',sysEdge('Stanton',20,10),'station'),
-      L('Wikelo Emporium Dasi',sysEdge('Stanton',10,18),'station'),
-      L('Wikelo Emporium Kinga',sysEdge('Stanton',-8,20),'station'),
-      L('Wikelo Emporium Selo',sysEdge('Stanton',18,-8),'station'),
-    ]},
-  },
-  "Pyro":{
-    "Pyro I":{locs:[
-      L('Rustville',near('Pyro I',0.12,0.08),'outpost'),
-      L("Stag's Rut",near('Pyro I',0.10,0.09),'outpost'),
-      L('PYAM-FARSTAT-1-2 (L2)',lagP('Pyro I','L2'),'lagrange'),
-      L('PYAM-FARSTAT-1-3 (L3)',lagP('Pyro I','L3'),'lagrange'),
-      L('PYAM-FARSTAT-1-5 (L5)',lagP('Pyro I','L5'),'lagrange'),
-      L('Lazarus Transport Hub Phoenix-II (Pyro I)',near('Pyro I',0.10,0.14),'outpost'),
-    ]},
-    "Monox (Pyro II)":{locs:[
-      L('Checkmate',lagP('Monox','L4'),'station'),
-      L('Rough & Ready Monox Camp',near('Monox',0.11,0.09),'outpost'),
-      L('Rust Society Extraction Hub',near('Monox',0.09,0.12),'outpost'),
-      L("Jackson's Swap",near('Monox',0.07,0.14),'outpost'),
-      L('Last Ditch (Monox)',near('Monox',0.15,0.05),'outpost'),
-      L('Sunset Mesa',near('Monox',0.13,0.11),'outpost'),
-    ]},
-    "Bloom (Pyro III)":{locs:[
-      L('Orbituary',near('Bloom',0.16,0.12),'station'),
-      L('Starlight Service Station',lagP('Bloom','L1'),'station'),
-      L('Patch City',lagP('Bloom','L3'),'station'),
-      L('PYAM-SUPVISR-3-4 (BLO-L4)',lagP('Bloom','L4'),'lagrange'),
-      L('PYAM-SUPVISR-3-5 (BLO-L5)',lagP('Bloom','L5'),'lagrange'),
-      L('PYAM-EXHANG-0-1',lagP('Bloom','L2'),'lagrange'),
-      L('Citizens for Pyro Settlement',near('Bloom',0.11,0.11),'outpost'),
-      L('Bloom Hydroponics & Trade',near('Bloom',0.08,0.13),'outpost'),
-      L('Frigid Knot (Bloom)',near('Bloom',0.10,0.15),'outpost'),
-      L('The Golden Riviera',near('Bloom',0.12,0.16),'outpost'),
-      L('Prospect Depot',near('Bloom',0.14,0.07),'outpost'),
-      L('Bueno Ravine',near('Bloom',0.10,0.08),'outpost'),
-      L("Shepherd's Rest",near('Bloom',0.11,0.09),'outpost'),
-    ]},
-    "Pyro IV":{locs:[
-      L("Chawla's Beach",near('Pyro V',0.44,0.25),'outpost'),
-      L('Fallow Field',near('Pyro V',0.46,0.24),'outpost'),
-      L("Goner's Deal",near('Pyro V',0.43,0.27),'outpost'),
-      L("Sacren's Plot",near('Pyro V',0.45,0.22),'outpost'),
-      L('Goner\'s Deal (Pyro IV)',near('Pyro V',0.43,0.27),'outpost'),
-      L('Farro Data Center I (Pyro IV)',near('Pyro V',0.47,0.23),'outpost'),
-      L('Farro Data Center II (Pyro IV)',near('Pyro V',0.45,0.22),'outpost'),
-      L('Farro Data Center III (Pyro IV)',near('Pyro V',0.44,0.28),'outpost'),
-      L('Farro Data Center IV (Pyro IV)',near('Pyro V',0.46,0.26),'outpost'),
-      L('Farro Data Center VII (Pyro IV)',near('Pyro V',0.48,0.25),'outpost'),
-      L('Farro Data Center IX (Pyro IV)',near('Pyro V',0.43,0.24),'outpost'),
-    ]},
-    "Pyro V":{locs:[
-      L('Gaslight',lagP('Pyro V','L2'),'station'),
-      L("Seer's Canyon (Vatra)",near('Pyro V',0.32,0.07),'outpost'),
-      
-      L("Rat's Nest",lagP('Pyro V','L5'),'station'),
-      L('Rod\'s Fuel \'N Supplies (PYV-L4)',lagP('Pyro V','L4'),'station'),
-      L('PYAM-FARSTAT-5-1 (PYV-L1)',lagP('Pyro V','L1'),'lagrange'),
-      L('PYAM-FARSTAT-5-3 (PYV-L3)',lagP('Pyro V','L3'),'lagrange'),
-      L('Headhunters Scrap Yard',near('Pyro V',0.34,0.06),'outpost'),
-      L('Kabir\'s Post (Ignis)',near('Pyro V',0.335,0.09),'outpost'),
-      L('Sulfur Fields Outpost',near('Pyro V',0.30,0.04),'outpost'),
-      L('Pyroclastic Settlement',near('Pyro V',0.35,0.10),'outpost'),
-      L('Vatra Refining Camp',near('Pyro V',0.31,0.01),'outpost'),
-      L('Ember Waste Dump',near('Pyro V',0.36,0.05),'outpost'),
-      L('Deadrock Mining Camp',near('Pyro V',0.28,0.09),'outpost'),
-      L("Prophet's Peak",near('Pyro V',0.27,0.10),'outpost'),
-      L('Ashland',near('Pyro V',0.34,0.06),'outpost'),
-      L("Kabir's Post",near('Pyro V',0.335,0.09),'outpost'),
-    ]},
-    "Terminus (Pyro VI)":{locs:[
-      L('Ruin Station',near('Terminus',0.16,0.12),'station'),
-      L("Shepherd's Rest (Terminus)",near('Terminus',0.18,0.08),'outpost'),
-      L('Canard View',near('Terminus',0.14,0.11),'outpost'),
-      L('Endgame',lagP('Terminus','L3'),'station'),
-      L('Dudley & Daughters (PYVI-L4)',lagP('Terminus','L4'),'station'),
-      L('Megumi Refueling',lagP('Terminus','L5'),'station'),
-      L('PYAM-FARSTAT-6-2 (PYVI-L2)',lagP('Terminus','L2'),'lagrange'),
-      L('Rough Landing',near('Terminus',0.09,0.10),'outpost'),
-      L('Scarper\'s Turn (Terminus)',near('Terminus',0.11,0.06),'outpost'),
-      L('Blackrock Exchange',near('Terminus',0.07,0.12),'outpost'),
-      L('Bullock\'s Reach (Terminus)',near('Terminus',0.10,0.09),'outpost'),
-      L('Kinder Plots',near('Terminus',0.06,0.11),'outpost'),
-      L('Last Landings',near('Terminus',0.13,0.10),'outpost'),
-      L('Windfall',near('Terminus',0.09,0.08),'outpost'),
-      L('Arid Reach',near('Terminus',0.11,0.07),'outpost'),
-      L("Carver's Ridge",near('Terminus',0.08,0.11),'outpost'),
-      L('The Yard',near('Terminus',0.10,0.07),'outpost'),
-      L("Ostler's Claim",near('Terminus',0.07,0.10),'outpost'),
-      L('Watcher\'s Depot (Terminus)',near('Terminus',0.07,0.09),'outpost'),
-      L("Beggar's Reach (Terminus)",near('Terminus',0.08,0.13),'outpost'),
-    ]},
-    "Estaciones RAB":{locs:[
-      L('RAB-Alpha',lagP('Terminus','L1'),'station'),
-      L('RAB-Bravo',lagP('Terminus','L2'),'station'),
-      L('RAB-Foxtrot',lagP('Bloom','L1'),'station'),
-      L('RAB-Ignition',lagP('Pyro I','L4'),'station'),
-      L('RAB-Kilo',lagP('Monox','L5'),'station'),
-      L('RAB-November',lagP('Bloom','L3'),'station'),
-      L('RAB-Roth',lagP('Pyro V','L1'),'station'),
-      L('RAB-Tung',lagP('Monox','L2'),'station'),
-      L('Cluster NBD-102',lagP('Pyro V','L3'),'lagrange'),
-    ]},
-    "Lagranges Pyro":{locs:[
-      L('PYR1 L1',lagP('Pyro I','L1'),'lagrange'),
-      L('PYR1 L2',lagP('Pyro I','L2'),'lagrange'),
-      L('PYR1 L3',lagP('Pyro I','L3'),'lagrange'),
-      L('PYR1 L4',lagP('Pyro I','L4'),'lagrange'),
-      L('PYR1 L5',lagP('Pyro I','L5'),'lagrange'),
-      L('PYR2 L1',lagP('Monox','L1'),'lagrange'),
-      L('PYR2 L2',lagP('Monox','L2'),'lagrange'),
-      L('PYR2 L4',lagP('Monox','L4'),'lagrange'),
-      L('PYR2 L5',lagP('Monox','L5'),'lagrange'),
-      L('PYR3 L3',lagP('Bloom','L3'),'lagrange'),
-      L('PYR3 L4',lagP('Bloom','L4'),'lagrange'),
-      L('PYR3 L5',lagP('Bloom','L5'),'lagrange'),
-    ]},
-    "Puertas (jump points)":{locs:[
-      L('Stanton Gateway (Pyro)',sysEdge('Pyro',42,-18),'station'),
-      L('Nyx Gateway (Pyro)',sysEdge('Pyro',-20,40),'station'),
-    ]},
-  },
-  "Nyx":{
-    "Delamar":{locs:[
-      L('Levski',near('Delamar',0.12,0.08),'habitat'),
-      L('People\'s Service Station Lambda',near('Delamar',0.2,-0.1),'station'),
-    ]},
-    "Nyx I / II":{locs:[
-      L('People\'s Service Station Alpha (Nyx I)',near('Nyx I',0.18,0.12),'station'),
-      L('People\'s Service Station Delta (Nyx II)',near('Nyx II',0.16,0.1),'station'),
-    ]},
-    "Puertas (jump points)":{locs:[
-      L('Stanton Gateway (Nyx)',sysEdge('Nyx',30,-18),'station'),
-      L('Pyro Gateway (Nyx)',sysEdge('Nyx',-22,30),'station'),
-    ]},
-  },
-};
-// --- AUTOGEN LOCS END ---
-// Construir índicesices
-let _i=0;Object.entries(DATA).forEach(([sysName,planets])=>Object.values(planets).forEach(z=>z.locs.forEach(l=>{l.id='loc'+(_i++);l.sys=sysName;})));
-const STATIONS=[];Object.entries(DATA).forEach(([sys,planets])=>Object.entries(planets).forEach(([planet,z])=>z.locs.forEach(l=>{if(['station','lagrange','habitat','outpost'].includes(l.type))STATIONS.push({...l,sys,planet,name:l.label});})));
-const ALL_LOCS={};Object.values(DATA).forEach(sys=>Object.values(sys).forEach(z=>z.locs.forEach(l=>{ALL_LOCS[l.id]=l;})));
+// ============================================================================
+// FUNCION DE EMERGENCIA (FALLBACK) - Si no existen los archivos /data/
+// ============================================================================
+function loadFallbackData() {
+  SHIPS = [
+    {name:"Avenger Titan",scu:8,qFuel:583}, {name:"Cutlass Black",scu:46,qFuel:2500},
+    {name:"Spirit C1",scu:64,qFuel:2500}, {name:"Freelancer MAX",scu:120,qFuel:2500},
+    {name:"Zeus Mk II CL",scu:128,qFuel:2500}, {name:"Constellation Taurus",scu:174,qFuel:3000},
+    {name:"Argo RAFT",scu:192,qFuel:3000}, {name:"Caterpillar",scu:576,qFuel:11000},
+    {name:"Hercules C2",scu:696,qFuel:88000}, {name:"Ironclad",scu:2204,qFuel:88000},
+    {name:"Hull C",scu:4608,qFuel:88000}, {name:"Personalizado",scu:0,qFuel:5000}
+  ];
+  
+  const rawDrives = {
+    "Atlas": {speed:0.18, fuelConsumption:1.0}, "Crossfield": {speed:0.22, fuelConsumption:1.8},
+    "TS-2": {speed:0.24, fuelConsumption:2.0}, "VK-00": {speed:0.28, fuelConsumption:2.5}
+  };
+  QUANTUM_DRIVES = rawDrives;
+  
+  MATERIALS = ["— Select commodity —","Acryliplex Composite","Agricium","Agricultural Supplies","Aluminum","Ammonia","Argon","Beryl","Chlorine","Construction Materials","Copper","Corundum","Distilled Spirits","Fluorine","Gold","Helium","Hydrogen","Iodine","Iron","Laranite","Medical Supplies","Processed Food","Quantanium","Quartz","Recycled Material Composite","Scrap","Steel","Titanium","Tungsten","Waste"];
+  
+  FACTION_DATA = {
+    "Covalex Shipping": { zone:"Stanton", color:"#378ADD", emoji:"📦", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:50, ship:"Spirit C1", strat:"1 mission intro"} } },
+    "Red Wind Linehaul": { zone:"Pyro", color:"#E84040", emoji:"🔴", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:60, ship:"Golem OX", strat:"1 mission intro"} } },
+    "Ling Family Hauling": { zone:"microTech / Stanton", color:"#4DB56A", emoji:"🟢", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:50, ship:"Cutlass", strat:"1 mission intro"} } }
+  };
 
-// Override pad type for known EFE stations (have external cargo deck)
-// Runs AFTER ALL_LOCS is built
-const EFE_STATIONS=new Set([
-  'Ruin Station','Gaslight','Checkmate',
-  'Everus Harbor','Baijini Point','Seraphim Station','Port Tressler',
-  'Orison','Orbituary','Endgame','Levski',
-  "Dudley & Daughters","Rod's Fuel 'N Supplies","Rat's Nest",
-  'Megumi Refueling','Starlight Service Station','Patch City',
-  'RAB-Alpha','RAB-Bravo','RAB-Foxtrot','RAB-Ignition',
-  'RAB-Kilo','RAB-November','RAB-Roth','RAB-Tung',
-  "HUR-L1 Green Glade","HUR-L2 Faithful Dream","HUR-L3 Thundering Express",
-  "HUR-L4 Melodic Fields","HUR-L5 High Course",
-  "CRU-L1 Ambitious Dream","CRU-L4 Shallow Fields","CRU-L5 Beautiful Glen",
-  "ARC-L1 Wide Forest","ARC-L2 Lively Pathway","ARC-L3 Modern Express",
-  "ARC-L4 Faint Glen","ARC-L5 Yellow Core",
-  "MIC-L1 Shallow Frontier","MIC-L2 Long Forest","MIC-L3 Endless Odyssey",
-  "MIC-L4 Red Crossroads","MIC-L5 Modern Icarus",
-]);
-Object.values(ALL_LOCS).forEach(l=>{
-  if(EFE_STATIONS.has(l.label))l.pad='efe';
-});
+  const rawLocs = {
+    "Rat's Nest": {x: 3.7326, y: -42.7669, z: 0.0185, sys: "Pyro", planet: "Pyro V", type: "station", pad: "efe"},
+    "Endgame": {x: 48.2968, y: 48.292, z: 0.0027, sys: "Pyro", planet: "Terminus", type: "station", pad: "efe"},
+    "Gaslight": {x: 46.4944, y: -8.1909, z: 0.0177, sys: "Pyro", planet: "Pyro V", type: "station", pad: "efe"},
+    "Ruin Station": {x: -52.3368, y: -43.9179, z: -0.0001, sys: "Pyro", planet: "Terminus", type: "station", pad: "efe"},
+    "Everus Harbor": {x: 12.8499, y: -0.0009, z: 0.0005, sys: "Stanton", planet: "Hurston", type: "station", pad: "efe"},
+    "Baijini Point": {x: 18.5869, y: -22.1522, z: -0.0004, sys: "Stanton", planet: "ArcCorp", type: "station", pad: "efe"}
+  };
+  let _i = 0;
+  Object.entries(rawLocs).forEach(([label, data]) => {
+    const loc = { id: 'loc' + (_i++), label: label, name: label, ...data };
+    ALL_LOCS[loc.id] = loc;
+    if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
+  });
+}
+// ============================================================================
 
-// --- AUTOGEN SHIPS START ---
-let SHIPS=[
-  {name:"Avenger Titan",scu:8},{name:"Golem OX",scu:64},{name:"Spirit C1",scu:64},
-  {name:"Cutlass Black",scu:46},{name:"Freelancer MAX",scu:120},{name:"Zeus Mk II CL",scu:128},
-  {name:"Mercury Star Runner",scu:114},{name:"Constellation Taurus",scu:174},{name:"Railen",scu:640},
-  {name:"Argo RAFT",scu:192},{name:"Anvil Asgard",scu:180},{name:"RSI Hermes",scu:288},
-  {name:"Caterpillar",scu:576},{name:"Hull B",scu:512},{name:"Hercules C2",scu:696},
-  {name:"Ironclad",scu:2204},{name:"Hull C",scu:4608},{name:"Personalizado",scu:0},
-];
-// --- AUTOGEN SHIPS END ---
-// --- AUTOGEN MATS START ---
-let MATERIALS=["— Select commodity —","Acryliplex Composite","Agricium","Agricultural Supplies","Aluminum","Amioshi Plague","Ammonia","Aphorite","Argon","Astatine","Beryl","Bexalite","Chlorine","Cobalt","Construction Materials","Copper","Corundum","Diamond","Distilled Spirits","Fluorine","Gold","Hadanite","Helium","Hydrogen","Iodine","Iron","Krypton","Laranite","Maze","Medical Supplies","Mercury","Methane","Neon","Nitrogen","Pressurized Ice","Processed Food","Quantanium","Quartz","Recycled Material Composite","Scrap","Silicon","SLAM","Steel","Titanium","Tungsten","Waste","Widow"];
-// --- AUTOGEN MATS END ---
+
+const $=id=>document.getElementById(id);
 const ALL_BOX_SIZES=[1,2,4,8,16,24,32];
 const TYPE_LBL={lagrange:"Lagrange",station:"Station",outpost:"Outpost",habitat:"Habitat",moon:"Luna",planet:"Planeta"};
-// ── Datos por facción: rangos, XP, estrategias ─────────────
-const FACTION_DATA={
-  "Covalex Shipping":{
-    zone:"Stanton",color:"#378ADD",emoji:"📦",
-    // XP reales confirmados por API de missions (umbrales acumulados):
-    // Rookie=50, Junior=250, Member=5250, Experienced=27750, Senior=77750, Master=237750
-    ranks:{
-      "Trainee":    {scuMin:1,  scuMax:10,  typical:8,   maxBox:1,  xpReq:50,     xpMission:50,    ship:"Spirit C1 / Cutlass",    strat:"1 mission intro → desbloquea Rookie. Hub: Baijini Point o Everus Harbor."},
-      "Rookie":     {scuMin:10, scuMax:50,  typical:30,  maxBox:8,  xpReq:200,    xpMission:75,    ship:"Cutlass / RAFT",          strat:"~3 missions. Baijini Point → Riker Memorial. Apila same ruta (~69 SCU)."},
-      "Junior":     {scuMin:10, scuMax:50,  typical:40,  maxBox:8,  xpReq:5000,   xpMission:250,   ship:"RAFT / Taurus",           strat:"~20 missions. Baijini → Riker. Añade medium contracts. Partial submit."},
-      "Member":     {scuMin:30, scuMax:100, typical:64,  maxBox:8,  xpReq:22500,  xpMission:500,   ship:"Taurus / C2",             strat:"El muro (~45 missions). Everus Harbor hub. Stack distribución. 25% parcial."},
-      "Experienced":{scuMin:50, scuMax:150, typical:128, maxBox:16, xpReq:50000,  xpMission:1000,  ship:"C2 Hercules / Cat",       strat:"~50 missions. Station-to-station. Contenedores 16–24 SCU. L-points hub."},
-      "Senior":     {scuMin:150,scuMax:600, typical:384, maxBox:24, xpReq:160000, xpMission:2000,  ship:"C2 Hercules",             strat:"~80 missions. Lagrange stacking. Partial-submit 25%. ~1.7M aUEC/mission."},
-      "Master":     {scuMin:600,scuMax:4608,typical:1500,maxBox:32, xpReq:0,      xpMission:0,     ship:"Ironclad / Hull C",       strat:"Interstellar. Blueprints militares: VK-00, XL-1, TS-2, Siren, Yeager."},
-    }
-  },
-  "Red Wind Linehaul":{
-    zone:"Pyro",color:"#E84040",emoji:"🔴",
-    // XP reales de la API de missions (umbrales acumulados de la facción):
-    // Rookie=50, Junior=250, Member=5250, Experienced=27750, Senior=77750, Master=237750
-    ranks:{
-      "Trainee":    {scuMin:1,  scuMax:10,  typical:8,   maxBox:1,  xpReq:50,     xpMission:60,    ship:"Golem OX / Cutlass",         strat:"1 mission intro en Ruin Station → desbloquea Rookie. Pickup en Pyro, entrega en Teasa Spaceport."},
-      "Rookie":     {scuMin:10, scuMax:50,  typical:25,  maxBox:8,  xpReq:200,    xpMission:80,    ship:"Golem OX / RAFT",             strat:"~3 missions Hauling Planetary. Ruta corta Ruin Station → outpost cercano. Apila sames rutas."},
-      "Junior":     {scuMin:10, scuMax:50,  typical:30,  maxBox:8,  xpReq:5000,   xpMission:300,   ship:"Golem OX / RAFT",             strat:"~17 missions. El cargo aparece en el ÚLTIMO pickup listado (bug 4.8.2). Misiones single-pickup."},
-      "Member":     {scuMin:30, scuMax:100, typical:64,  maxBox:8,  xpReq:22500,  xpMission:600,   ship:"RAFT / Taurus",               strat:"El muro (~37 missions). One-box rep: entrega 1 box válida → XP completo. Gaslight → Ruin Station."},
-      "Experienced":{scuMin:50, scuMax:150, typical:128, maxBox:16, xpReq:50000,  xpMission:1000,  ship:"Taurus / Ironclad",           strat:"~50 missions. Stack contratos ~795K aUEC en Gaslight. Ruta simple: Gaslight → Ruin Station."},
-      "Senior":     {scuMin:150,scuMax:600, typical:384, maxBox:24, xpReq:160000, xpMission:2000,  ship:"Argo RAFT (192 SCU) / Ironclad",strat:"~80 missions. ~1.7M aUEC/mission. Stack 10 contratos Ruin Station hub. 7-9M aUEC/hora."},
-      "Master":     {scuMin:600,scuMax:4608,typical:1500,maxBox:32, xpReq:0,      xpMission:0,     ship:"Ironclad",                    strat:"Hauling pesado Pyro. Desbloquea rutas interstellares Red Wind."},
-    }
-  },
-  "Ling Family Hauling":{
-    zone:"microTech / Stanton",color:"#4DB56A",emoji:"🟢",
-    // XP reales confirmados por la API (missionsmos umbrales que Covalex y Red Wind)
-    ranks:{
-      "Trainee":    {scuMin:1,  scuMax:10,  typical:8,   maxBox:1,  xpReq:50,     xpMission:50,    ship:"Cutlass / Spirit C1",    strat:"1 mission intro. New Babbage / Port Tressler como hub de start."},
-      "Rookie":     {scuMin:10, scuMax:50,  typical:30,  maxBox:8,  xpReq:200,    xpMission:75,    ship:"Cutlass / RAFT",          strat:"~3 missions. Port Tressler → Shubin SM0-18/22. Apila same ruta."},
-      "Junior":     {scuMin:10, scuMax:50,  typical:40,  maxBox:8,  xpReq:5000,   xpMission:250,   ship:"RAFT / Taurus",           strat:"~20 missions. Amplía a moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC)."},
-      "Member":     {scuMin:30, scuMax:100, typical:64,  maxBox:8,  xpReq:22500,  xpMission:500,   ship:"Taurus / C2",             strat:"El muro (~45 missions). Rutas entre outposts microTech. Apila 10 missions."},
-      "Experienced":{scuMin:50, scuMax:150, typical:128, maxBox:16, xpReq:50000,  xpMission:1000,  ship:"C2 Hercules",             strat:"~50 missions. MIC-L points como hubs. Station-to-outpost loops por moons."},
-      "Senior":     {scuMin:150,scuMax:600, typical:384, maxBox:24, xpReq:160000, xpMission:2000,  ship:"C2 Hercules",             strat:"~80 missions. Payouts altos. Misiones station→station microTech/Stanton."},
-      "Master":     {scuMin:600,scuMax:4608,typical:1500,maxBox:32, xpReq:0,      xpMission:0,     ship:"Ironclad / Hull C",       strat:"Master Ling desbloquea rutas interstellares Stanton completo."},
-    }
-  },
-};
 
-// Construir CONTRACT_RANKS dinámicamente según facción activa
 let _activeFactionKey="Covalex Shipping";
 function factionKey(f){return Object.keys(FACTION_DATA).find(k=>f.startsWith(k))||"Covalex Shipping";}
-function getRanks(){return FACTION_DATA[_activeFactionKey].ranks;}
+function getRanks(){return FACTION_DATA[_activeFactionKey]?.ranks || {};}
 let CONTRACT_RANKS=getRanks();
 let RANK_ORDER=Object.keys(CONTRACT_RANKS);
 let RANK_CUM=[];
@@ -1403,14 +1144,12 @@ function rebuildRankData(fk){
   RANK_ORDER=Object.keys(CONTRACT_RANKS);
   RANK_CUM=[];let acc=0;
   RANK_ORDER.forEach(r=>{RANK_CUM.push(acc);acc+=CONTRACT_RANKS[r].xpReq;});
-  // Acento de facción en CSS — solo si DOM está disponible
   const fd=FACTION_DATA[_activeFactionKey];
-  if(typeof document!=='undefined'){
+  if(typeof document!=='undefined' && fd){
     document.documentElement.style.setProperty('--c-faction',fd.color);
     const badge=document.getElementById('rank-faction-badge');
     if(badge){badge.textContent=fd.emoji+' '+_activeFactionKey;}
   }
-  // Update hotspots si ya hay locs cargados
   if(typeof renderHotspots==='function')renderHotspots();
 }
 
@@ -1419,10 +1158,8 @@ function renderHotspots(){
   const sysLbl=document.getElementById('pos-sys-label');
   if(!row)return;
   const fd=FACTION_DATA[_activeFactionKey];
-  const zone=fd.zone||'Stanton';
-  // Filtrar sistema relevante para la facción
+  const zone=fd?.zone||'Stanton';
   const sysFilt=zone==='Pyro'?['Pyro']:zone==='microTech'?['Stanton']:['Stanton'];
-  // Top 6 por missionssion_count — usando STATIONS que tiene los locs
   const tops=STATIONS
     .filter(l=>sysFilt.includes(l.sys)&&(l.missionssionCount||0)>0)
     .sort((a,b)=>(b.missionssionCount||0)-(a.missionssionCount||0))
@@ -1432,368 +1169,183 @@ function renderHotspots(){
   const curId=document.getElementById('o-loc')?.value;
   if(sysLbl)sysLbl.textContent=zone;
   row.innerHTML=tops.map(l=>`
-    <button class="hotspot-btn${curId===l.id?' active':''}"
-      onclick="selectHotspot('${l.id}','${l.label.replace(/'/g,"\'")}')">
-      ${l.label.split(' ')[0]}
-      ${l.missionssionCount>0?`<span class="hb-missions">${l.missionssionCount}</span>`:''}
+    <button class="hotspot-btn${curId===l.id?' active':''}" onclick="selectHotspot('${l.id}','${l.label.replace(/'/g,"\'")}')">
+      ${l.label.split(' ')[0]} ${l.missionssionCount>0?`<span class="hb-missions">${l.missionssionCount}</span>`:''}
     </button>`).join('');
 }
 
 function selectHotspot(id,label){
   document.getElementById('o-loc').value=id;
-  // Update el input de búsqueda si existe
   const wrap=document.getElementById('o-search-wrap');
   if(wrap){const inp=wrap.querySelector('.loc-input');if(inp){inp.value=label;inp.className='loc-input resolved';}}
   renderHotspots();
   refreshCandidates();
 }
-rebuildRankData("Covalex Shipping");
 
 const MAX_MISSIONS=10;
 const FACTIONS=["Covalex Shipping","Red Wind Linehaul","Ling Family Hauling"];
 
-let missionSeq=0,pickSeq=0,delivSeq=0,missions=[],boxSize=16,boxMode='optimal',useDest=false,deliveryMode='partial',partialPct=25,currentRank="Senior",oneBoxMode=false,oneBoxSize=1;
+let missionSeq=0,pickSeq=0,delivSeq=0,missions=[],boxSize=16,boxMode='optimal',useDest=false,deliveryMode='partial',partialPct=25,currentRank="Trainee",oneBoxMode=false,oneBoxSize=1;
 let lastRouteResult=null;
 let prog={f:FACTIONS[0],xp:{"Covalex Shipping":0,"Red Wind Linehaul":0,"Ling Family Hauling":0}};
 
 function saveProg(){try{localStorage.setItem('sc_hauling_xp',JSON.stringify(prog));}catch(e){}}
-function loadProg(){try{const v=localStorage.getItem('sc_hauling_xp');if(v){const p=JSON.parse(v);if(typeof p.xp==='number'){prog.xp["Covalex Shipping"]=p.xp;}else{// Migrar claves viejas si existen
+function loadProg(){try{const v=localStorage.getItem('sc_hauling_xp');if(v){const p=JSON.parse(v);if(typeof p.xp==='number'){prog.xp["Covalex Shipping"]=p.xp;}else{
 const km={"Covalex Shipping (Crusader)":"Covalex Shipping","Red Wind Linehaul (Hurston)":"Red Wind Linehaul","Ling Family Hauling (microTech)":"Ling Family Hauling"};
 prog={f:FACTIONS.includes(p.f)?p.f:factionKey(p.f||'')||FACTIONS[0],xp:{"Covalex Shipping":0,"Red Wind Linehaul":0,"Ling Family Hauling":0}};
 Object.entries(p.xp||{}).forEach(([k,v])=>{const nk=km[k]||k;if(prog.xp[nk]!==undefined)prog.xp[nk]=v;});}}}catch(e){}}
+
+// ── Distancias exactas estilo Star Citizen (m, km, Mm, Gm) ──
 function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
+function sysOf(n){return n.sys||'';}
+function legGm(a,b){return sysOf(a)===sysOf(b)?dist3(a,b):0;}
+function gatewayLoc(thisSys,fromSys){const id=findLoc(fromSys+' Gateway ('+thisSys+')');return id?locById(id):null;}
 
-// Tiempo estimado de viaje en minutos
-// QT ~0.2 Gm/s para outposts, ~0.15 Gm/s promedio con aceleración
-// Tiempo de hangar/cargo: outpost ~2min, lagrange ~4min, city ~6min
-function travelCost(a,b){
-  const gm=dist3(a,b);
-  const qtSecs=gm/0.18; // ~0.18 Gm/s velocidad QT promedio
-  const landingSecs=(b.pad==='ext'?90:b.pad==='int'?240:150); // 1.5min ext, 4min int
-  return qtSecs+landingSecs;
+function fmtDist(gm) {
+  if (gm == null || isNaN(gm)) return '?';
+  if (gm <= 0) return '0 m';
+  if (gm >= 1) return parseFloat(gm.toFixed(2)) + ' Gm'; 
+  const mm = gm * 1000;
+  if (mm >= 1) return parseFloat(mm.toFixed(2)) + ' Mm';
+  const km = gm * 1000000;
+  if (km >= 1) return Math.round(km).toLocaleString('es-CL') + ' km';
+  const m = gm * 1000000000;
+  return Math.round(m) + ' m';
 }
+function fmtGm(gm) { return fmtDist(gm); }
 
-// Distancia ajustada por tipo de pad — optimiza para tiempo real de viaje
-// QT speed ~0.18 Gm/s:
-//   EFE (exterior): +0 penalty — dock outside, load immediately
-//   int (hangar):   +0.05 Gm penalty (~17 min extra vs EFE for landing + walking)
-//   unknown:        +0.02 Gm penalty (small discount, assume exterior)
-function distWithPadPenalty(a,b){
-  const d=dist3(a,b);
-  const penalty=b.pad==='int'?0.05:b.pad==='efe'?0:0.02;
-  return d+penalty;
-}
 
-// Web Worker para 2-Opt
+// ══════════════════════════════════════════════════════════
+// EL CEREBRO: WORKER DE RUTEO (Tiempo vs Distancia)
+// ══════════════════════════════════════════════════════════
 const workerCode=`
   function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
   function sysOf(n){return n.sys||'';}
-  function dwp(a,b){return dist3(a,b)+(b.pad==='int'?0.05:b.pad==='efe'?0:0.02);}
-  function rd(s){let d=0;for(let i=0;i<s.length-1;i++)d+=dwp(s[i],s[i+1]);return d;}
+  
+  // 1. Costo por TIEMPO (Prioriza evitar hangares internos)
+  function timeCost(a,b,qSpeed){
+    const d=dist3(a,b);
+    const qtTime=d/qSpeed;
+    let p=150;if(b.pad==='int')p=240;else if(b.pad==='efe')p=90;
+    if(b.type==='outpost')p+=120;
+    return qtTime+p;
+  }
+  
+  // 2. Costo por DISTANCIA (Prioriza combustible)
+  function distCost(a,b){
+    const d=dist3(a,b);
+    let p=0.02;if(b.pad==='int')p=0.05;else if(b.pad==='efe')p=0;
+    return d+p;
+  }
+  
+  // Selector dinámico
+  function getCost(a,b,qSpeed,opt){return opt==='dist'?distCost(a,b):timeCost(a,b,qSpeed);}
+  
+  function rdPhysical(s){let d=0;for(let i=0;i<s.length-1;i++)d+=dist3(s[i],s[i+1]);return d;}
+  function rdTime(s,qSpeed){let d=0;for(let i=0;i<s.length-1;i++)d+=timeCost(s[i],s[i+1],qSpeed);return d;}
+  function rdOpt(s,qSpeed,opt){let d=0;for(let i=0;i<s.length-1;i++)d+=getCost(s[i],s[i+1],qSpeed,opt);return d;}
+
   function vs(seq,cap){const g={};let l=0;for(const n of seq){if(n.role==='pickup'){g[n.mid]=(g[n.mid]||0)+n.scu;l+=n.scu;if(l>cap+1e-6)return false;}else if(n.role==='dropoff'){if((g[n.mid]||0)+1e-6<n.scu)return false;g[n.mid]-=n.scu;l-=n.scu;}}return true;}
 
-  function nn(o,dest,nodes,cap){
+  function nn(o,dest,nodes,cap,qSpeed,opt){
     const rem=new Set(nodes);const route=[o];const hold={};let load=0;
     while(rem.size>0){
       const cur=route[route.length-1];let best=null,bc=Infinity;
       for(const n of rem){
         if(n.role==='pickup'&&load+n.scu>cap+1e-6)continue;
         if(n.role==='dropoff'&&(hold[n.mid]||0)<n.scu-1e-6)continue;
-        let cost=dwp(cur,n);
+        let cost=getCost(cur,n,qSpeed,opt);
         if(n.role==='dropoff'&&(hold[n.mid]||0)>=n.scu-1e-6)cost*=0.85;
         if(n.role==='dropoff'&&load/cap>0.7)cost*=0.90;
         if(sysOf(n)===sysOf(cur))cost*=0.95;
         if(cost<bc){bc=cost;best=n;}
       }
-      if(!best){for(const n of rem){if(n.role!=='pickup')continue;const d=dwp(cur,n);if(d<bc){bc=d;best=n;}}if(!best)break;}
+      if(!best){for(const n of rem){if(n.role!=='pickup')continue;const d=getCost(cur,n,qSpeed,opt);if(d<bc){bc=d;best=n;}}if(!best)break;}
       route.push(best);rem.delete(best);
-      if(best.role==='pickup'){hold[best.mid]=(hold[best.mid]||0)+best.scu;load+=best.scu;}
-      else if(best.role==='dropoff'){hold[best.mid]=(hold[best.mid]||0)-best.scu;load-=best.scu;}
+      if(best.role==='pickup'){hold[best.mid]=(hold[best.mid]||0)+best.scu;load+=best.scu;}else if(best.role==='dropoff'){hold[best.mid]=(hold[best.mid]||0)-best.scu;load-=best.scu;}
     }
     if(dest)route.push(dest);return route;
   }
-
-  function nnMulti(o,dest,nodes,cap){
-    let best=nn(o,dest,nodes,cap);let bd=rd(best);
-    const picks=nodes.filter(n=>n.role==='pickup')
-      .map(p=>({p,d:dwp(o,p)})).sort((a,b)=>a.d-b.d).slice(0,3);
+  function nnMulti(o,dest,nodes,cap,qSpeed,opt){
+    let best=nn(o,dest,nodes,cap,qSpeed,opt);let bd=rdOpt(best,qSpeed,opt);
+    const picks=nodes.filter(n=>n.role==='pickup').map(p=>({p,d:getCost(o,p,qSpeed,opt)})).sort((a,b)=>a.d-b.d).slice(0,3);
     for(const {p} of picks){
       const reord=[p,...nodes.filter(n=>n!==p)];
-      const r=nn({...o},dest,reord,cap);const d=rd(r);
+      const r=nn({...o},dest,reord,cap,qSpeed,opt);const d=rdOpt(r,qSpeed,opt);
       if(d<bd){bd=d;best=r;}
     }
     return best;
   }
-
-  function twoOpt(r,dest,cap){let best=rd(r);const lf=dest?1:0;let imp=true,g=0;
-    while(imp&&g++<200){imp=false;
+  function twoOpt(r,dest,cap,qSpeed,opt){
+    let best=rdOpt(r,qSpeed,opt);const lf=dest?1:0;let imp=true,g=0;
+    while(imp&&g++<200){
+      imp=false;
       for(let i=1;i<r.length-1-lf;i++){
         for(let k=i+1;k<r.length-lf;k++){
           const c=r.slice(0,i).concat(r.slice(i,k+1).reverse(),r.slice(k+1));
-          if(!vs(c,cap))continue;const dd=rd(c);if(dd<best-1e-9){r=c;best=dd;imp=true;}
+          if(!vs(c,cap))continue;const dd=rdOpt(c,qSpeed,opt);if(dd<best-1e-9){r=c;best=dd;imp=true;}
         }
       }
-    }return r;
+    }
+    return r;
   }
-
-  function orOpt(r,dest,cap){let best=rd(r);const lf=dest?1:0;let imp=true,it=0;
-    while(imp&&it++<50){imp=false;
-      for(let i=1;i<r.length-lf;i++){
-        const node=r[i];const wo=r.filter((_,idx)=>idx!==i);
-        for(let j=1;j<=wo.length-lf;j++){
-          const c=[...wo.slice(0,j),node,...wo.slice(j)];
-          if(!vs(c,cap))continue;const dd=rd(c);
-          if(dd<best-1e-9){r=c;best=dd;imp=true;break;}
-        }if(imp)break;
-      }
-    }return r;
-  }
-
-  function orOpt2(r,dest,cap){let best=rd(r);const lf=dest?1:0;let imp=true;
-    while(imp){imp=false;
-      for(let i=1;i<r.length-1-lf;i++){
-        const pair=[r[i],r[i+1]];const wo=r.filter((_,idx)=>idx!==i&&idx!==i+1);
-        for(let j=1;j<=wo.length-lf;j++){
-          const c=[...wo.slice(0,j),...pair,...wo.slice(j)];
-          if(!vs(c,cap))continue;const dd=rd(c);
-          if(dd<best-1e-9){r=c;best=dd;imp=true;break;}
-        }if(imp)break;
-      }
-    }return r;
-  }
-
-  function optimize(o,dest,nodes,cap){
+  function optimize(o,dest,nodes,cap,qSpeed,opt){
     if(!nodes.length)return null;
-    let r=nnMulti(o,dest,nodes,cap);
+    let r=nnMulti(o,dest,nodes,cap,qSpeed,opt);
     const f=vs(r,cap);
-    r=twoOpt(r,dest,cap);
-    r=orOpt(r,dest,cap);
-    r=orOpt2(r,dest,cap);
-    return{seq:r,dist:rd(r),feasible:f};
+    r=twoOpt(r,dest,cap,qSpeed,opt);
+    return{seq:r,dist:rdPhysical(r),timeSeconds:rdTime(r,qSpeed),feasible:f};
   }
-  self.onmessage=function(e){self.postMessage(optimize(e.data.o,e.data.dest,e.data.nodes,e.data.cap));};
+  self.onmessage=function(e){self.postMessage(optimize(e.data.o,e.data.dest,e.data.nodes,e.data.cap,e.data.qSpeed,e.data.opt));};
 `;
-
-// Respaldo sincrónico (por si file:// bloquea el worker)
-function _rd(s){
-  let d=0;
-  for(let i=0;i<s.length-1;i++) d+=distWithPadPenalty(s[i],s[i+1]);
-  return d;
-}
-
-// Validar que la secuencia es factible:
-// - cada dropoff tiene su pickup antes con suficiente carga
-// - la carga nunca supera la capacidad
-function _vs(seq,cap){
-  const g={};let l=0;
-  for(const n of seq){
-    if(n.role==='pickup'){g[n.mid]=(g[n.mid]||0)+n.scu;l+=n.scu;if(l>cap+1e-6)return false;}
-    else if(n.role==='dropoff'){if((g[n.mid]||0)+1e-6<n.scu)return false;g[n.mid]-=n.scu;l-=n.scu;}
-  }
-  return true;
-}
-
-// ══════════════════════════════════════════════════════════
-// NEAREST NEIGHBOR mejorado
-// Estrategia: siempre ir al nodo válido más cercano.
-// Prioridades cuando la distancia es similar:
-//   1. Dropoff pendiente del mismo mid que acabo de hacer pickup
-//   2. Cualquier dropoff válido cercano (vaciar hold)
-//   3. Pickup cercano (cargar más)
-// ══════════════════════════════════════════════════════════
-function _nn(o,dest,nodes,cap){
-  const remaining=new Set(nodes);
-  const route=[o];
-  const inHold={};
-  let load=0;
-
-  while(remaining.size>0){
-    const cur=route[route.length-1];
-    let bestNode=null,bestCost=Infinity;
-
-    for(const n of remaining){
-      // Validar elegibilidad
-      if(n.role==='pickup'){
-        if(load+n.scu>cap+1e-6)continue;
-      }else if(n.role==='dropoff'){
-        if((inHold[n.mid]||0)<n.scu-1e-6)continue;
-      }
-
-      let cost=distWithPadPenalty(cur,n);
-
-      // Bonus: preferir dropoff del mismo mid (ya recogí, conviene entregar)
-      if(n.role==='dropoff'&&(inHold[n.mid]||0)>=n.scu-1e-6){
-        cost*=0.85; // 15% descuento para entregar lo que ya tengo
-      }
-      // Bonus: si el hold está muy lleno (>70%), priorizar dropoffs
-      if(n.role==='dropoff'&&load/cap>0.7){
-        cost*=0.90;
-      }
-      // Bonus: nodos en el mismo sistema que la posición actual
-      if(sysOf(n)===sysOf(cur)){
-        cost*=0.95;
-      }
-
-      if(cost<bestCost){bestCost=cost;bestNode=n;}
-    }
-
-    // Si no hay nodo válido, forzar el pickup más cercano
-    if(!bestNode){
-      for(const n of remaining){
-        if(n.role!=='pickup')continue;
-        const d=distWithPadPenalty(cur,n);
-        if(d<bestCost){bestCost=d;bestNode=n;}
-      }
-      if(!bestNode)break;
-    }
-
-    route.push(bestNode);
-    remaining.delete(bestNode);
-    if(bestNode.role==='pickup'){
-      inHold[bestNode.mid]=(inHold[bestNode.mid]||0)+bestNode.scu;
-      load+=bestNode.scu;
-    }else if(bestNode.role==='dropoff'){
-      inHold[bestNode.mid]=(inHold[bestNode.mid]||0)-bestNode.scu;
-      load-=bestNode.scu;
-    }
-  }
-
-  if(dest)route.push(dest);
-  return route;
-}
-
-// ══════════════════════════════════════════════════════════
-// NEAREST NEIGHBOR con múltiples puntos de inicio
-// Prueba varios puntos de partida y queda con la mejor ruta
-// ══════════════════════════════════════════════════════════
-function _nnMultiStart(o,dest,nodes,cap){
-  // Inicio desde la posición actual (siempre)
-  let best=_nn(o,dest,nodes,cap);
-  let bestDist=_rd(best);
-
-  // También probar empezando por los pickups más cercanos al origen
-  const pickups=nodes.filter(n=>n.role==='pickup');
-  const nearby=pickups
-    .map(p=>({p,d:distWithPadPenalty(o,p)}))
-    .sort((a,b)=>a.d-b.d)
-    .slice(0,3); // los 3 pickups más cercanos
-
-  for(const {p} of nearby){
-    // Construir ruta artificial que empieza yendo a este pickup
-    const fakeO={...o};
-    const reordered=[p,...nodes.filter(n=>n!==p)];
-    const r=_nn(fakeO,dest,reordered,cap);
-    const d=_rd(r);
-    if(d<bestDist){bestDist=d;best=r;}
-  }
-
-  return best;
-}
-
-// 2-opt: intercambia pares de segmentos para acortar la ruta
-function _2o(r,dest,cap){
-  let best=_rd(r);
-  const lf=dest?1:0;
-  let improved=true;let g=0;
-  while(improved&&g++<200){
-    improved=false;
-    for(let i=1;i<r.length-1-lf;i++){
-      for(let k=i+1;k<r.length-lf;k++){
-        const c=r.slice(0,i).concat(r.slice(i,k+1).reverse(),r.slice(k+1));
-        if(!_vs(c,cap))continue;
-        const dd=_rd(c);
-        if(dd<best-1e-9){r=c;best=dd;improved=true;}
-      }
-    }
-  }
-  return r;
-}
-
-// Or-opt: mueve un nodo individual al mejor lugar
-function _orOpt(r,dest,cap){
-  let best=_rd(r);
-  const lf=dest?1:0;
-  let improved=true;let iters=0;
-  while(improved&&iters++<50){
-    improved=false;
-    for(let i=1;i<r.length-lf;i++){
-      const node=r[i];
-      const without=r.filter((_,idx)=>idx!==i);
-      for(let j=1;j<=without.length-lf;j++){
-        const c=[...without.slice(0,j),node,...without.slice(j)];
-        if(!_vs(c,cap))continue;
-        const dd=_rd(c);
-        if(dd<best-1e-9){r=c;best=dd;improved=true;break;}
-      }
-      if(improved)break;
-    }
-  }
-  return r;
-}
-
-// Or-opt de pares: mueve dos nodos consecutivos juntos
-function _orOpt2(r,dest,cap){
-  let best=_rd(r);
-  const lf=dest?1:0;
-  let improved=true;
-  while(improved){
-    improved=false;
-    for(let i=1;i<r.length-1-lf;i++){
-      const pair=[r[i],r[i+1]];
-      const without=r.filter((_,idx)=>idx!==i&&idx!==i+1);
-      for(let j=1;j<=without.length-lf;j++){
-        const c=[...without.slice(0,j),...pair,...without.slice(j)];
-        if(!_vs(c,cap))continue;
-        const dd=_rd(c);
-        if(dd<best-1e-9){r=c;best=dd;improved=true;break;}
-      }
-      if(improved)break;
-    }
-  }
-  return r;
-}
-
-function optimizeSync(o,dest,nodes,cap){
-  if(!nodes.length)return null;
-  // 1. Nearest Neighbor con múltiples inicios
-  let r=_nnMultiStart(o,dest,nodes,cap);
-  const f=_vs(r,cap);
-  // 2. 2-opt
-  r=_2o(r,dest,cap);
-  // 3. Or-opt individual
-  r=_orOpt(r,dest,cap);
-  // 4. Or-opt de pares (mejora adicional)
-  r=_orOpt2(r,dest,cap);
-  return{seq:r,dist:_rd(r),feasible:f};
-}
 
 let routerWorker=null;
 try{routerWorker=new Worker(URL.createObjectURL(new Blob([workerCode],{type:'application/javascript'})));}catch(e){routerWorker=null;}
 
-function runOptimizeAsync(o,dest,nodes,cap){
+function runOptimizeAsync(o,dest,nodes,cap,qSpeed,opt){
   return new Promise(resolve=>{
-    if(!routerWorker){resolve(optimizeSync(o,dest,nodes,cap));return;}
+    if(!routerWorker){ resolve({seq:[],dist:0,timeSeconds:0,feasible:false}); return; }
     let done=false;
-    const to=setTimeout(()=>{if(!done){done=true;resolve(optimizeSync(o,dest,nodes,cap));}},4000);
+    const to=setTimeout(()=>{if(!done){done=true;resolve(null);}},4000);
     routerWorker.onmessage=e=>{if(!done){done=true;clearTimeout(to);resolve(e.data);}};
-    routerWorker.onerror=()=>{if(!done){done=true;clearTimeout(to);resolve(optimizeSync(o,dest,nodes,cap));}};
-    routerWorker.postMessage({o,dest,nodes,cap});
+    routerWorker.onerror=()=>{if(!done){done=true;clearTimeout(to);resolve(null);}};
+    routerWorker.postMessage({o,dest,nodes,cap,qSpeed,opt});
   });
 }
 
+async function optimizeMultiSystemAsync(o,dest,nodes,cap,qSpeed,optMode){
+  if(!nodes.length)return null;
+  const groups={};nodes.forEach(n=>{(groups[sysOf(n)]=groups[sysOf(n)]||[]).push(n);});
+  const originSys=sysOf(o);const others=Object.keys(groups).filter(s=>s!==originSys);const ordered=[originSys,...others];
+  const sysWithNodes=ordered.filter(s=>groups[s]&&groups[s].length);const lastSys=sysWithNodes[sysWithNodes.length-1];
+  let fullSeq=[o];let feasible=true,jumps=0;let prevSys=originSys;
+  let totalTime = 0; let totalDist = 0;
+  
+  for(let si=0;si<ordered.length;si++){
+    const sys=ordered[si];const gnodes=groups[sys];if(!gnodes||!gnodes.length)continue;
+    let startForOpt;
+    if(sys===originSys&&si===0)startForOpt=o;
+    else{jumps++;const gw=gatewayLoc(sys,prevSys);startForOpt=gw?{...gw}:gnodes[0];}
+    const useDestHere=dest&&sysOf(dest)===sys&&sys===lastSys;
+    
+    const res=await runOptimizeAsync(startForOpt,useDestHere?dest:null,gnodes,cap,qSpeed,optMode);
+    if(!res||!res.feasible)feasible=false;
+    let seq=(res&&res.seq)?res.seq.slice():[];
+    if(seq.length>0){
+      if(sys===originSys&&si===0){ fullSeq=fullSeq.concat(seq.slice(1)); totalTime+=res.timeSeconds; totalDist+=res.dist; }
+      else{seq[0]={...seq[0],role:seq[0].role||'gateway',isJump:true,jumpFrom:prevSys};fullSeq=fullSeq.concat(seq); totalTime+=res.timeSeconds; totalDist+=res.dist;}
+    }
+    prevSys=sys;
+  }
+  return{seq:fullSeq,dist:totalDist,timeSeconds:totalTime,jumps,feasible};
+}
+
+
 function ptToSeg(p,a,b){const ab={x:b.x-a.x,y:b.y-a.y,z:b.z-a.z};const ap={x:p.x-a.x,y:p.y-a.y,z:p.z-a.z};const l2=ab.x**2+ab.y**2+ab.z**2;if(l2===0)return dist3(p,a);const t=Math.max(0,Math.min(1,(ap.x*ab.x+ap.y*ab.y+ap.z*ab.z)/l2));return dist3(p,{x:a.x+t*ab.x,y:a.y+t*ab.y,z:a.z+t*ab.z});}
 function fmt(n){return Number.isInteger(n)?n.toString():n.toFixed(2).replace(/\.?0+$/,'');}
-// Formato específico para distancias en Gm — muestra más decimales cuando son menores a 1 Gm
-function fmtGm(n){
-  if(n==null||isNaN(n))return'?';
-  if(n<0.01)return'<0.01';
-  if(n<1)return n.toFixed(2);
-  if(n<10)return n.toFixed(1);
-  return Math.round(n).toString();
-}
 function locById(id){return ALL_LOCS[id];}
-function findLoc(sub){for(const sys of Object.values(DATA))for(const z of Object.values(sys)){const f=z.locs.find(l=>l.label.includes(sub));if(f)return f.id;}return null;}
-function maxBox(){return CONTRACT_RANKS[currentRank].maxBox;}
+function findLoc(sub){for(const sys of Object.values(DATA))for(const z of Object.values(sys)){const f=z.locs?.find(l=>l.label.includes(sub));if(f)return f.id;}return null;}
+function maxBox(){return CONTRACT_RANKS[currentRank]?.maxBox||8;}
 function allowedBoxes(){return ALL_BOX_SIZES.filter(s=>s<=maxBox());}
 function rankFromXP(xp){let idx=0;for(let i=0;i<RANK_ORDER.length;i++){if(xp>=RANK_CUM[i])idx=i;}return idx;}
 
@@ -1821,35 +1373,24 @@ function bestCommodityPlan(m){
   return{target,best};
 }
 
-function buildPlanetSelect(sel){sel.innerHTML='';Object.entries(DATA).forEach(([sys,planets])=>{const og=document.createElement('optgroup');og.label=sys;Object.keys(planets).forEach(p=>{const o=document.createElement('option');o.value=sys+'||'+p;o.textContent=p;og.appendChild(o);});sel.appendChild(og);});}
-function buildLocOptions(planetSel,locSel){const[sys,planet]=planetSel.value.split('||');locSel.innerHTML='';(DATA[sys]?.[planet]?.locs||[]).forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=l.label;locSel.appendChild(o);});}
-
-// ── Búsqueda de ubicación por texto libre ──────────────────
-// Devuelve todos los locs que coinciden con el query (insensible a mayúsculas/acentos)
 function searchLocs(q){
   if(!q||q.length<1)return[];
   const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const nq=norm(q);
   const results=[];
-  Object.entries(DATA).forEach(([sys,planets])=>
-    Object.entries(planets).forEach(([planet,z])=>
-      z.locs.forEach(l=>{
-        const nl=norm(l.label);
-        const idx=nl.indexOf(nq);
-        if(idx>=0)results.push({...l,sys,planet,_matchIdx:idx,_exact:nl===nq});
-      })
-    )
-  );
-  // Ordenar: coincidencia exacta > empieza con la query > contiene la query > por sistema
+  Object.values(ALL_LOCS).forEach(l=>{
+    const nl=norm(l.label);
+    const idx=nl.indexOf(nq);
+    if(idx>=0)results.push({...l,_matchIdx:idx,_exact:nl===nq});
+  });
   results.sort((a,b)=>{
     if(a._exact!==b._exact)return a._exact?-1:1;
     if(a._matchIdx!==b._matchIdx)return a._matchIdx-b._matchIdx;
     return a.label.localeCompare(b.label);
   });
-  return results.slice(0,12); // max 12 sugerencias
+  return results.slice(0,12);
 }
 
-// Resalta la parte que coincide con la query
 function highlightMatch(label,q){
   const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const idx=norm(label).indexOf(norm(q));
@@ -1857,99 +1398,69 @@ function highlightMatch(label,q){
   return label.slice(0,idx)+'<b>'+label.slice(idx,idx+q.length)+'</b>'+label.slice(idx+q.length);
 }
 
-// Etiqueta de tipo corta
 function locTypeTag(l){
   const tags={station:'station',lagrange:'lagrange',habitat:'city',outpost:'outpost',moon:'moon',planet:'planet'};
   const padTag=l.pad==='efe'?' 🅿EFE':l.pad==='int'?' 🅿hgr':'';
   return (tags[l.type]||l.type)+padTag+' · '+l.sys;
 }
 
-// Crear un input de búsqueda con dropdown de sugerencias
-// onSelect(locId) se llama cuando el usuario elige una ubicación
-// Búsqueda de material por texto libre (igual que createLocSearch pero para MATERIALS)
 function createMatSearch(initialMat, onSelect){
   const wrap=document.createElement('div');wrap.className='loc-wrap';wrap.style.marginTop='3px';
-
   const inp=document.createElement('input');
   inp.type='text';
   inp.className='loc-input'+(initialMat&&initialMat!=='— Select commodity —'?' resolved':'');
   inp.placeholder='Commodity (optional)…';
   inp.value=(initialMat&&initialMat!=='— Select commodity —')?initialMat:'';
   inp.autocomplete='off';inp.spellcheck=false;
-
   const clearBtn=document.createElement('button');
   clearBtn.className='loc-clear';clearBtn.type='button';
   clearBtn.innerHTML='<i class="ti ti-x"></i>';
-
   const drop=document.createElement('div');drop.className='loc-dropdown';
 
   let _cur=initialMat,_activeIdx=-1,_results=[],_closeTimer=null;
-
   function showDrop(q){
     const nq=(q||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    _results=MATERIALS.filter(m=>m!=='— Select commodity —'&&
-      m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(nq)).slice(0,12);
+    _results=MATERIALS.filter(m=>m!=='— Select commodity —'&&m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(nq)).slice(0,12);
     _activeIdx=-1;
     if(!_results.length){drop.classList.remove('open');return;}
-    drop.innerHTML=_results.map((m,i)=>
-      `<div class="loc-opt" data-i="${i}"><span class="loc-opt-name">${m}</span></div>`
-    ).join('');
-    drop.querySelectorAll('.loc-opt').forEach(el=>{
-      el.addEventListener('mousedown',e=>{e.preventDefault();selectMat(parseInt(el.dataset.i));});
-    });
+    drop.innerHTML=_results.map((m,i)=>`<div class="loc-opt" data-i="${i}"><span class="loc-opt-name">${m}</span></div>`).join('');
+    drop.querySelectorAll('.loc-opt').forEach(el=>{el.addEventListener('mousedown',e=>{e.preventDefault();selectMat(parseInt(el.dataset.i));});});
     drop.classList.add('open');
   }
-
   function selectMat(i){
     const m=_results[i];if(!m)return;
     _cur=m;inp.value=m;inp.className='loc-input resolved';
     drop.classList.remove('open');onSelect(m);
   }
-
   inp.addEventListener('input',()=>{inp.className='loc-input';showDrop(inp.value);});
   inp.addEventListener('focus',()=>{clearTimeout(_closeTimer);showDrop(inp.value);});
-  inp.addEventListener('blur',()=>{_closeTimer=setTimeout(()=>{drop.classList.remove('open');
-    if(_cur&&_cur!=='— Select commodity —'){inp.value=_cur;inp.className='loc-input resolved';}
-    else{inp.className='loc-input';}},150);});
+  inp.addEventListener('blur',()=>{_closeTimer=setTimeout(()=>{drop.classList.remove('open');if(_cur&&_cur!=='— Select commodity —'){inp.value=_cur;inp.className='loc-input resolved';}else{inp.className='loc-input';}},150);});
   inp.addEventListener('keydown',e=>{
     const opts=drop.querySelectorAll('.loc-opt');
-    if(e.key==='ArrowDown'){e.preventDefault();_activeIdx=Math.min(_activeIdx+1,opts.length-1);
-      opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
-    else if(e.key==='ArrowUp'){e.preventDefault();_activeIdx=Math.max(_activeIdx-1,-1);
-      opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
-    else if(e.key==='Enter'){e.preventDefault();
-      if(_activeIdx>=0)selectMat(_activeIdx);else if(_results.length===1)selectMat(0);}
+    if(e.key==='ArrowDown'){e.preventDefault();_activeIdx=Math.min(_activeIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
+    else if(e.key==='ArrowUp'){e.preventDefault();_activeIdx=Math.max(_activeIdx-1,-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
+    else if(e.key==='Enter'){e.preventDefault();if(_activeIdx>=0)selectMat(_activeIdx);else if(_results.length===1)selectMat(0);}
     else if(e.key==='Escape'){drop.classList.remove('open');}
   });
-  clearBtn.addEventListener('click',()=>{_cur='';inp.value='';inp.className='loc-input';
-    drop.classList.remove('open');onSelect('— Select commodity —');});
-
+  clearBtn.addEventListener('click',()=>{_cur='';inp.value='';inp.className='loc-input';drop.classList.remove('open');onSelect('— Select commodity —');});
   wrap.appendChild(inp);wrap.appendChild(clearBtn);wrap.appendChild(drop);
   return wrap;
 }
 
 function createLocSearch(initialLocId, onSelect){
   const wrap=document.createElement('div');wrap.className='loc-wrap';
-
   const initLoc=locById(initialLocId);
   const inp=document.createElement('input');
   inp.type='text';inp.className='loc-input'+(initLoc?' resolved':'');
   inp.placeholder='Search location…';
   inp.value=initLoc?initLoc.label:'';
   inp.autocomplete='off';inp.spellcheck=false;
-
   const clearBtn=document.createElement('button');
   clearBtn.className='loc-clear';clearBtn.type='button';
   clearBtn.innerHTML='<i class="ti ti-x"></i>';
-  clearBtn.title='Limpiar';
-
   const drop=document.createElement('div');drop.className='loc-dropdown';
 
-  let _currentId=initialLocId;
-  let _activeIdx=-1;
-  let _results=[];
-  let _closeTimer=null;
-
+  let _currentId=initialLocId, _activeIdx=-1, _results=[], _closeTimer=null;
   function showDrop(q){
     _results=searchLocs(q);
     _activeIdx=-1;
@@ -1960,86 +1471,33 @@ function createLocSearch(initialLocId, onSelect){
         <span class="loc-opt-tag">${locTypeTag(l)}</span>
       </div>`
     ).join('');
-    drop.querySelectorAll('.loc-opt').forEach(el=>{
-      el.addEventListener('mousedown',e=>{
-        e.preventDefault();
-        selectResult(parseInt(el.dataset.i));
-      });
-    });
+    drop.querySelectorAll('.loc-opt').forEach(el=>{el.addEventListener('mousedown',e=>{e.preventDefault();selectResult(parseInt(el.dataset.i));});});
     drop.classList.add('open');
   }
-
   function selectResult(i){
     const l=_results[i];if(!l)return;
-    _currentId=l.id;
-    inp.value=l.label;
-    inp.className='loc-input resolved';
-    drop.classList.remove('open');
-    _activeIdx=-1;
-    onSelect(l.id);
+    _currentId=l.id;inp.value=l.label;inp.className='loc-input resolved';
+    drop.classList.remove('open');_activeIdx=-1;onSelect(l.id);
   }
-
   function clearSearch(){
-    _currentId=null;
-    inp.value='';
-    inp.className='loc-input unresolved';
-    inp.focus();
-    drop.classList.remove('open');
-    onSelect(null);
+    _currentId=null;inp.value='';inp.className='loc-input unresolved';inp.focus();
+    drop.classList.remove('open');onSelect(null);
   }
-
-  inp.addEventListener('input',()=>{
-    const q=inp.value.trim();
-    inp.className='loc-input'+(q?'':' unresolved');
-    if(q)showDrop(q);
-    else drop.classList.remove('open');
-  });
-
+  inp.addEventListener('input',()=>{const q=inp.value.trim();inp.className='loc-input'+(q?'':' unresolved');if(q)showDrop(q);else drop.classList.remove('open');});
   inp.addEventListener('keydown',e=>{
     const opts=drop.querySelectorAll('.loc-opt');
-    if(e.key==='ArrowDown'){
-      e.preventDefault();
-      _activeIdx=Math.min(_activeIdx+1,opts.length-1);
-      opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));
-      if(opts[_activeIdx])opts[_activeIdx].scrollIntoView({block:'nearest'});
-    }else if(e.key==='ArrowUp'){
-      e.preventDefault();
-      _activeIdx=Math.max(_activeIdx-1,-1);
-      opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));
-    }else if(e.key==='Enter'){
-      e.preventDefault();
-      if(_activeIdx>=0)selectResult(_activeIdx);
-      else if(_results.length===1)selectResult(0);
-    }else if(e.key==='Escape'){
-      drop.classList.remove('open');
-      if(_currentId){const l=locById(_currentId);if(l)inp.value=l.label;}
-    }
+    if(e.key==='ArrowDown'){e.preventDefault();_activeIdx=Math.min(_activeIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));if(opts[_activeIdx])opts[_activeIdx].scrollIntoView({block:'nearest'});}
+    else if(e.key==='ArrowUp'){e.preventDefault();_activeIdx=Math.max(_activeIdx-1,-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
+    else if(e.key==='Enter'){e.preventDefault();if(_activeIdx>=0)selectResult(_activeIdx);else if(_results.length===1)selectResult(0);}
+    else if(e.key==='Escape'){drop.classList.remove('open');if(_currentId){const l=locById(_currentId);if(l)inp.value=l.label;}}
   });
-
-  inp.addEventListener('focus',()=>{
-    clearTimeout(_closeTimer);
-    const q=inp.value.trim();
-    if(q&&!drop.classList.contains('open'))showDrop(q);
-  });
-
-  inp.addEventListener('blur',()=>{
-    _closeTimer=setTimeout(()=>{
-      drop.classList.remove('open');
-      // Si no resolvió, restaurar el último id válido o marcar vacío
-      if(_currentId){const l=locById(_currentId);if(l){inp.value=l.label;inp.className='loc-input resolved';}}
-      else if(inp.value.trim()){inp.className='loc-input unresolved';}
-    },150);
-  });
-
+  inp.addEventListener('focus',()=>{clearTimeout(_closeTimer);const q=inp.value.trim();if(q&&!drop.classList.contains('open'))showDrop(q);});
+  inp.addEventListener('blur',()=>{_closeTimer=setTimeout(()=>{drop.classList.remove('open');if(_currentId){const l=locById(_currentId);if(l){inp.value=l.label;inp.className='loc-input resolved';}}else if(inp.value.trim()){inp.className='loc-input unresolved';}},150);});
   clearBtn.addEventListener('click',clearSearch);
-
   wrap.appendChild(inp);wrap.appendChild(clearBtn);wrap.appendChild(drop);
   return wrap;
 }
 
-// Versión legacy mantenida para compatibilidad (posición actual usa selects)
-function buildFlatLocSelect(sel,selId){sel.innerHTML='';Object.entries(DATA).forEach(([sys,planets])=>Object.entries(planets).forEach(([planet,z])=>{const og=document.createElement('optgroup');og.label=sys+' · '+planet;z.locs.forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=l.label;if(l.id===selId)o.selected=true;og.appendChild(o);});sel.appendChild(og);}));}
-function buildMatSelect(sel,selMat){sel.innerHTML='';MATERIALS.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===selMat)o.selected=true;sel.appendChild(o);});}
 function getSelLoc(pId,lId){return locById($(lId).value)||null;}
 function getCap(){return parseInt($('cap-input').value)||0;}
 
@@ -2051,6 +1509,7 @@ function renderSizeRow(){const sr=$('size-row');sr.innerHTML='';const mb=maxBox(
 
 function renderXP(){
   const xp=prog.xp[prog.f]||0;const idx=rankFromXP(xp);const rname=RANK_ORDER[idx];
+  if(!rname)return;
   $('xp-rank-name').textContent=rname;
   if(idx>=RANK_ORDER.length-1){$('xp-bar').style.width='100%';$('xp-next').textContent='Max rank reached';$('xp-bar-text').textContent=`${xp.toLocaleString()} XP total · Master!`;}
   else{const start=RANK_CUM[idx];const next=RANK_CUM[idx+1];const span=next-start;const inLvl=xp-start;const pct=Math.max(0,Math.min(100,(inLvl/span)*100));$('xp-bar').style.width=pct+'%';$('xp-next').textContent=`Need ${(next-xp).toLocaleString()} XP for ${RANK_ORDER[idx+1]}`;$('xp-bar-text').textContent=`${inLvl.toLocaleString()} / ${span.toLocaleString()} XP en ${rname} (${Math.round(pct)}%)`;}
@@ -2072,8 +1531,6 @@ function renderRankGuide(){
   el.appendChild(d);});
 }
 
-// ===== COMBOS DE FARMEO =====
-function sysOf(n){return(n&&n.sys)||'Stanton';}
 function farmCombos(){
   if(deliveryMode==='full')return[];
   const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;
@@ -2124,7 +1581,7 @@ function renderFarmCombos(){
     card.innerHTML=`<div class="com-head"><div><span class="com-name">${title}</span><div class="cgroup-sub" style="margin-top:5px">${badges}</div></div><span class="com-scu">+${c.xp.toLocaleString()} XP</span></div>
       <div class="cgroup-sub"><span class="d" style="background:#378ADD"></span>pick up at <b style="color:var(--c-text-1)">${c.pick.label}</b></div>
       <div class="cgroup-sub"><span class="d"></span>deliver to <b style="color:var(--c-text-1)">${c.drop.label}</b></div>
-      <div class="cgroup-detail">${c.boxes} boxes · ${fmt(c.scu)} SCU · loop ${fmtGm(c.loopGm)} Gm${c.jumps?` + ${c.jumps} jump`:''} · ${c.sys}</div>
+      <div class="cgroup-detail">${c.boxes} boxes · ${fmt(c.scu)} SCU · loop ${fmtDist(c.loopGm)} ${c.jumps?` + ${c.jumps} jump`:''} · ${c.sys}</div>
       ${fitWarn}`;
     el.appendChild(card);
   });
@@ -2132,8 +1589,7 @@ function renderFarmCombos(){
 }
 
 function newMission(){
-  const t=CONTRACT_RANKS[currentRank].typical;
-  // Solo usar posición actual si el usuario la definió — no autocompletar
+  const t=CONTRACT_RANKS[currentRank]?.typical||64;
   const currentLocId=$('o-loc').value||null;
   const destLocId=(useDest&&$('d-loc').value)||null;
   return{
@@ -2152,11 +1608,11 @@ function cloneMission(id){
   missions.splice(missions.findIndex(x=>x.id===id)+1,0,cloned);
   renderMissions();
 }
-function addPickup(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups.push({id:++pickSeq,material:'— Select commodity —',scu:Math.round(CONTRACT_RANKS[currentRank].typical/2),locId:$('o-loc').value||findLoc('HUR-L1')});renderMissions();}
+function addPickup(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups.push({id:++pickSeq,material:'— Select commodity —',scu:Math.round((CONTRACT_RANKS[currentRank]?.typical||64)/2),locId:$('o-loc').value||findLoc('HUR-L1')});renderMissions();}
 function removePickup(mid,pid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups=m.pickups.filter(p=>p.id!==pid);if(!m.pickups.length)removeMission(mid);else renderMissions();}
 function addDelivery(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.deliveries.push({id:++delivSeq,locId:(useDest&&$('d-loc').value)?$('d-loc').value:findLoc('Lorville')});renderMissions();}
 function removeDelivery(mid,did){const m=missions.find(x=>x.id===mid);if(!m)return;m.deliveries=m.deliveries.filter(d=>d.id!==did);renderMissions();}
-// ── Sesión de juego ─────────────────────────────────
+
 let session={active:false,start:0,missions:0,xpEarned:0,aUECEarned:0,timerInterval:null};
 function startSession(){
   if(session.active)return;
@@ -2178,51 +1634,29 @@ function stopSession(){
     const xph=dur>0?Math.round(session.xpEarned/(dur/60)):session.xpEarned;
     const mph=dur>0?Math.round(session.missions/(dur/60)*10)/10:session.missions;
     const auph=dur>0?Math.round(session.aUECEarned/(dur/60)):session.aUECEarned;
-    // Guardar en historial
-    saveSessionHistory({
-      ts:Date.now(),faction:prog.f,
-      missions:session.missions,xp:session.xpEarned,
-      aUEC:session.aUECEarned,dur,
-      xph,mph,auph
-    });
+    saveSessionHistory({ts:Date.now(),faction:prog.f,missions:session.missions,xp:session.xpEarned,aUEC:session.aUECEarned,dur,xph,mph,auph});
     renderSessionHistory();
   }
 }
 function saveSessionHistory(entry){
-  try{
-    const h=JSON.parse(localStorage.getItem('sc_session_history')||'[]');
-    h.unshift(entry);
-    localStorage.setItem('sc_session_history',JSON.stringify(h.slice(0,10)));
-  }catch(e){}
+  try{const h=JSON.parse(localStorage.getItem('sc_session_history')||'[]');h.unshift(entry);localStorage.setItem('sc_session_history',JSON.stringify(h.slice(0,10)));}catch(e){}
 }
-function loadSessionHistory(){
-  try{return JSON.parse(localStorage.getItem('sc_session_history')||'[]');}catch(e){return[];}
-}
+function loadSessionHistory(){try{return JSON.parse(localStorage.getItem('sc_session_history')||'[]');}catch(e){return[];}}
 function renderSessionHistory(){
   const el=$('session-history');if(!el)return;
   const hist=loadSessionHistory();
   if(!hist.length){el.innerHTML='<div style="color:var(--c-text-3);font-size:11px;padding:8px 0">No sessions saved yet.</div>';return;}
-  // Encontrar mejores valores para resaltar
   const bestXph=Math.max(...hist.map(h=>h.xph||0));
   const bestAuph=Math.max(...hist.map(h=>h.auph||0));
   el.innerHTML=`<table class="hist-table">
-    <thead><tr>
-      <th>Fecha</th><th>Faction</th><th>Mis</th><th>XP</th>
-      <th>aUEC</th><th>Tiempo</th><th>XP/h</th><th>aUEC/h</th>
-    </tr></thead>
+    <thead><tr><th>Fecha</th><th>Faction</th><th>Mis</th><th>XP</th><th>aUEC</th><th>Tiempo</th><th>XP/h</th><th>aUEC/h</th></tr></thead>
     <tbody>${hist.map(h=>{
       const d=new Date(h.ts);
       const fecha=d.toLocaleDateString('es',{day:'2-digit',month:'2-digit'});
       const hora=d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
-      const fd=Object.values(FACTION_DATA).find(f=>f.emoji&&h.faction?.startsWith(Object.keys(FACTION_DATA).find(k=>FACTION_DATA[k]===f)));
       const emoji=h.faction?.includes('Red')?'🔴':h.faction?.includes('Ling')?'🟢':'📦';
-      return`<tr>
-        <td>${fecha} ${hora}</td>
-        <td>${emoji}</td>
-        <td>${h.missions}</td>
-        <td>${(h.xp||0).toLocaleString()}</td>
-        <td>${h.aUEC>0?(h.aUEC/1000).toFixed(0)+'K':'—'}</td>
-        <td>${h.dur}m</td>
+      return`<tr><td>${fecha} ${hora}</td><td>${emoji}</td><td>${h.missions}</td><td>${(h.xp||0).toLocaleString()}</td>
+        <td>${h.aUEC>0?(h.aUEC/1000).toFixed(0)+'K':'—'}</td><td>${h.dur}m</td>
         <td class="${h.xph>=bestXph&&bestXph>0?'hist-best':''}">${(h.xph||0).toLocaleString()}</td>
         <td class="${h.auph>=bestAuph&&bestAuph>0&&h.auph>0?'hist-best':''}">${h.auph>0?(h.auph/1000).toFixed(0)+'K/h':'—'}</td>
       </tr>`;}).join('')}
@@ -2240,7 +1674,6 @@ function renderSessionBar(){
   el.innerHTML=`<span style="color:${fd.color};font-weight:600">${fd.emoji} ${session.missions} missions</span><span style="color:var(--c-text-2)">${session.xpEarned.toLocaleString()} XP this session</span><span style="color:var(--c-text-3)">${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>${missionsLeft>0?`<span style="color:#F5A623">≈${missionsLeft} missions → ${RANK_ORDER[RANK_ORDER.indexOf(currentRank)+1]||'Master'}</span>`:'<span style="color:#1D9E75">Rank reached!</span>'}`;
 }
 
-// ── Rutas favoritas ──────────────────────────────────
 let savedRoutes=[];
 function loadSavedRoutes(){try{const v=localStorage.getItem('sc_saved_routes');if(v)savedRoutes=JSON.parse(v);}catch(e){}}
 function saveSavedRoutes(){try{localStorage.setItem('sc_saved_routes',JSON.stringify(savedRoutes));}catch(e){}}
@@ -2269,743 +1702,6 @@ function renderSavedRoutes(){
 }
 
 // ── Plan de boxes para una mission ─────────────────────────────
-// Devuelve:
-//   min: 1 box ofl tamaño mínimo permitido → XP completo, mínimo esfuerzo
-//   full: todas las boxes para maximizar aUEC
-function missionssionBoxPlan(m){
-  const rank=CONTRACT_RANKS[currentRank];
-  const rankMaxBox=rank?.maxBox||8;
-  const total=missionssionTotal(m);
-  if(!total)return null;
-  const nd=m.deliveries.length||1;
-
-  // ── SCU máximo por box del contrato ─────────────────────────
-  // El contrato dice "4 SCU or smaller" — cada box individual
-  // no puede superar ese límite. Lo leemos del SCU del pickup.
-  // Heurística: el total dividido entre las deliveries suele ser
-  // el máximo por entrega, pero el límite real es el que aparece
-  // en "X SCU or smaller" del contrato.
-  // Usamos el SCU del primer pickup como referencia del límite
-  // (el juego lo fija igual al total máximo del contrato).
-  const contractMaxScuPerBox=Math.min(
-    m.pickups[0]?.scu||rankMaxBox,  // SCU del contrato
-    rankMaxBox                        // límite del rango
-  );
-
-  // ── SCU por entrega (como reparte el juego) ──────────────────
-  const scuPerDelivery=m.deliveries.map((_,i)=>{
-    const base=Math.floor(total/nd);
-    const rem=total-(base*nd);
-    return i<rem?base+1:base;
-  });
-  const minDelivScu=Math.min(...scuPerDelivery);
-
-  // ── One-box rep: ir solo a la entrega más pequeña ────────────
-  // Necesitas llevar exactamente el SCU que pide esa parada
-  // en boxes de máximo contractMaxScuPerBox cada una
-  const pickLoc=locById(m.pickups[0]?.locId);
-  let nearestDelivIdx=0,nearestDelivDist=Infinity;
-  // Primero buscar la entrega con menor SCU
-  let minScuIdx=0;
-  scuPerDelivery.forEach((s,i)=>{if(s<scuPerDelivery[minScuIdx])minScuIdx=i;});
-  // Entre las de menor SCU, la nearest to pickup
-  if(pickLoc){
-    const minScu=scuPerDelivery[minScuIdx];
-    m.deliveries.forEach((d,i)=>{
-      if(scuPerDelivery[i]!==minScu)return;
-      const dl=locById(d.locId);if(!dl)return;
-      const dd=dist3(pickLoc,dl);
-      if(dd<nearestDelivDist){nearestDelivDist=dd;nearestDelivIdx=i;}
-    });
-  }else{
-    nearestDelivIdx=minScuIdx;
-  }
-
-  const nearestDelivScu=scuPerDelivery[nearestDelivIdx];
-  const nearestDelivLoc=locById(m.deliveries[nearestDelivIdx]?.locId);
-
-  // Cajas necesarias para esa entrega con el límite del contrato
-  const oneBoxCount=Math.ceil(nearestDelivScu/contractMaxScuPerBox);
-  const oneBoxDetail=oneBoxCount>1
-    ?(oneBoxCount-1)+'×'+contractMaxScuPerBox+' + 1×'+(nearestDelivScu-(oneBoxCount-1)*contractMaxScuPerBox)+' SCU'
-    :'1×'+contractMaxScuPerBox+' SCU';
-
-  // ── Full load: todas las boxes para todo el total ────────────
-  // Cada box ≤ contractMaxScuPerBox
-  function boxesWithLimit(scu,maxSz){
-    let rem=scu;const used=[];
-    // Tamaños disponibles hasta el límite del contrato
-    const sizes=[1,2,4,8,16,24,32].filter(s=>s<=maxSz);
-    sizes.slice().reverse().forEach(sz=>{
-      const n=Math.floor((rem+1e-9)/sz);
-      if(n>0){used.push({size:sz,n});rem-=n*sz;}
-    });
-    if(rem>1e-9){used.push({size:1,n:Math.ceil(rem)});}
-    return used;
-  }
-
-  const fullBoxes=boxesWithLimit(total,contractMaxScuPerBox);
-  const fullCount=fullBoxes.reduce((a,u)=>a+u.n,0);
-  const fullDetail=fullBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
-
-  // ── Por entrega ───────────────────────────────────────────────
-  const perDelivery=m.deliveries.map((d,i)=>{
-    const amt=scuPerDelivery[i];
-    const boxes=boxesWithLimit(amt,contractMaxScuPerBox);
-    const count=boxes.reduce((a,u)=>a+u.n,0);
-    const detail=boxes.map(u=>u.n+'×'+u.size).join('+');
-    const loc=locById(d.locId);
-    const dist=pickLoc&&loc?dist3(pickLoc,loc):null;
-    return{
-      loc:loc?.label||'?',
-      scu:amt,
-      boxes:count,
-      detail,
-      mat:m.pickups[0]?.material||'?',
-      dist,
-      isNearest:i===nearestDelivIdx
-    };
-  });
-
-  return{
-    contractMaxScuPerBox,
-    // One-box rep: ir solo a la entrega de menor SCU
-    oneBoxLoc:nearestDelivLoc?.label||'?',
-    oneBoxScu:nearestDelivScu,
-    oneBoxCount,
-    oneBoxDetail,
-    // Full
-    fullScu:total,
-    fullCount,
-    fullDetail,
-    perDelivery,
-    nd
-  };
-}
-
-function completeMission(id){
-  const rank=CONTRACT_RANKS[currentRank];
-  const base=rank?.xpMission||8000;
-  const frac=deliveryMode==='full'?1:partialPct/100;
-  const xpGained=Math.round(base*frac);
-  prog.xp[prog.f]=(prog.xp[prog.f]||0)+xpGained;
-  // Sesión
-  const mPay=missions.find(x=>x.id===id)?.pay||0;
-  if(session.active){session.missions++;session.xpEarned+=xpGained;session.aUECEarned+=mPay;renderSessionBar();}
-  saveProg();renderXP();renderRankGuide();
-  removeMission(id);
-  // Flash visual en barra de XP
-  const wrap=$('xp-bar-wrap');if(wrap){wrap.classList.add('flash');setTimeout(()=>wrap.classList.remove('flash'),500);}
-}
-
-function totalMissionScu(){
-  if(oneBoxMode)return missions.reduce((s,m)=>s+m.pickups.length*oneBoxSize,0); // oneBoxSize SCU por pickup
-  if(deliveryMode==='partial')return missions.reduce((s,m)=>{const plan=bestCommodityPlan(m);return s+(plan?.best?.amt||0);},0);
-  return missions.reduce((s,m)=>s+m.pickups.reduce((a,p)=>a+p.scu,0),0);
-}
-function renderCapacityAlert(){
-  const el=$('cap-alert');if(!el)return;
-  const cap=getCap();const total=totalMissionScu();
-  if(total>cap){
-    const over=total-cap;
-    el.style.display='flex';
-    el.innerHTML=`<i class="ti ti-alert-triangle" style="color:#E84040;flex-shrink:0"></i><span>Capacidad superada: <b>${total} SCU</b> en missions vs <b>${cap} SCU</b> de la nave — sobran <b style="color:#E84040">${over} SCU</b>. Considera quitar o dividir alguna mission.</span>`;
-  } else if(total>0){
-    el.style.display='flex';
-    const pct=Math.round(total/cap*100);
-    const col=pct>85?'#F5A623':pct>50?'#1D9E75':'var(--c-text-3)';
-    el.innerHTML=`<i class="ti ti-package" style="color:${col};flex-shrink:0"></i><span style="color:${col}"><b>${total} / ${cap} SCU</b> (${pct}% of hold)</span>`;
-  } else {
-    el.style.display='none';
-  }
-}
-
-// ── Mapa visual de ruta ─────────────────────────────────────
-function renderRouteMap(seq){
-  const svg=document.getElementById('route-map');
-  if(!svg||!seq||seq.length<2){document.getElementById('map-wrap').style.display='none';return;}
-  document.getElementById('map-wrap').style.display='block';
-
-  const W=600,H=160,PAD=50,STEP=Math.min(120,(W-PAD*2)/Math.max(seq.length-1,1));
-  const cx=i=>PAD+i*STEP,cy=()=>H/2;
-
-  // Colores por rol
-  const dotColor=n=>{
-    if(n.role==='origin'||n._isOrigin)return'#1D9E75';
-    if(n.role==='dest')return'#D85A30';
-    if(n.role==='pickup')return'#378ADD';
-    if(n.role==='dropoff')return'#C2410C';
-    return'#888';
-  };
-  const roleIcon=n=>{
-    if(n.role==='origin'||n._isOrigin)return'⊙';
-    if(n.role==='dest')return'⚑';
-    if(n.role==='pickup')return'↑';
-    if(n.role==='dropoff')return'↓';
-    return'·';
-  };
-
-  let svgHtml='';
-  // Líneas de conexión
-  for(let i=0;i<seq.length-1;i++){
-    const isJump=seq[i]&&seq[i+1]&&sysOf(seq[i])!==sysOf(seq[i+1]);
-    svgHtml+=`<line x1="${cx(i)}" y1="${cy()}" x2="${cx(i+1)}" y2="${cy()}"
-      stroke="${isJump?'#9B7BD8':'#444'}" stroke-width="${isJump?1.5:1}"
-      stroke-dasharray="${isJump?'4 3':'none'}" opacity="0.7"/>`;
-  }
-  // Nodos
-  seq.forEach((n,i)=>{
-    const x=cx(i),y=cy();
-    const col=dotColor(n);
-    const label=(n.label||'').split(' ').slice(0,2).join(' ');
-    const isTop=i%2===0;
-    svgHtml+=`
-      <circle cx="${x}" cy="${y}" r="7" fill="${col}" opacity="0.9"/>
-      <text x="${x}" y="${y+1}" text-anchor="middle" font-size="8"
-        fill="#fff" font-family="monospace" font-weight="bold">${roleIcon(n)}</text>
-      <text x="${x}" y="${isTop?y-16:y+24}" text-anchor="middle" font-size="9"
-        fill="#aaa" font-family="monospace"
-        style="overflow:hidden;text-overflow:ellipsis">${label}</text>`;
-    // Distancia entre nodos
-    if(i>0&&seq[i-1]){
-      const d=legGm(seq[i-1],n);
-      if(d>0)svgHtml+=`<text x="${(cx(i)+cx(i-1))/2}" y="${y-6}" text-anchor="middle"
-        font-size="8" fill="#666" font-family="monospace">${fmtGm(d)}</text>`;
-    }
-  });
-
-  // Leyenda compacta
-  svgHtml+=`
-    <circle cx="12" cy="${H-12}" r="5" fill="#378ADD"/>
-    <text x="20" y="${H-8}" font-size="8" fill="#888" font-family="monospace">Pickup</text>
-    <circle cx="60" cy="${H-12}" r="5" fill="#C2410C"/>
-    <text x="68" y="${H-8}" font-size="8" fill="#888" font-family="monospace">Delivery</text>
-    <circle cx="110" cy="${H-12}" r="5" fill="#1D9E75"/>
-    <text x="118" y="${H-8}" font-size="8" fill="#888" font-family="monospace">Tú</text>`;
-
-  svg.setAttribute('viewBox','0 0 '+Math.max(W,cx(seq.length-1)+PAD)+' '+H);
-  svg.innerHTML=svgHtml;
-}
-function renderMissions(){
-  const el=$('missions-list');
-  $('mcount').textContent=`(${missions.length}/${MAX_MISSIONS})`;
-  $('add-missionssion').disabled=missions.length>=MAX_MISSIONS;
-  renderCapacityAlert();
-  if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderFarmCombos();return;}
-  el.innerHTML='';
-  missions.forEach((m,mi)=>{
-    const card=document.createElement('div');card.className='cm-card';
-
-    // ── Header timeline ───────────────────────────────────────
-    const scuTotal=m.pickups.reduce((s,p)=>s+p.scu,0);
-    const mat0=m.pickups[0]?.material;
-    const elapsed=m.startedAt?Math.floor((Date.now()-m.startedAt)/1000):0;
-    const elapsedStr=`${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
-    const head=document.createElement('div');head.className='cm-card-header';
-    head.innerHTML=`
-      <div class="cm-card-meta">
-        <span class="cm-badge">M${mi+1}</span>
-        ${oneBoxMode
-          ?`<span class="cm-scu-badge">${oneBoxSize} SCU</span><span style="font-size:9px;background:#E84040;color:#fff;border-radius:99px;padding:1px 7px">1 box</span>`
-          :`<span class="cm-scu-badge">${scuTotal} SCU</span>${mat0&&mat0!=='— Select commodity —'?`<span class="cm-mat-badge">${mat0}</span>`:''}`}
-        ${m.pay>0?`<span class="cm-pay-badge">${(m.pay/1000).toFixed(0)}K aUEC</span>`:''}
-        <span class="cm-timer${session.active?' running':''}"><i class="ti ti-clock" style="font-size:10px"></i>${elapsedStr}</span>
-      </div>
-      <div class="cm-actions">
-        <button class="js-clone" title="Apilar"><i class="ti ti-copy"></i></button>
-        <button class="js-done"><i class="ti ti-check"></i> Done</button>
-        <button class="js-rm"><i class="ti ti-trash"></i></button>
-      </div>`;
-    head.querySelector('.js-rm').addEventListener('click',()=>removeMission(m.id));
-    head.querySelector('.js-done').addEventListener('click',()=>completeMission(m.id));
-    head.querySelector('.js-clone').addEventListener('click',()=>cloneMission(m.id));
-    // Editar pago inline
-    head.querySelector('.cm-pay-badge')?.addEventListener?.('click',()=>{
-      const v=prompt('Contract payment (aUEC):',m.pay||'');
-      if(v!==null){m.pay=parseInt(v.replace(/[^0-9]/g,''))||0;renderMissions();}
-    });
-    card.appendChild(head);
-
-    // ── Cuerpo timeline ───────────────────────────────────────
-    const body=document.createElement('div');body.className='cm-timeline';
-    card.appendChild(body);
-    // Reasignar card.appendChild para que apunte al body del timeline
-    const origAppend=card.appendChild.bind(card);
-    card.appendChild=el=>body.appendChild(el);
-    if(oneBoxMode){
-      // ── PICKUP ──────────────────────────────────────────────
-      m.pickups.forEach(p=>{
-        const pickRow=document.createElement('div');pickRow.className='cm-row';
-        pickRow.innerHTML=`
-          <span class="cm-icon" style="color:var(--c-blue)"><i class="ti ti-package-import"></i></span>
-          <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-            <span style="font-size:9px;color:var(--c-text-3);font-family:var(--font-mono);
-              text-transform:uppercase;letter-spacing:.04em">
-              Pickup — recoger 1 box of ${oneBoxSize} SCU
-            </span>
-            <div class="cm-inputs"><select class="js-loc" style="flex:1"></select></div>
-          </div>
-          ${m.pickups.length>1?'<button class="cm-mini-btn js-rm-pick"><i class="ti ti-x"></i></button>':''}`;
-        const ls=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;renderMissions();});
-        pickRow.querySelector('.js-loc').replaceWith(ls);
-        if(m.pickups.length>1)pickRow.querySelector('.js-rm-pick').addEventListener('click',()=>removePickup(m.id,p.id));
-        card.appendChild(pickRow);
-      });
-
-      // ── ENTREGAS POSIBLES (del contrato) ─────────────────────
-      // Calcular cuál es la nearest al primer pickup
-      const pickLoc0=locById(m.pickups[0]?.locId);
-      let nearestId=null,nearestDist=Infinity;
-      if(pickLoc0){
-        m.deliveries.forEach(d=>{
-          const dl=locById(d.locId);if(!dl)return;
-          const dd=dist3(pickLoc0,dl);
-          if(dd<nearestDist){nearestDist=dd;nearestId=d.locId;}
-        });
-      }
-
-      // Separador
-      const sep=document.createElement('div');
-      sep.style.cssText='font-size:9px;color:var(--c-text-3);font-family:var(--font-mono);'+
-        'text-transform:uppercase;letter-spacing:.04em;padding:6px 0 3px 22px;'+
-        'border-top:0.5px solid var(--c-border-3);margin-top:4px;display:flex;align-items:center;gap:6px;';
-      sep.innerHTML='Possible contract deliveries'+
-        (m.deliveries.length>1?
-          ` <span style="color:var(--c-green);font-weight:600">★ = nearest to pickup</span>`:'');
-      card.appendChild(sep);
-
-      m.deliveries.forEach(d=>{
-        const dl=locById(d.locId);
-        const isNearest=nearestId&&d.locId===nearestId;
-        const distGm=pickLoc0&&dl?Math.round(dist3(pickLoc0,dl)*10)/10:null;
-
-        const dRow=document.createElement('div');dRow.className='cm-row';
-        dRow.style.marginTop='3px';
-        if(isNearest)dRow.style.cssText+=';border-radius:var(--r-md);';
-
-        dRow.innerHTML=`
-          <span class="cm-icon" style="color:${isNearest?'var(--c-green)':'#C2410C'}">
-            <i class="ti ti-${isNearest?'star':'map-pin'}"></i>
-          </span>
-          <div style="flex:1;display:flex;align-items:center;gap:6px">
-            <div class="cm-inputs" style="flex:1"><select class="js-loc"></select></div>
-            ${distGm!==null?`<span style="font-size:10px;color:${isNearest?'var(--c-green)':'var(--c-text-3)'};
-              font-family:var(--font-mono);white-space:nowrap;font-weight:${isNearest?600:400}">
-              ${fmtGm(distGm)} Gm${isNearest?' ★':''}
-            </span>`:''}
-          </div>
-          ${m.deliveries.length>1?'<button class="cm-mini-btn js-rm-del"><i class="ti ti-x"></i></button>':''}`;
-
-        if(isNearest){
-          dRow.style.background='color-mix(in srgb,var(--c-green) 5%,var(--c-bg-2))';
-          dRow.style.border='1px solid color-mix(in srgb,var(--c-green) 20%,transparent)';
-          dRow.style.borderRadius='var(--r-sm)';
-          dRow.style.padding='3px 4px';
-        }
-
-        const ls=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
-        dRow.querySelector('.js-loc').replaceWith(ls);
-        if(m.deliveries.length>1)dRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
-        card.appendChild(dRow);
-      });
-
-      // Botón add delivery posible
-      const addDelBtn=document.createElement('div');
-      addDelBtn.style.cssText='padding:4px 0 2px 22px;';
-      addDelBtn.innerHTML=`<button class="js-add-del"
-        style="font-size:10px;padding:2px 9px;border-radius:5px;
-        border:0.5px dashed var(--c-border-1);background:transparent;
-        color:var(--c-text-3);cursor:pointer;font-family:var(--font-mono)">
-        <i class="ti ti-plus" style="font-size:10px"></i> Add delivery point
-      </button>`;
-      addDelBtn.querySelector('.js-add-del').addEventListener('click',()=>addDelivery(m.id));
-      card.appendChild(addDelBtn);
-
-      // Selector tamaño de box
-      const boxRow=document.createElement('div');
-      boxRow.style.cssText='display:flex;align-items:center;gap:6px;padding:6px 0 2px 22px;'+
-        'flex-wrap:wrap;border-top:0.5px solid var(--c-border-3);margin-top:6px;';
-      boxRow.innerHTML=`<span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono)">Box size:</span>`
-        +[1,2,4,8,12,16,24,32].map(s=>`<button class="onebox-sz${s===oneBoxSize?' onebox-sz-on':''}" data-sz="${s}"
-          style="font-size:10px;padding:2px 7px;border:1px solid ${s===oneBoxSize?'var(--c-faction)':'var(--c-border-2)'};
-          background:${s===oneBoxSize?'var(--c-faction)':'transparent'};
-          color:${s===oneBoxSize?'#fff':'var(--c-text-3)'};border-radius:4px;cursor:pointer;
-          font-family:var(--font-mono)">${s} SCU</button>`).join('');
-      setTimeout(()=>{
-        boxRow.querySelectorAll('[data-sz]').forEach(btn=>{
-          btn.addEventListener('click',()=>{oneBoxSize=parseInt(btn.dataset.sz);renderMissions();});
-        });
-      },0);
-      card.appendChild(boxRow);
-
-      // Info: qué hacer
-      if(nearestId){
-        const info=document.createElement('div');
-        info.style.cssText='font-size:10px;color:var(--c-green);font-family:var(--font-mono);'+
-          'padding:4px 0 0 22px;display:flex;align-items:center;gap:4px;';
-        const nearLoc=locById(nearestId);
-        info.innerHTML=`<i class="ti ti-route"></i> Go to <b>${nearLoc?.label||'—'}</b> · ${fmtGm(nearestDist)} Gm · 1 box of ${oneBoxSize} SCU`;
-        card.appendChild(info);
-      }
-    } else {
-      // ══ MODO NORMAL — layout timeline ══════════════════════
-
-      // ── Calcular nearest delivery para destacarla ────────
-      const pickLoc0=locById(m.pickups[0]?.locId);
-      let nearestDelivId=null;
-      if(pickLoc0&&m.deliveries.length>1){
-        let bestD=Infinity;
-        m.deliveries.forEach(d=>{
-          const dl=locById(d.locId);if(!dl)return;
-          const dd=dist3(pickLoc0,dl);
-          if(dd<bestD){bestD=dd;nearestDelivId=d.locId;}
-        });
-      }
-
-      // ── PICKUP(S) ───────────────────────────────────────────
-      m.pickups.forEach((p,pi)=>{
-        // Fila pickup
-        const tlItem=document.createElement('div');tlItem.className='cm-tl-item';
-
-        // Columna dot
-        const dotCol=document.createElement('div');dotCol.className='cm-tl-dot-col';
-        const dot=document.createElement('div');dot.className='cm-tl-dot pickup';
-        dotCol.appendChild(dot);
-        if(pi<m.pickups.length-1||m.deliveries.length){
-          const line=document.createElement('div');line.className='cm-tl-line';
-          dotCol.appendChild(line);
-        }
-        tlItem.appendChild(dotCol);
-
-        // Contenido
-        const content=document.createElement('div');content.className='cm-tl-content';
-
-        // Label + SCU
-        const labelRow=document.createElement('div');
-        labelRow.style.cssText='display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap;';
-        labelRow.innerHTML=`<span class="cm-tl-label" style="margin:0">Pickup</span>
-          <input type="number" value="${p.scu}" min="1"
-            style="width:54px;font-size:11px;padding:2px 5px;height:22px;
-            font-family:var(--font-mono);border-radius:4px;border:0.5px solid var(--c-border-2);
-            background:var(--c-bg-1);color:var(--c-text-1);" class="js-scu">
-          <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono)">SCU</span>
-          ${m.pickups.length>1?`<button class="cm-mini-btn js-rm-pick" style="margin-left:auto"><i class="ti ti-x"></i></button>`:''}`;
-        labelRow.querySelector('.js-scu').addEventListener('change',e=>{p.scu=parseInt(e.target.value)||1;renderMissions();});
-        if(m.pickups.length>1)labelRow.querySelector('.js-rm-pick').addEventListener('click',()=>removePickup(m.id,p.id));
-        content.appendChild(labelRow);
-
-        // Material — búsqueda libre
-        const matSearch=createMatSearch(p.material,(mat)=>{p.material=mat;renderMissions();});
-        content.appendChild(matSearch);
-
-        // Ubicación — búsqueda libre
-        const locSearch=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;renderMissions();});
-        locSearch.style.marginTop='3px';
-        content.appendChild(locSearch);
-
-        tlItem.appendChild(content);
-        card.appendChild(tlItem);
-      });
-
-      // ── ENTREGA(S) ──────────────────────────────────────────
-      m.deliveries.forEach((d,di)=>{
-        const isNearest=nearestDelivId&&d.locId===nearestDelivId;
-        const dl=locById(d.locId);
-        const distGm=pickLoc0&&dl?Math.round(dist3(pickLoc0,dl)*10)/10:null;
-
-        const tlItem=document.createElement('div');tlItem.className='cm-tl-item';
-        if(isNearest)tlItem.style.cssText='background:color-mix(in srgb,var(--c-green) 4%,transparent);border-radius:var(--r-sm);margin:-2px;padding:2px;';
-
-        const dotCol=document.createElement('div');dotCol.className='cm-tl-dot-col';
-        const dot=document.createElement('div');
-        dot.className=`cm-tl-dot delivery${isNearest?' nearest':''}`;
-        dotCol.appendChild(dot);
-        if(di<m.deliveries.length-1){
-          const line=document.createElement('div');line.className='cm-tl-line';
-          dotCol.appendChild(line);
-        }
-        tlItem.appendChild(dotCol);
-
-        const content=document.createElement('div');content.className='cm-tl-content';
-        const labelRow=document.createElement('div');
-        labelRow.style.cssText='display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap;';
-        // Calcular SCU y cajas para esta entrega según el modo actual
-        const _total=missionssionTotal(m);
-        const _nd=m.deliveries.length||1;
-        let _scuForThis=0;
-        if(oneBoxMode){
-          _scuForThis=oneBoxSize;
-        } else if(deliveryMode==='full'){
-          _scuForThis=Math.floor(_total/_nd)+(di===_nd-1?_total-Math.floor(_total/_nd)*_nd:0);
-        } else {
-          // modo parcial (25%): solo va a la entrega nearest
-          const _plan=bestCommodityPlan(m);
-          _scuForThis=isNearest&&_plan?.best?_plan.best.amt:0;
-        }
-        const _boxes=_scuForThis>0?boxesOptimal(_scuForThis):[];
-        const _boxStr=_boxes.map(u=>u.n+'×'+u.size).join('+');
-        const _scuLabel=_scuForThis>0
-          ?`<span style="font-size:10px;font-family:var(--font-mono);font-weight:600;
-              color:${isNearest?'var(--c-green)':'var(--c-blue)'}">
-              ${_scuForThis} SCU${_boxStr?' · '+_boxStr:''}
-            </span>`:'';
-        labelRow.innerHTML=`
-          <span class="cm-tl-label" style="margin:0;color:${isNearest?'var(--c-green)':'var(--c-text-3)'}">
-            ${isNearest?'★ Nearest':'Delivery'}
-          </span>
-          ${distGm!==null?`<span style="font-size:10px;color:${isNearest?'var(--c-green)':'var(--c-text-3)'};font-family:var(--font-mono)">${fmtGm(distGm)} Gm</span>`:''}
-          ${_scuLabel}
-          ${m.deliveries.length>1?`<button class="cm-mini-btn js-rm-del" style="margin-left:auto"><i class="ti ti-x"></i></button>`:''}`;
-        if(m.deliveries.length>1)labelRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
-        content.appendChild(labelRow);
-
-        const locSearch=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
-        content.appendChild(locSearch);
-        tlItem.appendChild(content);
-        card.appendChild(tlItem);
-      });
-
-      // ── Botón + Delivery ─────────────────────────────────────
-      const addBtn=document.createElement('button');
-      addBtn.className='cm-tl-add';
-      addBtn.innerHTML='<i class="ti ti-plus" style="font-size:10px"></i> Add delivery';
-      addBtn.addEventListener('click',()=>addDelivery(m.id));
-      card.appendChild(addBtn);
-
-      // ── Campo pago (editable inline) ─────────────────────────
-      const payRow=document.createElement('div');
-      payRow.style.cssText='display:flex;align-items:center;gap:6px;padding:8px 0 2px;border-top:0.5px solid var(--c-border-3);margin-top:4px;';
-      payRow.innerHTML=`
-        <i class="ti ti-coin" style="font-size:12px;color:var(--c-green)"></i>
-        <input type="number" class="cm-pay-input" value="${m.pay||0}" min="0" step="1000"
-          placeholder="Pago del contrato (aUEC)">
-        <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono)">aUEC</span>`;
-      payRow.querySelector('.cm-pay-input').addEventListener('change',e=>{
-        m.pay=parseInt(e.target.value)||0;renderMissions();
-      });
-      card.appendChild(payRow);
-    }
-    card.appendChild=origAppend;
-
-    // ── Panel de plan de boxes ────────────────────────────────
-    if(!oneBoxMode){
-      const plan=missionssionBoxPlan(m);
-      if(plan&&missionssionTotal(m)>0){
-        const bp=document.createElement('div');bp.className='box-plan';
-
-        // ── Fila: Min XP vs Max aUEC ──────────────────────────
-        const row=document.createElement('div');row.className='box-plan-row';
-
-        // MIN XP — one-box rep
-        const minDiv=document.createElement('div');minDiv.className='bp-min';
-        minDiv.innerHTML=
-          '<div class="bp-title">⚡ Min XP — One delivery only</div>'+
-          '<div class="bp-val">'+plan.oneBoxDetail+' → '+plan.oneBoxLoc+'</div>'+
-          '<div class="bp-sub" style="margin-top:4px">'+
-            'This delivery needs <b>'+plan.oneBoxScu+' SCU</b> total.<br>'+
-            'Max box size: <b>'+plan.contractMaxScuPerBox+' SCU</b> each.<br>'+
-            'Load <b>'+plan.oneBoxDetail+'</b> and take them to<br>'+
-            '<b>'+plan.oneBoxLoc+'</b> — that counts for XP.'+
-          '</div>';
-
-        // FULL
-        const fullDiv=document.createElement('div');fullDiv.className='bp-full';
-        fullDiv.innerHTML=
-          '<div class="bp-title">💰 Max aUEC — Full load</div>'+
-          '<div class="bp-val">'+plan.fullCount+' boxes · '+plan.fullScu+' SCU</div>'+
-          '<div class="bp-sub">'+plan.fullDetail+'<br>'+plan.nd+' stops</div>';
-
-        row.appendChild(minDiv);row.appendChild(fullDiv);
-        bp.appendChild(row);
-
-        // ── Por entrega — qué llevar a cada parada ────────────
-        if(plan.perDelivery.length>=1){
-          const stops=document.createElement('div');stops.className='bp-deliveries';
-          const hdr=document.createElement('div');
-          hdr.style.cssText='font-size:9px;color:var(--c-text-3);text-transform:uppercase;'+
-            'letter-spacing:.05em;margin-bottom:3px;display:flex;justify-content:space-between;';
-          hdr.innerHTML='<span>What to deliver at each stop (full load):</span>'+
-            '<span style="color:var(--c-text-3)">'+plan.perDelivery.length+' stops</span>';
-          stops.appendChild(hdr);
-          plan.perDelivery.forEach(d=>{
-            const s=document.createElement('div');s.className='bp-stop';
-            if(d.isNearest)s.style.cssText='background:color-mix(in srgb,var(--c-green) 8%,var(--c-bg-3));'+
-              'border:1px solid color-mix(in srgb,var(--c-green) 25%,transparent);border-radius:4px;';
-            s.innerHTML=
-              '<span class="bp-stop-loc">'+(d.isNearest?'★ ':'')+d.loc+'</span>'+
-              '<span class="bp-stop-mat">'+d.mat+'</span>'+
-              '<span class="bp-stop-detail">'+d.boxes+' box'+(d.boxes!==1?'es':'')+
-              ' ('+d.detail+') · '+d.scu+' SCU'+(d.dist!==null?' · '+fmtDist(d.dist):'')+
-              '</span>';
-            stops.appendChild(s);
-          });
-          bp.appendChild(stops);
-        }
-        card.appendChild(bp);
-      }
-    }
-
-    // Línea compacta (visible solo en compact-mode)
-    if(compactMode)card.appendChild(buildCompactLine(m));
-    el.appendChild(card);
-  });
-  refreshBoxes();refreshCandidates();renderFarmCombos();
-}
-
-// Update solo los timers de missions (sin re-render completo)
-function renderMissionTimers(){
-  document.querySelectorAll('.cm-timer').forEach((el,i)=>{
-    const m=missions[i];if(!m||!m.startedAt)return;
-    const elapsed=Math.floor((Date.now()-m.startedAt)/1000);
-    const s=`${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
-    el.innerHTML=`<i class="ti ti-clock" style="font-size:10px"></i>${s}`;
-  });
-}
-
-// Encuentra la station nearest a una ubicación, excluyendo la same
-function nearestStation(loc,excludeId){
-  let best=null,bestD=Infinity;
-  STATIONS.forEach(s=>{
-    if(s.id===excludeId)return;
-    const d=dist3(s,loc);
-    if(d<bestD){bestD=d;best=s;}
-  });
-  return best;
-}
-
-function buildNodes(){
-  const nodes=[];
-  missions.forEach((m,mi)=>{
-    const total=missionssionTotal(m);if(!total)return;
-    const mid=''+mi;
-    const mat=m.pickups[0]?.material||'cargo';
-    const pickLoc=locById(m.pickups[0]?.locId);
-
-    // ── Helper: ordenar deliveries por distancia desde el pickup ──
-    // Resuelve los locIds y los ordena de más cercano a más lejano
-    const sortedDeliveries=m.deliveries
-      .map(d=>({d,loc:locById(d.locId)}))
-      .filter(({loc})=>!!loc)
-      .sort((a,b)=>{
-        if(!pickLoc)return 0;
-        return dist3(pickLoc,a.loc)-dist3(pickLoc,b.loc);
-      });
-
-    if(oneBoxMode){
-      // ── MODO 1-BOX REP ────────────────────────────────────────
-      // Ir solo al lugar MÁS CERCANO al pickup con 1 caja
-      m.pickups.forEach(p=>{
-        const pl=locById(p.locId);if(!pl)return;
-        // Nearest delivery al pickup
-        const nearest=sortedDeliveries[0];
-        const dropLoc=nearest?.loc||nearestStation(pl,p.locId);
-        const bestDist=dropLoc?dist3(pl,dropLoc):0;
-        nodes.push({...pl,role:'pickup',mid,mnum:mi+1,
-          scu:oneBoxSize,material:mat});
-        if(dropLoc)nodes.push({...dropLoc,role:'dropoff',mid,mnum:mi+1,
-          scu:oneBoxSize,material:mat,
-          boxDetail:'1×'+oneBoxSize+' SCU',
-          _autoNearest:true,_nearestDist:bestDist});
-      });
-
-    } else if(deliveryMode==='full'){
-      // ── MODO 100% — todas las entregas, orden nearest → lejano ─
-      m.pickups.forEach(p=>{
-        const pl=locById(p.locId);if(!pl)return;
-        nodes.push({...pl,role:'pickup',mid,mnum:mi+1,
-          scu:p.scu,material:p.material,pad:pl.pad});
-      });
-      // Distribuir SCU total entre entregas, en orden de distancia
-      const nd=sortedDeliveries.length||1;
-      let assigned=0;
-      sortedDeliveries.forEach(({d,loc},di)=>{
-        let amt=Math.floor(total/nd);
-        if(di===nd-1)amt=total-assigned; // el último recibe el resto
-        assigned+=amt;
-        const boxes=boxesOptimal(amt);
-        const boxDetail=boxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
-        const isFirst=di===0; // la más cercana
-        nodes.push({...loc,role:'dropoff',mid,mnum:mi+1,
-          scu:amt,material:mat,boxDetail,pad:loc.pad,
-          _isNearest:isFirst,
-          _distFromPickup:pickLoc?dist3(pickLoc,loc):null});
-      });
-
-    } else {
-      // ── MODO PARCIAL (25%) — solo el lugar MÁS CERCANO ────────
-      // Igual que one-box pero con el SCU del plan óptimo
-      const plan=bestCommodityPlan(m);
-      if(!plan||!plan.best)return;
-      const b=plan.best;
-      const pk=m.pickups.find(p=>p.material===b.mat)||m.pickups[0];
-      const pkLoc=pk?locById(pk.locId):null;
-      if(!pkLoc)return;
-
-      // Buscar el nearest delivery explícitamente (no usar plan.best.nd que
-      // puede apuntar a cualquier lugar)
-      const nearestDeliv=sortedDeliveries[0];
-      const dropLoc=nearestDeliv?.loc||b.nd;
-      if(!dropLoc)return;
-
-      const boxes=boxesOptimal(b.amt);
-      const boxDetail=boxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
-      nodes.push({...pkLoc,role:'pickup',mid,mnum:mi+1,
-        scu:b.amt,material:b.mat});
-      nodes.push({...dropLoc,role:'dropoff',mid,mnum:mi+1,
-        scu:b.amt,material:b.mat,boxDetail,
-        _autoNearest:true,
-        _nearestDist:pickLoc?dist3(pkLoc,dropLoc):0});
-    }
-  });
-  return nodes;
-}
-
-function refreshCandidates(){
-  const el=$('cand-list');
-  if(!el)return; // cand-list removed — no-op
-  const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;
-  if(!o){el.innerHTML='<div class="empty">Selecciona tu posición.</div>';return;}
-  let target;const drops=[];missions.forEach(m=>m.deliveries.forEach(d=>{const l=locById(d.locId);if(l)drops.push(l);}));
-  if(useDest)target=getSelLoc('d-planet','d-loc');
-  if(!target&&drops.length)target={x:drops.reduce((a,d)=>a+d.x,0)/drops.length,y:drops.reduce((a,d)=>a+d.y,0)/drops.length,z:drops.reduce((a,d)=>a+d.z,0)/drops.length};
-  if(!target){el.innerHTML='<div class="empty">Add missions with deliveries to suggest pickup stops.</div>';return;}
-  const directD=dist3(o,target)||1;const tolEl=$('tol');const maxDev=directD*((tolEl?parseInt(tolEl.value):60)/100);
-  const cands=STATIONS.filter(s=>dist3(s,o)>0.05&&dist3(s,target)>0.05).map(s=>{const dev=ptToSeg(s,o,target);const dFromO=dist3(o,s);return{...s,dev,dFromO,extra:dFromO+dist3(s,target)-directD,progress:dFromO/directD};}).filter(s=>s.dev<=maxDev&&s.progress>0.02&&s.progress<1.3).sort((a,b)=>a.extra-b.extra);
-  if(!cands.length){el.innerHTML='<div class="empty">No hay recogidas de paso con este desvío.</div>';return;}
-  el.innerHTML='';
-  cands.slice(0,8).forEach(s=>{const bc='b-'+(s.type==='habitat'?'habitat':s.type==='lagrange'?'lagrange':s.type==='outpost'?'outpost':'station');const extraPct=Math.round((s.extra/directD)*100);const div=document.createElement('div');div.className='cand';div.innerHTML=`<div><div class="cand-name"><span class="badge ${bc}">${TYPE_LBL[s.type]||s.type}</span>${s.name}</div><div class="cand-meta"><span><i class="ti ti-planet" style="font-size:10px"></i> ${s.sys} · ${s.planet}</span><span>${fmtGm(s.dFromO)} Gm de ti</span></div></div><div><div class="csv">+${extraPct}%</div><div class="csu">desvío</div></div>`;el.appendChild(div);});
-}
-
-function loadProfile(seq){let load=0,maxLoad=0;const loads=[];seq.forEach(n=>{if(n.role==='pickup')load+=n.scu;else if(n.role==='dropoff')load-=n.scu;loads.push(load);if(load>maxLoad)maxLoad=load;});return{loads,maxLoad};}
-function legGm(a,b){return sysOf(a)===sysOf(b)?dist3(a,b):0;}
-function gatewayLoc(thisSys,fromSys){const id=findLoc(fromSys+' Gateway ('+thisSys+')');return id?locById(id):null;}
-
-async function optimizeMultiSystemAsync(o,dest,nodes,cap){
-  if(!nodes.length)return null;
-  const groups={};nodes.forEach(n=>{(groups[sysOf(n)]=groups[sysOf(n)]||[]).push(n);});
-  const originSys=sysOf(o);
-  const others=Object.keys(groups).filter(s=>s!==originSys);
-  const ordered=[originSys,...others];
-  const sysWithNodes=ordered.filter(s=>groups[s]&&groups[s].length);
-  const lastSys=sysWithNodes[sysWithNodes.length-1];
-  let fullSeq=[o];let feasible=true,jumps=0;let prevSys=originSys;
-  for(let si=0;si<ordered.length;si++){
-    const sys=ordered[si];const gnodes=groups[sys];if(!gnodes||!gnodes.length)continue;
-    let startForOpt;
-    if(sys===originSys&&si===0)startForOpt=o;
-    else{jumps++;const gw=gatewayLoc(sys,prevSys);startForOpt=gw?{...gw}:gnodes[0];}
-    const useDestHere=dest&&sysOf(dest)===sys&&sys===lastSys;
-    const res=await runOptimizeAsync(startForOpt,useDestHere?dest:null,gnodes,cap);
-    if(!res||!res.feasible)feasible=false;
-    let seq=res.seq.slice();
-    if(sys===originSys&&si===0)fullSeq=fullSeq.concat(seq.slice(1));
-    else{seq[0]={...seq[0],role:seq[0].role||'gateway',isJump:true,jumpFrom:prevSys};fullSeq=fullSeq.concat(seq);}
-    prevSys=sys;
-  }
-  let intra=0;for(let i=0;i<fullSeq.length-1;i++)intra+=legGm(fullSeq[i],fullSeq[i+1]);
-  return{seq:fullSeq,dist:intra,jumps,feasible};
-}
-
 async function calculate(){
   const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;const dLocId=$('d-loc')?.value;const dest=useDest&&dLocId?{...locById(dLocId),role:'dest'}:null;
   const cap=getCap();const nodes=buildNodes();
@@ -3014,25 +1710,63 @@ async function calculate(){
     $('step-list').innerHTML='<div class="empty">Add missions to calculate the route.</div>';
     $('share-btn').style.display='none';lastRouteResult=null;return;
   }
+  
+  // Extraer valores de la UI
+  const driveKey = $('drive-sel')?.value || 'Atlas';
+  const optMode = $('opt-mode-sel')?.value || 'time';
+  const drive = QUANTUM_DRIVES[driveKey] || { speed: 0.18, fuelConsumption: 1.0 };
+  const shipObj = SHIPS.find(x=>x.name===$('ship-sel').value) || {qFuel: 2500};
+  const qFuelMax = shipObj.qFuel;
+
   const calcBtn=$('calc-btn');const originalText=calcBtn.innerHTML;
   calcBtn.innerHTML='<i class="ti ti-loader spin"></i> Calculating...';calcBtn.style.pointerEvents='none';calcBtn.style.opacity='0.7';
-  const res=await optimizeMultiSystemAsync(o,dest,nodes,cap);
+  
+  // Ejecutamos la "Mezcla Maestra"
+  const res=await optimizeMultiSystemAsync(o,dest,nodes,cap,drive.speed,optMode);
+  
   calcBtn.innerHTML=originalText;calcBtn.style.pointerEvents='auto';calcBtn.style.opacity='1';
   $('output').style.display='block';
+  
   const{loads,maxLoad}=loadProfile(res.seq);
   const totalScu=nodes.filter(n=>n.role==='dropoff').reduce((a,n)=>a+n.scu,0);
   const jumps=res.jumps||0;
-  $('alert-box').innerHTML=(!res.feasible||maxLoad>cap)?`<div class="alert bad"><i class="ti ti-alert-triangle"></i> Peak load ${maxLoad} SCU exceeds your hold (${cap} SCU). Check or use a larger ship.</div>`:`<div class="alert ok"><i class="ti ti-circle-check"></i> All fits: max load ${maxLoad} de ${cap} SCU${deliveryMode!=='full'?` (modo ${partialPct}%)`:' (100%)'}.${jumps>0?` Includes ${jumps} jump${jumps!==1?'s':''} entre sistemas.`:''}</div>`;
-  $('stats').innerHTML=`<div class="stat"><div class="sv">${fmtGm(res.dist)}</div><div class="sl">Gm intra-system</div></div><div class="stat"><div class="sv">${jumps}</div><div class="sl">quantum jumps</div></div><div class="stat ${maxLoad>cap?'danger':''}"><div class="sv">${maxLoad}<span style="font-size:11px;color:var(--c-text-3)">/${cap}</span></div><div class="sl">SCU peak / hold</div></div><div class="stat"><div class="sv">${res.seq.filter(n=>n.role==='dropoff').length}</div><div class="sl">deliveries</div></div>`;
-  // rv visual — now using rv2 (renderRouteVisual2 called below)
+
+  // VERIFICACIÓN DE COMBUSTIBLE
+  let fuelWarnings = 0;
+  res.seq.forEach((n, i) => {
+      if(i < res.seq.length - 1) {
+         const d = dist3(res.seq[i], res.seq[i+1]);
+         // Aproximación del consumo para escalar a números legibles (ajuste base juego)
+         const fuelNeeded = d * (drive.fuelConsumption || drive.fuel || 1.0) * 40; 
+         if (fuelNeeded > qFuelMax) fuelWarnings++;
+      }
+  });
+
+  const mins = Math.floor(res.timeSeconds / 60);
+  const secs = Math.round(res.timeSeconds % 60);
+
+  let alertHTML = '';
+  if(!res.feasible || maxLoad>cap) {
+    alertHTML = `<div class="alert bad"><i class="ti ti-alert-triangle"></i> Peak load ${maxLoad} SCU exceeds your hold (${cap} SCU). Check or use a larger ship.</div>`;
+  } else if (fuelWarnings > 0) {
+    alertHTML = `<div class="alert bad" style="background:var(--c-warn-bg); color:var(--c-warn-text);"><i class="ti ti-flame"></i> ALERTA DE COMBUSTIBLE: Con el motor ${driveKey} no tienes suficiente Quantum Fuel para un tramo de esta ruta. ¡Deberás recargar en una estación intermedia!</div>`;
+  } else {
+    alertHTML = `<div class="alert ok"><i class="ti ti-circle-check"></i> Ruta Optimizada por ${optMode==='time'?'Menor Tiempo ⏳':'Menor Distancia 📏'}. Max load ${maxLoad}/${cap} SCU.</div>`;
+  }
+  
+  $('alert-box').innerHTML=alertHTML;
+  $('stats').innerHTML=`
+    <div class="stat"><div class="sv">${fmtDist(res.dist)}</div><div class="sl">Distancia Total</div></div>
+    <div class="stat"><div class="sv">${mins}m ${secs}s</div><div class="sl">Tiempo Estimado</div></div>
+    <div class="stat ${maxLoad>cap?'danger':''}"><div class="sv">${maxLoad}<span style="font-size:11px;color:var(--c-text-3)">/${cap}</span></div><div class="sl">SCU peak / hold</div></div>
+    <div class="stat"><div class="sv">${res.seq.filter(n=>n.role==='dropoff').length}</div><div class="sl">entregas</div></div>`;
+  
   $('route-vis').innerHTML='';
   $('steps-lbl').innerHTML=`<span>STEP BY STEP — ${res.seq.length} stops · ${totalScu} SCU delivered${jumps>0?` · ${jumps} jump${jumps!==1?'s':''}`:''}</span>`;
-  // Build step-list with cargo manifest style
+  
   const cap2=cap;
   function scBoxes(n){
-    // Generar lista de cajas para este nodo
     if(!n.boxDetail)return[];
-    // Parsear boxDetail "2×4 SCU + 1×2 SCU" → [{n:2,size:4},{n:1,size:2}]
     return(n.boxDetail||'').split(/\s*\+\s*/).map(s=>{
       const m=s.match(/(\d+)×(\d+)/);
       return m?{n:parseInt(m[1]),size:parseInt(m[2])}:null;
@@ -3042,36 +1776,15 @@ async function calculate(){
   const steps=res.seq;
   let stepHtml='';
   steps.forEach((n,i)=>{
-    const isO=i===0;
-    const isDest=n.role==='dest';
-    const prev=i>0?steps[i-1]:null;
-    const isJump=prev&&sysOf(prev)!==sysOf(n);
-    const seg=i>0?legGm(prev,n):0;
-    const loadNow=loads[i];
-    const isLast=i===steps.length-1;
-    const isNearest=n._autoNearest||n._isNearest;
-
-    // Tipo de nodo
+    const isO=i===0;const isDest=n.role==='dest';const prev=i>0?steps[i-1]:null;
+    const isJump=prev&&sysOf(prev)!==sysOf(n);const seg=i>0?legGm(prev,n):0;
+    const loadNow=loads[i];const isLast=i===steps.length-1;const isNearest=n._autoNearest||n._isNearest;
     let dotCls,headCls,iconCls,iconName,dotTxt,scuLabel='';
-    if(isO||isDest){
-      dotCls='dot-o';headCls='origin';iconCls='origin';
-      iconName='ti-map-pin';dotTxt='•';
-    }else if(n.role==='pickup'){
-      dotCls='dot-p';headCls='load';iconCls='load';
-      iconName='ti-package-import';dotTxt='M'+n.mnum;
-      scuLabel=n.scu+' SCU to load';
-    }else if(n.role==='dropoff'){
-      dotCls=isNearest?'dot-dn':'dot-d';
-      headCls=isNearest?'deliver-near':'deliver';
-      iconCls=isNearest?'deliver-near':'deliver';
-      iconName='ti-package-export';dotTxt='M'+n.mnum;
-      scuLabel=n.scu+' SCU to deliver';
-    }else{
-      dotCls='dot-j';headCls='jump-hd';iconCls='jump';
-      iconName='ti-arrows-transfer-up';dotTxt='↗';
-    }
+    if(isO||isDest){dotCls='dot-o';headCls='origin';iconCls='origin';iconName='ti-map-pin';dotTxt='•';}
+    else if(n.role==='pickup'){dotCls='dot-p';headCls='load';iconCls='load';iconName='ti-package-import';dotTxt='M'+n.mnum;scuLabel=n.scu+' SCU to load';}
+    else if(n.role==='dropoff'){dotCls=isNearest?'dot-dn':'dot-d';headCls=isNearest?'deliver-near':'deliver';iconCls=isNearest?'deliver-near':'deliver';iconName='ti-package-export';dotTxt='M'+n.mnum;scuLabel=n.scu+' SCU to deliver';}
+    else{dotCls='dot-j';headCls='jump-hd';iconCls='jump';iconName='ti-arrows-transfer-up';dotTxt='↗';}
 
-    // Dot color CSS inline
     const dotColors={
       'dot-o':'background:color-mix(in srgb,var(--c-blue) 15%,var(--c-bg-1));color:var(--c-blue);border:2px solid color-mix(in srgb,var(--c-blue) 40%,transparent)',
       'dot-p':'background:color-mix(in srgb,var(--c-blue) 15%,var(--c-bg-1));color:var(--c-blue);border:2px solid var(--c-blue)',
@@ -3081,7 +1794,6 @@ async function calculate(){
     };
     const dotStyle=dotColors[dotCls]||'';
 
-    // Subtítulo del head
     let sub='';
     if(isO)sub='Your starting position'+(n.sys?` · ${n.sys}`:'');
     else if(isDest)sub='Destination';
@@ -3089,12 +1801,10 @@ async function calculate(){
     else if(n.role==='dropoff')sub=`Deliver ${n.material||''}${seg>0?' · +'+fmtDist(seg):''}`;
     else if(isJump)sub=`Quantum jump → ${sysOf(n)}`;
 
-    // EFE badge
     const efeBadge=n.pad==='efe'?'<span class="pad-ext" style="font-size:10px">EFE</span>':
                    n.pad==='int'?'<span class="pad-int" style="font-size:10px">Hangar</span>':'';
     const nearBadge=isNearest?'<span style="background:color-mix(in srgb,var(--c-green) 15%,transparent);color:var(--c-green);border-radius:4px;padding:2px 6px;font-size:10px;font-weight:500">★ nearest</span>':'';
 
-    // Cajas
     const boxes=scBoxes(n);
     let boxesHtml='';
     if(boxes.length&&(n.role==='pickup'||n.role==='dropoff')){
@@ -3108,7 +1818,6 @@ async function calculate(){
       </div>`;
     }
 
-    // Hold bar
     const pct=Math.min(100,Math.round(loadNow/cap2*100));
     const holdHtml=`<div class="sc-hold">
       <div class="sc-hold-lbl">Hold after</div>
@@ -3120,6 +1829,16 @@ async function calculate(){
     const bodyHtml=(boxesHtml&&(n.role==='pickup'||n.role==='dropoff'))
       ?`<div class="sc-body">${boxesHtml}${holdHtml}</div>`:'';
 
+    // Comprobación de fuel visual para el segmento
+    let fuelWarningBadge = '';
+    if (i > 0 && prev) {
+       const d = dist3(prev, n);
+       const fuelNeeded = d * (drive.fuelConsumption || drive.fuel || 1.0) * 40; 
+       if (fuelNeeded > qFuelMax) {
+           fuelWarningBadge = `<span style="background:var(--c-err-bg); color:var(--c-err-text); font-size:9px; padding: 2px 6px; border-radius: 4px; margin-left: 6px;"><i class="ti ti-flame"></i> Falta Fuel</span>`;
+       }
+    }
+
     stepHtml+=`<div class="step-wrap">
       <div class="step-left">
         <div class="step-dot" style="${dotStyle}">${dotTxt}</div>
@@ -3129,7 +1848,7 @@ async function calculate(){
         <div class="sc-head ${headCls}">
           <div class="sc-icon ${iconCls}"><i class="ti ${iconName}" aria-hidden="true"></i></div>
           <div class="sc-text">
-            <div class="sc-name">${n.label}${efeBadge}${nearBadge}</div>
+            <div class="sc-name">${n.label}${efeBadge}${nearBadge}${fuelWarningBadge}</div>
             <div class="sc-sub">${sub}</div>
           </div>
           ${scuLabel?`<div class="sc-scu"><div class="sc-scu-val">${n.scu}</div><div class="sc-scu-lbl">${n.role==='pickup'?'to load':'to deliver'}</div></div>`:''}
@@ -3141,1062 +1860,38 @@ async function calculate(){
   });
   $('step-list').innerHTML=stepHtml;
   lastRouteResult=res.seq;const sb=$('share-btn');if(sb)sb.style.display='inline-block';
-  renderRouteVisual2(res.seq,cap);
+  renderRouteVisual2(res.seq,loads,cap);
   renderRouteMap(res.seq);
   initChecklist(res.seq);
   renderCommodityGuide(res.seq);
 }
 
-function refreshBoxes(){
-  const gt=$('grand-total'),tbl=$('com-table');
-  $('boxes-hint').textContent=deliveryMode==='full'?`100% load · boxes ${boxMode==='single'?'de '+boxSize:'auto 1–'+maxBox()}`:`load ${partialPct}% · boxes ${boxMode==='single'?'de '+boxSize:'auto 1–'+maxBox()}`;
-  if(!missions.length){gt.innerHTML='<div><span class="gtv">0</span> <span class="gtl">boxes — add missions</span></div>';tbl.innerHTML='<div class="empty">No missions.</div>';$('box-note').innerHTML='';return;}
-  $('size-wrap').style.display=boxMode==='single'?'block':'none';
-  let grandBoxes=0,grandScu=0;tbl.innerHTML='';
-  missions.forEach((m,mi)=>{
-    const card=document.createElement('div');card.className='com-card';let missionBoxes=0,missionScu=0,groups='';
-    if(deliveryMode==='full'){
-      const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,loc:p.locId});byMat[p.material].scu+=p.scu;});
-      Object.entries(byMat).forEach(([mat,info])=>{
-        const amt=info.scu;missionScu+=amt;let boxesN,detail;
-        if(boxMode==='single'){const r=boxesForSingle(amt,boxSize);boxesN=r.n;detail=r.exact?'exacto':`${r.n}×${boxSize} (sobran ${fmt(r.rem)})`;}
-        else{const used=boxesOptimal(amt);boxesN=used.reduce((a,u)=>a+u.n,0);detail=used.map(u=>`${u.n}×${u.size}`).join(' · ');}
-        missionBoxes+=boxesN;
-        const dests=m.deliveries.map(d=>{const l=locById(d.locId);return l?l.label:'?';}).join(' · ');
-        groups+=`<div class="cgroup"><div class="cgroup-head"><span class="cgroup-mat">${mat}</span><span class="cgroup-box"><span class="x">×</span>${boxesN}</span></div><div class="cgroup-detail">${fmt(amt)} SCU · ${detail}</div><div class="cgroup-sub"><span class="d"></span>deliver to: ${dests}</div></div>`;
-      });
-    }else{
-      const plan=bestCommodityPlan(m);
-      if(plan&&plan.best){const b=plan.best;missionScu+=b.amt;let boxesN,detail;if(boxMode==='single'){const r=boxesForSingle(b.amt,boxSize);boxesN=r.n;detail=r.exact?'exacto':`${r.n}×${boxSize} (sobran ${fmt(r.rem)})`;}else{const used=boxesOptimal(b.amt);boxesN=used.reduce((a,u)=>a+u.n,0);detail=used.map(u=>`${u.n}×${u.size}`).join(' · ');}missionBoxes+=boxesN;groups+=`<div class="cgroup"><div class="cgroup-head"><span class="cgroup-mat">${b.mat} <span style="font-size:9px;color:#378ADD">(optimal ${partialPct}%)</span></span><span class="cgroup-box"><span class="x">×</span>${boxesN}</span></div><div class="cgroup-detail">${fmt(b.amt)} SCU · ${detail}</div><div class="cgroup-sub"><span class="d"></span>deliver to: ${b.nd?b.nd.label:'?'} (nearest)</div></div>`;}
-    }
-    grandBoxes+=missionBoxes;grandScu+=missionScu;
-    card.innerHTML=`<div class="com-head"><div><span class="mhead-num">${mi+1}</span><span class="com-name">Mission ${mi+1}</span></div><span class="com-scu">${missionBoxes} boxes · ${fmt(missionScu)} SCU</span></div>${groups}`;
-    tbl.appendChild(card);
-  });
-  gt.innerHTML=`<div><span class="gtv">${grandBoxes}</span> <span class="gtl">total boxes</span></div><div><span class="gtv">${fmt(grandScu)}</span> <span class="gtl">SCU to load</span></div><div><span class="gtv">${missions.length}</span> <span class="gtl">missions</span></div>`;
-  $('box-note').innerHTML=deliveryMode==='full'?`<i class="ti ti-info-circle"></i> 100% mode: boxes for full load, by commodity. Max box in ${currentRank}: ${maxBox()} SCU.`:`<i class="ti ti-info-circle"></i> Mode ${partialPct}%: optimal commodity only (fewest boxes), delivered to nearest stop. ${boxMode==='optimal'?'Auto-packing combining boxes 1 to '+maxBox()+' SCU.':'Fixed size of '+boxSize+' SCU.'}`;
-}
-
-function switchTab(t){['loop','route','boxes'].forEach(x=>{$('tab-'+x).classList.toggle('on',x===t);$(x+'-tab').style.display=x===t?'block':'none';});if(t==='boxes')refreshBoxes();if(t==='loop'){renderXP();renderRankGuide();renderFarmCombos();}}
-function setMode(mode){
-  deliveryMode=mode;
-  $('mode-full').classList.toggle('on',mode==='full');
-  $('mode-partial').classList.toggle('on',mode==='partial');
-  const pl=$('pct-line');if(pl)pl.classList.toggle('dim',mode==='full');
-  renderMissions();updateXpHint();
-}
-
-
-// ═══════════════════════════════════════════════════════
-// AUTO-UPDATE: caché inteligente con localStorage
-// Arranque instantáneo con datos base + actualización
-// silenciosa desde la API cada CACHE_DAYS días.
-// ═══════════════════════════════════════════════════════
-const SC_API         = 'https://api.star-citizen.wiki/api';
-const SC_FREIGHT     = 'Commodity Trading - Freight Elevator';
-const SC_CACHE_DAYS  = 7;
-const SC_CACHE_VER   = 'v2'; // cambiar si el formato de caché cambia
-
-async function fetchAllPagesSC(endpoint, pageSize=100){
-  const all=[];let page=1,last=1;
-  do{
-    const url=`${SC_API}/${endpoint}?page%5Bnumber%5D=${page}&page%5Bsize%5D=${pageSize}`;
-    const r=await fetch(url,{headers:{Accept:'application/json','User-Agent':'sc-hauling-cache/1.0'}});
-    if(!r.ok)throw new Error(`HTTP ${r.status}`);
-    const j=await r.json();last=j.meta?.last_page||1;
-    all.push(...(j.data||[]));page++;
-  }while(page<=last);
-  return all;
-}
-
-async function autoUpdateData(){
-  const VER_KEY   = 'sc_cache_ver';
-  const TIME_KEY  = 'sc_api_last_update';
-  const SHIPS_KEY = 'sc_api_ships';
-  const MATS_KEY  = 'sc_api_mats';
-  const LOCS_KEY  = 'sc_api_locs';
-
-  // ── 1. Load caché local (instantáneo) ─────────────────
-  try{
-    const ver=localStorage.getItem(VER_KEY);
-    if(ver===SC_CACHE_VER){
-      const cs=localStorage.getItem(SHIPS_KEY);
-      const cm=localStorage.getItem(MATS_KEY);
-      if(cs)SHIPS=JSON.parse(cs);
-      if(cm)MATERIALS=JSON.parse(cm);
-      if(cs||cm)console.info('[SC] Ships and commodities loaded from local cache');
-    }
-  }catch(e){console.warn('[SC] Caché local no disponible');}
-
-  // ── 2. ¿Toca actualizar? ─────────────────────────────────
-  const now=Date.now();
-  const last=parseInt(localStorage.getItem(TIME_KEY)||'0');
-  const diff=now-last;
-  const limite=SC_CACHE_DAYS*24*60*60*1000;
-  if(diff<limite&&localStorage.getItem(SHIPS_KEY)){
-    const dias=Math.round(diff/86400000);
-    console.info(`[SC] Próxima actualización en ${SC_CACHE_DAYS-dias} día(s)`);
-    return false;
-  }
-
-  // ── 3. Update desde la API en segundo plano ──────────
-  console.info('[SC] Actualizando datos desde api.star-citizen.wiki…');
-  setBadge('sync','Actualizando API…');
-
-  let actualizados=false;
-  try{
-    // Naves
-    const vData=await fetchAllPagesSC('vehicles',50);
-    const nuevasNaves=vData
-      .filter(v=>(v.cargo_capacity??0)>0)
-      .map(v=>({name:v.name,scu:v.cargo_capacity}))
-      .sort((a,b)=>a.scu-b.scu);
-    nuevasNaves.push({name:'Personalizado',scu:0});
-
-    // Commodities
-    const cData=await fetchAllPagesSC('commodities',100);
-    const nuevosMats=['— Select commodity —',
-      ...cData
-        .filter(c=>c.has_default_cargo_containers&&(c.box_sizes_scu||[]).some(s=>s>=1))
-        .map(c=>c.name)
-        .sort()
-    ];
-
-    // Ubicaciones — TODAS las útiles (con CT, freight elevator, o missions activas)
-    const EXCL_CLASS=new Set(['Moon','Planet','Star','Asteroid','Asteroid_ValidQT','AsteroidBelt','JumpPoint']);
-    const FREIGHT_NAME='Commodity Trading - Freight Elevator';
-    const CT_NAME='Commodity Trading';
-    const SYS_MAP={'Stanton System':'Stanton','Pyro System':'Pyro','Nyx System':'Nyx'};
-    const lData=await fetchAllPagesSC('locations',100);
-    const nuevasLocs={};
-    for(const loc of lData){
-      const sys=SYS_MAP[loc.system];
-      if(!sys||loc.hide_in_starmap||loc.hide_in_world)continue;
-      const cls=loc.type?.classification||'';
-      if(!cls||EXCL_CLASS.has(cls))continue;
-      const name=(loc.name||'').trim();
-      if(!name||name.includes('<= UNINITIALIZED =>'))continue;
-      const amenities=loc.amenities||[];
-      const hasFE=amenities.some(a=>a.name===FREIGHT_NAME||a.name?.includes('Freight Elevator'));
-      const hasCT=amenities.some(a=>a.name?.startsWith(CT_NAME));
-      const hasMis=(loc.missionssion_count||0)>0;
-      if(!hasFE&&!hasCT&&!hasMis)continue;
-      const parent=loc.parent?.name||sys;
-      if(!nuevasLocs[sys])nuevasLocs[sys]={};
-      if(!nuevasLocs[sys][parent])nuevasLocs[sys][parent]=[];
-      nuevasLocs[sys][parent].push({name,type:cls.toLowerCase(),missions:loc.missionssion_count||0});
-    }
-    // Ordenar por missions
-    for(const s of Object.values(nuevasLocs))
-      for(const g of Object.values(s))
-        g.sort((a,b)=>b.missions-a.missions);
-
-    const totalLocs=Object.values(nuevasLocs).reduce((t,s)=>t+Object.values(s).reduce((a,g)=>a+g.length,0),0);
-    console.info(`[SC] ${totalLocs} ubicaciones descargadas`);
-
-    // Guardar en caché
-    localStorage.setItem(SHIPS_KEY, JSON.stringify(nuevasNaves));
-    localStorage.setItem(MATS_KEY,  JSON.stringify(nuevosMats));
-    if(totalLocs>50)localStorage.setItem(LOCS_KEY, JSON.stringify(nuevasLocs));
-    localStorage.setItem(TIME_KEY,  now.toString());
-    localStorage.setItem(VER_KEY,   SC_CACHE_VER);
-
-    // Aplicar en memoria (locs se aplican en el siguiente reload para no romper el DATA actual)
-    SHIPS     = nuevasNaves;
-    MATERIALS = nuevosMats;
-    actualizados=true;
-    const locsMsg=totalLocs>50?` · ${totalLocs} ubicaciones`:'';
-    console.info(`[SC] ✓ ${nuevasNaves.length-1} naves, ${nuevosMats.length-1} commodities${locsMsg}`);
-    setBadge('ok',`Datos actualizados${locsMsg}`);
-  }catch(e){
-    console.warn('[SC] Error en actualización API (usando datos base):', e.message);
-    setBadge('error','API no disponible — usando datos base');
-    setTimeout(()=>setBadge('hidden',''),4000);
-  }
-  return actualizados;
-}
-
-function setBadge(state,msg){
-  const b=document.getElementById('api-badge');
-  if(!b)return;
-  const colors={sync:'#F5A623',ok:'#1D9E75',error:'#E84040',hidden:'transparent'};
-  b.textContent=msg;
-  b.style.background=colors[state]||'transparent';
-  b.style.color=state==='hidden'?'transparent':'#fff';
-  b.style.display=state==='hidden'?'none':'inline-block';
-  if(state==='ok')setTimeout(()=>setBadge('hidden',''),5000);
-}
-
-// Forzar actualización inmediata (botón de pánico post-parche)
-async function forceUpdate(){
-  const btn=document.getElementById('btn-refresh');
-  const icon=document.getElementById('refresh-icon');
-  if(btn)btn.disabled=true;
-  if(icon)icon.classList.add('spin');
-  setBadge('sync','Actualizando…');
-  // Borrar el timestamp para que autoUpdateData descargue sin esperar
-  try{localStorage.removeItem('sc_api_last_update');}catch(e){}
-  const ok=await autoUpdateData();
-  if(icon)icon.classList.remove('spin');
-  if(btn)btn.disabled=false;
-  if(ok){
-    if(icon){icon.className='ti ti-check';setTimeout(()=>{icon.className='ti ti-refresh';},3000);}
-    poblarNaves();
-    renderMissions();
-  }
-}
-
-function poblarNaves(){
-  const shipSel=$('ship-sel');
-  const prev=shipSel.value||'Argo RAFT';
-  shipSel.innerHTML='';
-  SHIPS.forEach(s=>{
-    const o=document.createElement('option');
-    o.value=s.name;
-    o.textContent=s.scu>0?`${s.name} — ${s.scu} SCU`:s.name;
-    shipSel.appendChild(o);
-  });
-  // Mantener la nave seleccionada si sigue existiendo, si no → Argo RAFT
-  shipSel.value=SHIPS.some(x=>x.name===prev)?prev:'Argo RAFT';
-  const nav=SHIPS.find(x=>x.name===shipSel.value);
-  if(nav&&nav.scu>0){$('cap-input').value=nav.scu;$('cap-show').textContent=nav.scu;}
-  // Update también el campo de búsqueda
-  const shipInp=document.getElementById('ship-search-inp');
-  if(shipInp)shipInp.value=shipSel.value||'';
-}
-
-// ══════════════════════════════════════════════════════════
-// INGRESO INTELIGENTE
-// ══════════════════════════════════════════════════════════
-let smartOcrReady=false, Tesseract=null;
-
-// ── Helpers de búsqueda fuzzy de locs ──────────────────────
-function findLocFuzzy(q){
-  if(!q)return null;
-  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
-
-  // Detectar sistema de la query para priorizar búsqueda
-  let hintSys=null;
-  if(/\bpyro\b/i.test(q)) hintSys='Pyro';
-  else if(/\bstanton\b/i.test(q)) hintSys='Stanton';
-  else if(/\bnyx\b/i.test(q)) hintSys='Nyx';
-
-  // Limpiar sufijos de planet/sistema del nombre
-  let cleaned=q
-    .replace(/\s+at\s+the\s+L\d+\s+Lagrange.*$/i,'')
-    .replace(/\s+(?:L[1-5]\s+)?Lagrange.*$/i,'')
-    .replace(/\s+on\s+(?:Pyro|Stanton|Nyx)\s*(?:[IVX]+|[0-9]+)?\.?\s*[ab]?$/i,'')
-    .replace(/\s+\((?:Pyro|Stanton|Nyx)\s*[IVX0-9]*\)$/i,'')
-    .replace(/\bPyro\s+[IVX]+[ab]?\b/gi,'')
-    .replace(/\bPyro\s+[IVX]+\b/gi,'')
-    .replace(/[.,;]+$/,'')
-    .trim();
-
-  const nq=norm(cleaned);
-  if(!nq||nq.length<2)return null;
-
-  // Función de búsqueda ordenada por sistema (Pyro primero si hay hint)
-  const sysOrder=hintSys
-    ? [hintSys,...Object.keys(DATA).filter(s=>s!==hintSys)]
-    : Object.keys(DATA);
-
-  const allLocs=[];
-  for(const sysName of sysOrder)
-    for(const z of Object.values(DATA[sysName]||{}))
-      for(const l of z.locs)
-        allLocs.push({...l,_sys:sysName});
-
-  // 1. Exacto
-  for(const l of allLocs)
-    if(norm(l.label)===nq)return l.id;
-
-  // 2. El label empieza con la query (ej: "Seer's Canyon" → "Seer's Canyon (Vatra)")
-  let best=null,bestScore=0,bestSysMatch=false;
-  for(const l of allLocs){
-    const nl=norm(l.label);
-    if(nl.startsWith(nq)&&nq.length>=bestScore){
-      const sysMatch=!hintSys||l._sys===hintSys;
-      if(nq.length>bestScore||(nq.length===bestScore&&sysMatch&&!bestSysMatch)){
-        bestScore=nq.length;best=l.id;bestSysMatch=sysMatch;
-      }
-    }
-  }
-  if(best)return best;
-
-  // 3. Query contenida en el label (match parcial)
-  bestScore=0;bestSysMatch=false;
-  for(const l of allLocs){
-    const nl=norm(l.label);
-    if(nl.includes(nq)&&nq.length>=bestScore){
-      const sysMatch=!hintSys||l._sys===hintSys;
-      if(nq.length>bestScore||(nq.length===bestScore&&sysMatch&&!bestSysMatch)){
-        bestScore=nq.length;best=l.id;bestSysMatch=sysMatch;
-      }
-    }
-  }
-  if(best)return best;
-
-  // 4. Búsqueda por palabras significativas (solo palabras >4 chars)
-  // IMPORTANTE: no buscar palabras genéricas que causan falsos positivos
-  const stopWords=new Set(['from','the','and','for','with','that','this','on','at','in','of']);
-  const words=nq.split(/\s+/).filter(w=>w.length>4&&!stopWords.has(w));
-  bestScore=0;
-  for(const word of words){
-    for(const l of allLocs){
-      const nl=norm(l.label);
-      // Solo match si la palabra está como palabra completa o al start de una palabra
-      const wordRegex=new RegExp('\\b'+word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
-      if(wordRegex.test(nl)&&word.length>bestScore){
-        const sysMatch=!hintSys||l._sys===hintSys;
-        if(word.length>bestScore||(word.length===bestScore&&sysMatch)){
-          bestScore=word.length;best=l.id;
-        }
-      }
-    }
-    if(best)break;
-  }
-
-  return best;
-}
-
-function findMatFuzzy(q){
-  if(!q)return MATERIALS[1]||MATERIALS[0];
-  const nq=q.toLowerCase();
-  return MATERIALS.find(m=>m.toLowerCase().includes(nq))||MATERIALS[1]||MATERIALS[0];
-}
-
-// ── Crear mission desde datos parseados ─────────────────────
-function createMissionFromParsed(parsed){
-  if(missions.length>=MAX_MISSIONS){
-    setSmartStatus('text','err',`Max ${MAX_MISSIONS} contracts active`);return false;
-  }
-
-  // Resolver pickups — puede haber varios (ej: "Canard View y Sacren's Plot")
-  // Deduplicar pickups — el parser puede extraer el mismo lugar dos veces
-  const pickIds=[...new Set((parsed.pickups||[]).map(p=>findLocFuzzy(p)).filter(Boolean))];
-  // Fallback si no se encontró ningún pickup: usar posición actual
-  const fallbackPickId=$('o-loc').value||findLoc('HUR-L2')||STATIONS[0]?.id;
-  const firstPickId=pickIds[0]||fallbackPickId;
-
-  // Resolver deliveries
-  const delivIds=(parsed.deliveries||[]).map(d=>findLocFuzzy(d)).filter(Boolean);
-  const fallbackDelivId=(useDest&&$('d-loc').value)||findLoc('Everus')||findLoc('Gaslight')||STATIONS[1]?.id;
-  const firstDelivId=delivIds[0]||fallbackDelivId;
-
-  const mat=findMatFuzzy(parsed.material)||'— Select commodity —';
-  const scu=Math.max(1,parseInt(parsed.scu)||CONTRACT_RANKS[currentRank]?.typical||64);
-
-  // Construir pickups — uno por ubicación encontrada
-  const pickupsArr=pickIds.length>0
-    ? pickIds.map(id=>({id:++pickSeq,material:mat,scu:Math.round(scu/Math.max(pickIds.length,1)),locId:id}))
-    : [{id:++pickSeq,material:mat,scu:scu,locId:firstPickId}];
-
-  // Construir deliveries
-  const deliveriesArr=delivIds.length>0
-    ? delivIds.map(id=>({id:++delivSeq,locId:id}))
-    : [{id:++delivSeq,locId:firstDelivId}];
-
-  const newM={
-    id:++missionSeq,
-    pickups:pickupsArr,
-    deliveries:deliveriesArr,
-    pay:Math.max(0,parseInt(parsed.pay)||0),
-    startedAt:Date.now(),
-  };
-  missions.push(newM);
-  renderMissions();
-  return true;
-}
-
-// ══════════════════════════════════════════════════════════
-// INGRESO INTELIGENTE (TEXTO E IMAGEN) CON GOOGLE GEMINI
-// ══════════════════════════════════════════════════════════
-
-function setSmartStatus(mode, type, msg) {
-  const el = $(mode === 'text' ? 'smart-text-status' : 'smart-ocr-status');
-  if (!el) return;
-  el.className = 'smart-status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
-  el.innerHTML = type === 'sync' ? `<span class="spin" style="font-size:12px">⟳</span> ${msg}` : msg;
-}
-
-// ── Parseo local rápido (regex) para textos simples ──
-function parseTextLocal(text) {
-  const t = text.toLowerCase();
-  const m = t.match(/^(\d+)\s+([a-záéíóúñ\s]+?)\s+(?:de|from|en)\s+([\w\s]+?)\s+(?:a|to|→|->)\s+([\w\s]+?)(?:\s+[\d,]+)?$/i);
-  if (m) return { scu: parseInt(m[1]), material: m[2].trim(), pickups: [m[3].trim()], deliveries: [m[4].trim()] };
-  const m2 = t.match(/^([\w\s]+?)\s*[→\-]+\s*([\w\s]+?)(?:\s+(\d+)\s+([\w\s]+?))?$/);
-  if (m2) return { scu: parseInt(m2[3]) || 64, material: m2[4]?.trim() || null, pickups: [m2[1].trim()], deliveries: [m2[2].trim()] };
-  return null;
-}
-
-// ── Gestión de API Key de Gemini ──
-function getGeminiKey() {
-  let key = localStorage.getItem('sc_gemini_key');
-  if (!key) {
-    key = prompt(
-      "🤖 LECTOR AUTOMÁTICO DE CONTRATOS (GEMINI)\n\n" +
-      "1. Entra a: aistudio.google.com\n" +
-      "2. Inicia sesión con Google y haz clic en 'Get API Key'.\n" +
-      "3. Pega esa clave aquí abajo:\n\n" +
-      "(Tu clave se guarda SOLO en tu navegador, es 100% seguro)."
-    );
-    if (key) {
-      key = key.trim();
-      localStorage.setItem('sc_gemini_key', key);
-    }
-  }
-  return key;
-}
-
-function resetGeminiKey() {
-  localStorage.removeItem('sc_gemini_key');
-  alert("Clave borrada. Se te pedirá una nueva la próxima vez que proceses un contrato.");
-}
-
-// ── PARSEO DE TEXTO MANUAL (Input) ──
-async function parseTextInput(text) {
-  if (!text.trim()) return;
-  setSmartStatus('text', 'sync', 'Procesando contrato...');
-  $('smart-parse-btn').disabled = true;
-
-  try {
-    // 1. Intentar resolverlo localmente si el formato es muy simple
-    const local = parseTextLocal(text);
-    if (local && local.pickups?.length) {
-      createMissionFromParsed(local);
-      $('smart-text-input').value = '';
-      setSmartStatus('text', 'ok', `✓ Contrato creado (Parseo Local)`);
-      $('smart-parse-btn').disabled = false;
-      return;
-    }
-
-    // 2. Si es complejo, usar Gemini
-    const apiKey = getGeminiKey();
-    if (!apiKey) throw new Error("Se requiere API Key de Gemini.");
-
-    const promptText = 'Extract data from this Star Citizen hauling contract text.\n' +
-      'Return ONLY valid JSON, no markdown.\n' +
-      '{"scu":NUMBER,"material":"STRING","pickups":["loc1","loc2"],"deliveries":["loc1"],"pay":NUMBER}\n\n' +
-      'Text: ' + text.slice(0, 800).replace(/`/g, "'");
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: promptText }] }],
-        generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
-      })
-    });
-
-    if (!res.ok) {
-      if (res.status === 400 || res.status === 403) localStorage.removeItem('sc_gemini_key');
-      throw new Error('API Error: ' + res.status);
-    }
-
-    const data = await res.json();
-    const parsed = JSON.parse((data.candidates?.[0]?.content?.parts?.[0]?.text || '{}').trim());
-
-    if (createMissionFromParsed(parsed)) {
-      $('smart-text-input').value = '';
-      setSmartStatus('text', 'ok', `✓ Contrato creado — ${parsed.scu || '?'} SCU ${parsed.material || ''}`);
-    } else {
-      setSmartStatus('text', 'err', 'No se detectó un formato válido.');
-    }
-  } catch (e) {
-    setSmartStatus('text', 'err', 'Error: ' + e.message);
-  } finally {
-    $('smart-parse-btn').disabled = false;
-  }
-}
-
-// ── PARSEO DE IMAGENES (OCR) ──
-async function runOCR(imageSource) {
-  const apiKey = getGeminiKey();
-  if (!apiKey) {
-    setSmartStatus('ocr', 'err', 'Se requiere una API Key para leer la imagen.');
-    return;
-  }
-
-  setSmartStatus('ocr', 'sync', 'Analizando contrato con Gemini Vision...');
-  $('smart-parse-btn').disabled = true;
-
-  try {
-    const base64Data = imageSource.split(',')[1];
-    const mediaType = imageSource.split(';')[0].split(':')[1] || 'image/png';
-
-    const promptText = 'You are an AI assistant helping a Star Citizen player. ' +
-      'Look at this hauling contract screenshot and extract the data into pure JSON format. ' +
-      'Return ONLY valid JSON, no markdown formatting like ```json, just the raw object.\n\n' +
-      '{"scu":NUMBER,"material":"STRING","pickups":["loc1"],"deliveries":["loc1","loc2"],"pay":NUMBER}\n\n' +
-      'Rules:\n' +
-      '- scu: Look for "X SCU or smaller" and extract X.\n' +
-      '- material: The commodity name.\n' +
-      '- pickups: Array of pickup locations (exact names, ignore system/planet suffixes).\n' +
-      '- deliveries: Array of delivery locations (exact names).\n' +
-      '- pay: Reward in aUEC (digits only). Use 0 if not found.';
-
-    const url = `[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$){apiKey}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: promptText }, { inline_data: { mime_type: mediaType, data: base64Data } }] }],
-        generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
-      })
-    });
-
-    if (!res.ok) {
-      if (res.status === 400 || res.status === 403) {
-        localStorage.removeItem('sc_gemini_key');
-        throw new Error('API Key inválida. Sube la imagen de nuevo para ingresar la clave correcta.');
-      }
-      throw new Error('Error en la API de Google: ' + res.status);
-    }
-    
-    const data = await res.json();
-    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-    const parsed = JSON.parse(rawText.trim());
-    
-    if (createMissionFromParsed(parsed)) {
-      setSmartStatus('ocr', 'ok', `✓ Contrato creado — ${parsed.scu || '?'} SCU ${parsed.material || ''}`);
-    } else {
-      setSmartStatus('ocr', 'err', 'No se pudo leer el contrato. Intenta hacer otra captura.');
-    }
-
-  } catch (e) {
-    console.error('[OCR-AI] Error:', e);
-    setSmartStatus('ocr', 'err', 'Error: ' + e.message);
-  } finally {
-    $('smart-parse-btn').disabled = false;
-  }
-}
-
-function showOCRPreview(file) {
-  if (!file) return;
-  setSmartStatus('ocr', 'sync', 'Cargando imagen...');
-
-  const reader = new FileReader();
-  reader.onerror = e => setSmartStatus('ocr', 'err', 'No se pudo leer la imagen');
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = $('ocr-canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      
-      const preview = $('ocr-preview');
-      if (preview) preview.style.display = 'block';
-      
-      runOCR(e.target.result);
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-// ── INICIALIZACIÓN DEL PANEL ──
-function initSmartPanel() {
-  $('smart-parse-btn').addEventListener('click', () => parseTextInput($('smart-text-input').value));
-  $('smart-text-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); parseTextInput($('smart-text-input').value); }
-  });
-
-  const fileInput = document.getElementById('ocr-file-input');
-  if (fileInput) {
-    fileInput.addEventListener('change', e => {
-      const f = e.target.files[0];
-      if (f && f.type.startsWith('image/')) showOCRPreview(f);
-      e.target.value = ''; // Resetear input
-    });
-  }
-
-  const dropZone = document.getElementById('ocr-drop-zone');
-  if (dropZone) {
-    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--c-faction)'; });
-    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
-    dropZone.addEventListener('drop', e => {
-      e.preventDefault(); dropZone.style.borderColor = '';
-      const f = e.dataTransfer?.files?.[0];
-      if (f && f.type.startsWith('image/')) showOCRPreview(f);
-    });
-    dropZone.addEventListener('click', () => fileInput?.click());
-  }
-
-  // Pegar directamente con Ctrl+V
-  document.addEventListener('paste', e => {
-    const items = [...(e.clipboardData?.items || [])];
-    const imgItem = items.find(i => i.type.startsWith('image/'));
-    if (!imgItem) return;
-    
-    // Evitar leer imagen si estás escribiendo texto en un input
-    if (e.target.tagName === 'INPUT' && e.target.type === 'text') return;
-    
-    e.preventDefault();
-    showOCRPreview(imgItem.getAsFile());
-  });
-}
-
-// ══════════════════════════════════════════════════════════
-// TEMA CLARO/OSCURO FORZADO
-// ══════════════════════════════════════════════════════════
-function initTheme(){
-  const saved=localStorage.getItem('sc_theme');
-  if(saved)applyTheme(saved);
-  updateThemeBtn();
-}
-function applyTheme(t){
-  document.documentElement.classList.remove('force-dark','force-light');
-  if(t&&t!=='auto')document.documentElement.classList.add('force-'+t);
-  localStorage.setItem('sc_theme',t||'auto');
-  updateThemeBtn();
-}
-function cycleTheme(){
-  const cur=localStorage.getItem('sc_theme')||'auto';
-  const next={auto:'dark',dark:'light',light:'auto'}[cur]||'auto';
-  applyTheme(next);
-}
-function updateThemeBtn(){
-  const btn=document.getElementById('btn-theme');if(!btn)return;
-  const cur=localStorage.getItem('sc_theme')||'auto';
-  btn.textContent={auto:'🌗',dark:'🌙',light:'☀️'}[cur]||'🌗';
-  btn.title={auto:'Tema: Sistema (clic para oscuro)',dark:'Tema: Oscuro (clic para claro)',light:'Tema: Claro (clic para auto)'}[cur]||'';
-}
-
-// ══════════════════════════════════════════════════════════
-// VISTA COMPACTA
-// ══════════════════════════════════════════════════════════
-let compactMode=false;
-function toggleCompact(){
-  compactMode=!compactMode;
-  document.getElementById('missions-list').classList.toggle('compact-mode',compactMode);
-  const btn=document.getElementById('btn-compact');
-  if(btn){btn.style.color=compactMode?'var(--c-faction)':'var(--c-text-3)';
-    btn.style.borderColor=compactMode?'var(--c-faction)':'var(--c-border-1)';}
-  renderMissions();
-}
-
-// Línea compacta de resumen por mission (solo en compact-mode)
-function buildCompactLine(m){
-  const div=document.createElement('div');div.className='cm-compact-line';
-  const pick=locById(m.pickups[0]?.locId);
-  const deliv=locById(m.deliveries[0]?.locId);
-  const mat=m.pickups[0]?.material;
-  const scu=m.pickups.reduce((s,p)=>s+p.scu,0);
-  const matStr=mat&&mat!=='— Select commodity —'?`<span class="cm-mat-badge" style="font-size:9px">${mat}</span>`:'';
-  div.innerHTML=`
-    <span class="cm-scu-badge" style="font-size:9px">${scu} SCU</span>
-    ${matStr}
-    <span class="cl-loc">${pick?.label||'?'}</span>
-    <span class="cl-arrow">→</span>
-    <span class="cl-loc">${deliv?.label||'?'}</span>
-    ${m.pay>0?`<span class="cm-pay-badge" style="font-size:9px;margin-left:auto">${(m.pay/1000).toFixed(0)}K</span>`:''}`;
-  return div;
-}
-
-// ══════════════════════════════════════════════════════════
-// EXPORTAR / IMPORTAR
-// ══════════════════════════════════════════════════════════
-function exportConfig(){
-  const data={
-    version:'1.0',
-    exported:new Date().toISOString(),
-    prog,
-    savedRoutes,
-    sessionHistory:loadSessionHistory(),
-    settings:{
-      ship:document.getElementById('ship-sel')?.value,
-      theme:localStorage.getItem('sc_theme')||'auto',
-    }
-  };
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`sc-hauling-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  setBadge('ok','Configuración exportada');
-}
-
-function importConfig(file){
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(data.prog){
-        prog=data.prog;
-        saveProg();
-      }
-      if(data.savedRoutes){
-        savedRoutes=data.savedRoutes;
-        saveSavedRoutes();
-        renderSavedRoutes();
-      }
-      if(data.sessionHistory){
-        localStorage.setItem('sc_session_history',JSON.stringify(data.sessionHistory));
-        renderSessionHistory();
-      }
-      if(data.settings?.theme)applyTheme(data.settings.theme);
-      renderXP();renderRankGuide();
-      setBadge('ok','✓ Configuración importada');
-    }catch(err){
-      setBadge('error','Error al importar: '+err.message);
-    }
-  };
-  reader.readAsText(file);
-}
-
-// ══════════════════════════════════════════════════════════
-// STACK RÁPIDO
-// ══════════════════════════════════════════════════════════
-let stackPickupId=null;
-
-function initStackPanel(){
-  const wrap=document.getElementById('stack-pickup-wrap');
-  if(!wrap||wrap.hasChildNodes())return;
-  const locS=createLocSearch(null,(id)=>{stackPickupId=id;});
-  locS.querySelector('.loc-input').placeholder='Type pickup location…';
-  wrap.appendChild(locS);
-
-  document.getElementById('stack-create').addEventListener('click',()=>{
-    const n=Math.min(10,Math.max(1,parseInt(document.getElementById('stack-count').value)||5));
-    const scu=parseInt(document.getElementById('stack-scu').value)||64;
-    const pickId=stackPickupId||$('o-loc').value||findLoc('HUR-L2');
-    const space=MAX_MISSIONS-missions.length;
-    const toCreate=Math.min(n,space);
-    if(!toCreate){setBadge('error','List full (max 10 contracts)');return;}
-    for(let i=0;i<toCreate;i++){
-      const delivId=(useDest&&$('d-loc').value)||findLoc('Everus')||findLoc('Gaslight')||STATIONS[0]?.id;
-      missions.push({
-        id:++missionSeq,
-        pickups:[{id:++pickSeq,material:'— Select commodity —',scu,locId:pickId}],
-        deliveries:[{id:++delivSeq,locId:delivId}],
-        pay:0,startedAt:Date.now()
-      });
-    }
-    renderMissions();
-    document.getElementById('stack-panel').style.display='none';
-    setBadge('ok',`✓ ${toCreate} contratos creados con missionsmo pickup`);
-  });
-}
-
-// ══════════════════════════════════════════════════════════
-// DETECCIÓN DE PARCHE NUEVO
-// ══════════════════════════════════════════════════════════
-async function checkPatchVersion(){
-  try{
-    const PATCH_KEY='sc_game_version';
-    const cached=localStorage.getItem(PATCH_KEY)||'';
-    // Pedir solo 1 location para leer el campo 'version'
-    const r=await fetch(`${SC_API}/locations?page%5Bnumber%5D=1&page%5Bsize%5D=1`,
-      {headers:{Accept:'application/json'}});
-    if(!r.ok)return;
-    const j=await r.json();
-    const current=j.data?.[0]?.version||'';
-    if(!current)return;
-    if(cached&&cached!==current){
-      // Hay parche nuevo
-      const badge=document.getElementById('patch-badge');
-      if(badge){
-        badge.style.display='inline-flex';
-        badge.innerHTML=`<i class="ti ti-refresh" style="font-size:10px;margin-right:3px"></i>Nuevo parche: ${current}`;
-        badge.title=`Antes: ${cached} → Ahora: ${current}. Clic para actualizar datos.`;
-      }
-    }
-    localStorage.setItem(PATCH_KEY,current);
-  }catch(e){/* sin red, ignorar */}
-}
-
-// ══════════════════════════════════════════════════════
-// SHIP AUTOCOMPLETE
-// ══════════════════════════════════════════════════════
-function initShipSearch(){
-  const inp=document.getElementById('ship-search-inp');
-  const drop=document.getElementById('ship-dropdown');
-  const sel=$('ship-sel'); // hidden select for compatibility
-  if(!inp||!drop)return;
-
-  let _active=-1,_results=[],_closeTimer=null;
-
-  function showShips(q){
-    const nq=(q||'').toLowerCase();
-    _results=nq?SHIPS.filter(s=>s.name.toLowerCase().includes(nq)):SHIPS.slice();
-    _active=-1;
-    if(!_results.length){drop.style.display='none';return;}
-    drop.innerHTML=_results.map((s,i)=>`
-      <div class="ship-opt" data-i="${i}">
-        <span>${s.name}</span>
-        <span class="ship-opt-scu">${s.scu>0?s.scu+' SCU':''}</span>
-      </div>`).join('');
-    drop.querySelectorAll('.ship-opt').forEach(el=>{
-      el.addEventListener('mousedown',e=>{e.preventDefault();selectShip(parseInt(el.dataset.i));});
-    });
-    drop.style.display='block';
-  }
-
-  function selectShip(i){
-    const s=_results[i];if(!s)return;
-    inp.value=s.name;
-    sel.value=s.name;
-    drop.style.display='none';
-    if(s.scu>0){$('cap-input').value=s.scu;$('cap-show').textContent=s.scu;renderCapacityAlert();}
-    // Trigger change event
-    sel.dispatchEvent(new Event('change'));
-  }
-
-  inp.addEventListener('input',()=>showShips(inp.value));
-  inp.addEventListener('focus',()=>{clearTimeout(_closeTimer);showShips(inp.value);});
-  inp.addEventListener('blur',()=>{_closeTimer=setTimeout(()=>{drop.style.display='none';},150);});
-  inp.addEventListener('keydown',e=>{
-    const opts=drop.querySelectorAll('.ship-opt');
-    if(e.key==='ArrowDown'){e.preventDefault();_active=Math.min(_active+1,opts.length-1);
-      opts.forEach((o,i)=>o.classList.toggle('active',i===_active));}
-    else if(e.key==='ArrowUp'){e.preventDefault();_active=Math.max(_active-1,-1);
-      opts.forEach((o,i)=>o.classList.toggle('active',i===_active));}
-    else if(e.key==='Enter'){e.preventDefault();
-      if(_active>=0)selectShip(_active);else if(_results.length)selectShip(0);}
-    else if(e.key==='Escape')drop.style.display='none';
-  });
-
-  // Init with current ship
-  const cur=sel.value||'Argo RAFT';
-  inp.value=cur;
-}
-
-// ══════════════════════════════════════════════════════
-// DISTANCIA — unidades exactas del juego
-// m → km → Mm (Megámetros = 1,000 km) → Gm (Gigámetros = 1,000 Mm)
-// La API devuelve todo en Gm internamente
-// ══════════════════════════════════════════════════════
-function fmtDist(gm){
-  if(gm==null||isNaN(gm))return'?';
-  if(gm<0)return'0 m';
-
-  // Convertir Gm a metros para escalar correctamente
-  const m=gm*1e9; // 1 Gm = 1,000,000,000 m
-
-  if(m<1000){
-    // metros
-    return Math.round(m)+' m';
-  }
-  const km=m/1000;
-  if(km<1000){
-    // kilómetros
-    return (km<10?km.toFixed(1):Math.round(km))+' km';
-  }
-  const mm=km/1000; // Megámetros
-  if(mm<1000){
-    // Megámetros
-    return (mm<10?mm.toFixed(2):mm<100?mm.toFixed(1):Math.round(mm))+' Mm';
-  }
-  // Gigámetros
-  return (gm<10?gm.toFixed(2):gm<100?gm.toFixed(1):Math.round(gm))+' Gm';
-}
-
-// ══════════════════════════════════════════════════════
-// CHECKLIST DE RUTA
-// ══════════════════════════════════════════════════════
-let routeChecklist={};// {stepIdx: true/false}
-
-function initChecklist(seq){
-  routeChecklist={};
-  seq.forEach((_,i)=>routeChecklist[i]=false);
-}
-
-function toggleCheck(idx){
-  routeChecklist[idx]=!routeChecklist[idx];
-  const card=document.querySelector(`.step-card[data-idx="${idx}"]`);
-  if(card){
-    card.classList.toggle('done',routeChecklist[idx]);
-    const chk=card.querySelector('.sc-check');
-    if(chk){
-      if(routeChecklist[idx]){
-        chk.style.background='color-mix(in srgb,var(--c-green) 15%,transparent)';
-        chk.style.borderColor='var(--c-green)';
-        chk.style.color='var(--c-green)';
-      }else{
-        chk.style.background='';
-        chk.style.borderColor='';
-        chk.style.color='';
-      }
-    }
-  }
-}
-
-// ══════════════════════════════════════════════════════
-// COMMODITY GUIDE — qué llevar y deliver to cada parada
-// ══════════════════════════════════════════════════════
-function renderCommodityGuide(seq){
-  const el=document.getElementById('commodity-guide');if(!el)return;
-  if(!seq||seq.length<2){el.innerHTML='';return;}
-
-  // Agrupar acciones por ubicación
-  const stops={};
-  seq.forEach(n=>{
-    if(n.role==='pickup'||n.role==='dropoff'){
-      const key=n.label;
-      if(!stops[key])stops[key]={label:n.label,pickups:[],dropoffs:[]};
-      if(n.role==='pickup')stops[key].pickups.push({scu:n.scu,mat:n.material,mnum:n.mnum});
-      if(n.role==='dropoff')stops[key].dropoffs.push({scu:n.scu,mat:n.material,mnum:n.mnum});
-    }
-  });
-
-  // Detectar ubicaciones donde hay que hacer AMBAS cosas (pickup Y dropoff)
-  const multiAction=Object.values(stops).filter(s=>s.pickups.length&&s.dropoffs.length);
-
-  let html='';
-  Object.values(stops).forEach(stop=>{
-    const hasBoth=stop.pickups.length&&stop.dropoffs.length;
-    if(stop.pickups.length){
-      html+=`<div class="cg-stop" style="border-left-color:var(--c-blue);">
-        <div class="cg-action"><i class="ti ti-package-import" style="color:var(--c-blue)"></i> Load at <b>${stop.label}</b>${stop.pad==='efe'?' <span class="pad-ext">EFE ✓</span>':stop.pad==='int'?' <span class="pad-int">Hangar</span>':''}</div>
-        <div class="cg-items">${stop.pickups.map(p=>`M${p.mnum}: ${p.scu} SCU ${p.mat}`).join(' · ')}</div>
-      </div>`;
-    }
-    if(stop.dropoffs.length){
-      html+=`<div class="cg-stop dropoff">
-        <div class="cg-action"><i class="ti ti-package-export" style="color:#C2410C"></i> Deliver at <b>${stop.label}</b>${stop.pad==='efe'?' <span class="pad-ext">EFE ✓</span>':stop.pad==='int'?' <span class="pad-int">Hangar</span>':''}</div>
-        <div class="cg-items">${stop.dropoffs.map(d=>`M${d.mnum}: ${d.scu} SCU ${d.mat}`).join(' · ')}</div>
-      </div>`;
-    }
-  });
-
-  // Aviso especial para paradas con ambas acciones
-  if(multiAction.length){
-    html=`<div style="background:color-mix(in srgb,var(--c-orange) 10%,var(--c-bg-2));border:1px solid var(--c-orange);border-radius:var(--r-sm);padding:8px 10px;margin-bottom:8px;font-size:11px;color:var(--c-text-2);">
-      <i class="ti ti-alert-triangle" style="color:var(--c-orange)"></i> 
-      <b>Multi-action stops:</b> ${multiAction.map(s=>`<b>${s.label}</b> (load + deliver)`).join(', ')} — Use separate boxes per missionssion, process one at a time in the elevator.
-    </div>`+html;
-  }
-
-  el.innerHTML=html;
-}
-
-// ══════════════════════════════════════════════════════
-// VISUAL ROUTE MEJORADA (rv2) — hasta 10 missions
-// ══════════════════════════════════════════════════════
-function renderRouteVisual2(seq,loads,cap){
-  const el=document.getElementById('route-vis');if(!el)return;
-  if(!seq||seq.length<2){el.innerHTML='';return;}
-
-  // Colores
-  const dotCol=n=>{
-    if(!n.role||n._isOrigin)return{bg:'#1D9E75',border:'#1D9E75'};
-    if(n.role==='dest')return{bg:'#D85A30',border:'#D85A30'};
-    if(n.role==='pickup')return{bg:'var(--c-blue)',border:'var(--c-blue)'};
-    if(n.role==='dropoff')return{bg:'#C2410C',border:'#C2410C'};
-    return{bg:'#888',border:'#888'};
-  };
-  const dotIcon=n=>{
-    if(!n.role||n._isOrigin)return'⊙';
-    if(n.role==='dest')return'⚑';
-    if(n.role==='pickup')return'↑';
-    if(n.role==='dropoff')return'↓';
-    return'·';
-  };
-
-  let rv=`<div class="rv2-wrap"><div class="rv2">`;
-  seq.forEach((n,i)=>{
-    const{bg}=dotCol(n);
-    // Etiqueta corta: max 2 palabras del nombre
-    const words=(n.label||'').split(/\s+/);
-    const shortLabel=words.slice(0,2).join(' ')+(words.length>2?'…':'');
-    const mLabel=n.mnum?`<div style="font-size:8px;color:var(--c-text-3)">M${n.mnum}</div>`:'';
-    rv+=`<div class="rv2-node">
-      <div class="rv2-circle" style="background:${bg}">${dotIcon(n)}</div>
-      <div class="rv2-label">${shortLabel}</div>
-      ${mLabel}
-    </div>`;
-    if(i<seq.length-1){
-      const sl=loads[i]||0;
-      const over=sl>cap;
-      const jump=sysOf(seq[i])!==sysOf(seq[i+1]);
-      const d=legGm(seq[i],seq[i+1]);
-      const lineStyle=jump
-        ?'background:repeating-linear-gradient(90deg,#9B7BD8,#9B7BD8 4px,transparent 4px,transparent 8px);height:2px;'
-        :`background:${over?'#C2410C':'var(--c-border-1)'};height:2px;`;
-      rv+=`<div class="rv2-seg">
-        <div class="rv2-line" style="${lineStyle}"></div>
-        <div class="rv2-dist" style="color:${jump?'#9B7BD8':'inherit'}">${jump?'JUMP':fmtDist(d)}</div>
-        <div class="rv2-load" style="color:${over?'var(--c-red)':'var(--c-text-3)'}">${sl}/${cap}</div>
-      </div>`;
-    }
-  });
-  rv+='</div></div>';
-  el.innerHTML=rv;
-}
-
-// Bug de elevator múltiple — tooltip/info
-function showElevatorTip(){
-  // Remove existing tip if any
-  const existing=document.getElementById('elev-tip-overlay');
-  if(existing){existing.remove();return;}
-
-  const overlay=document.createElement('div');
-  overlay.id='elev-tip-overlay';
-  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;'+
-    'display:flex;align-items:center;justify-content:center;padding:20px;';
-
-  overlay.innerHTML=`
-    <div style="background:var(--c-bg-2);border:1px solid var(--c-orange);border-radius:var(--r-lg);
-      max-width:520px;width:100%;padding:20px;font-family:var(--font-mono);font-size:12px;
-      color:var(--c-text-1);line-height:1.7;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <span style="font-weight:700;color:var(--c-orange);font-size:13px">
-          ⚠ Cargo Elevator Guide
-        </span>
-        <button onclick="document.getElementById('elev-tip-overlay').remove()"
-          style="background:none;border:none;color:var(--c-text-3);cursor:pointer;font-size:18px">✕</button>
-      </div>
-
-      <div style="color:var(--c-text-2);margin-bottom:12px">
-        The contract says <b style="color:var(--c-text-1)">"X SCU or smaller"</b> — 
-        this is the <b style="color:var(--c-orange)">max size per individual box</b>, 
-        not the total. Each delivery point has its own SCU requirement.
-      </div>
-
-      <div style="background:var(--c-bg-3);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:12px">
-        <div style="color:var(--c-green);font-weight:600;margin-bottom:6px">✓ How to deliver correctly:</div>
-        <div>1. Check the "What to deliver" panel in each contract</div>
-        <div>2. Load EXACTLY the boxes shown for one delivery stop</div>
-        <div>3. Fly to that stop → use the freight elevator</div>
-        <div>4. The elevator will show the contract — complete it</div>
-        <div>5. If multiple stops at same station: exit elevator fully, re-enter for next delivery</div>
-      </div>
-
-      <div style="background:var(--c-bg-3);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:12px">
-        <div style="color:var(--c-red);font-weight:600;margin-bottom:6px">✗ Common missionstakes:</div>
-        <div>• Delivering 1 SCU to a stop that needs 5 SCU → contract won't register</div>
-        <div>• Mixing boxes from different deliveries in one elevator session</div>
-        <div>• Using boxes larger than the contract's max SCU/box limit</div>
-      </div>
-
-      <div style="color:var(--c-text-3);font-size:10px">
-        The box plan below each contract shows exactly what to load for each stop.
-        "4 SCU or smaller" + stop needs 6 SCU = you need 2 boxes (e.g. 1×4 + 1×2).
-      </div>
-    </div>`;
-
-  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
-  document.body.appendChild(overlay);
-}
-
+// Inicialización
 async function init(){
+  // 1. Archivos JSON Locales + Fallback
+  await loadGameData();
+  
+  // 2. Progreso de usuario
   loadProg();
   rebuildRankData(factionKey(prog.f));
 
-  // ── Auto-update: load caché + actualiza API en segundo plano ──
-  poblarNaves(); // Poblar con datos hardcodeados primero (0 ms)
-  autoUpdateData().then(seActualizo=>{
-    if(seActualizo){
-      poblarNaves();       // Re-poblar si la API trajo naves nuevas
-      renderMissions();    // Refrescar materiales en cards abiertas
+  // 3. UI y Naves
+  poblarNaves(); 
+  
+  const shipSel=$('ship-sel');
+  shipSel.addEventListener('change',()=>{
+    const s=SHIPS.find(x=>x.name===shipSel.value);
+    if(s){
+      if(s.scu>0){$('cap-input').value=s.scu;$('cap-show').textContent=s.scu;renderCapacityAlert();}
+      const driveSel=$('drive-sel');
+      if(driveSel&&s.size){
+        const defDrive=Object.entries(QUANTUM_DRIVES).find(([k,v])=>
+          v.size===s.size&&k.includes('Atlas')
+        )||Object.entries(QUANTUM_DRIVES).find(([k,v])=>v.size===s.size);
+        if(defDrive)driveSel.value=defDrive[0];
+      }
     }
   });
-
-  const shipSel=$('ship-sel');
-  shipSel.addEventListener('change',()=>{const s=SHIPS.find(x=>x.name===shipSel.value);if(s&&s.scu>0){$('cap-input').value=s.scu;$('cap-show').textContent=s.scu;renderCapacityAlert();}});
   initShipSearch();
   $('cap-input').addEventListener('input',e=>{$('cap-show').textContent=e.target.value;renderCapacityAlert();});
   $('btn-refresh').addEventListener('click',forceUpdate);
@@ -4207,7 +1902,7 @@ async function init(){
     if(e.target.files[0])importConfig(e.target.files[0]);
     e.target.value='';
   });
-  // Botón Stack rápido — añadir a add-missionssion-row
+
   const stackBtn=document.createElement('button');
   stackBtn.className='add-missionssion-row-btn';
   stackBtn.innerHTML='<i class="ti ti-stack-2"></i> Stack';
@@ -4219,7 +1914,6 @@ async function init(){
   });
   document.getElementById('add-missionssion').parentNode.appendChild(stackBtn);
 
-  // Inicializar facción PRIMERO (ahora está en rank-bar)
   const facSel=$('faction-sel');
   const FAC_LABELS={"Covalex Shipping":"📦 Covalex Shipping","Red Wind Linehaul":"🔴 Red Wind Linehaul","Ling Family Hauling":"🟢 Ling Family Hauling"};
   FACTIONS.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=FAC_LABELS[f]||f;facSel.appendChild(o);});
@@ -4247,23 +1941,16 @@ async function init(){
 
   $('use-dest').addEventListener('change',e=>{useDest=e.target.checked;$('dest-fields').classList.toggle('hidden',!useDest);refreshCandidates();});
 
-  // ── Posición actual: búsqueda con autocompletado ─────────────
-  // Auto-seleccionar el hotspot más activo de la zona de la facción activa
   function getDefaultPosId(){
     const fd=FACTION_DATA[_activeFactionKey];
     const zone=fd.zone||'Stanton';
-    // Buscar por missionssion_count en las locs del sistema correspondiente
     const sysFilt=zone==='Pyro'?['Pyro']:zone==='microTech'?['Stanton']:['Stanton'];
-    const best=STATIONS.filter(l=>sysFilt.includes(l.sys))
-      .sort((a,b)=>(b.missionssionCount||0)-(a.missionssionCount||0))[0];
-    // Fallback a HUR-L2 si no hay missionssion counts cargados
+    const best=STATIONS.filter(l=>sysFilt.includes(l.sys)).sort((a,b)=>(b.missionssionCount||0)-(a.missionssionCount||0))[0];
     return best?.id||findLoc('HUR-L2')||STATIONS[0]?.id;
   }
 
-  // Posición actual — vacía al start, el usuario escribe dónde está
   const oWrap=$('o-search-wrap');
   if(oWrap&&!oWrap.hasChildNodes()){
-    // Intentar restaurar última posición usada
     const lastPosId=localStorage.getItem('sc_last_pos_id');
     const lastPosLabel=localStorage.getItem('sc_last_pos_label');
     const oInitId=lastPosId||null;
@@ -4271,7 +1958,6 @@ async function init(){
     const oSearch=createLocSearch(oInitId,(id)=>{
       if(id){
         $('o-loc').value=id;
-        // Guardar última posición
         const l=locById(id);
         if(l){localStorage.setItem('sc_last_pos_id',id);localStorage.setItem('sc_last_pos_label',l.label);}
         refreshCandidates();
@@ -4279,7 +1965,6 @@ async function init(){
     });
     oSearch.querySelector('.loc-input').style.fontSize='12px';
     oSearch.querySelector('.loc-input').placeholder='Where are you now?';
-    // Si había última posición, mostrar su label
     if(lastPosId&&lastPosLabel){
       const inp=oSearch.querySelector('.loc-input');
       if(inp){inp.value=lastPosLabel;inp.className='loc-input resolved';}
@@ -4287,19 +1972,15 @@ async function init(){
     oWrap.appendChild(oSearch);
   }
 
-  // Montar campo de búsqueda destino fijo
   const dWrap=$('d-search-wrap');
   if(dWrap&&!dWrap.hasChildNodes()){
     const dInitId=findLoc('Everus')||STATIONS[0]?.id;
     $('d-loc').value=dInitId||'';
-    const dSearch=createLocSearch(dInitId,(id)=>{
-      if(id){$('d-loc').value=id;refreshCandidates();}
-    });
+    const dSearch=createLocSearch(dInitId,(id)=>{if(id){$('d-loc').value=id;refreshCandidates();}});
     dSearch.querySelector('.loc-input').placeholder='Escribe destino final…';
     dWrap.appendChild(dSearch);
   }
 
-  // Renderizar hotspots iniciales
   renderHotspots();
   $('mode-full').addEventListener('click',()=>setMode('full'));
   $('mode-partial').addEventListener('click',()=>setMode('partial'));
@@ -4309,7 +1990,6 @@ async function init(){
     const lbl=$('pct-label');if(lbl)lbl.textContent=partialPct+'%';
     renderMissions();updateXpHint();
   });
-  // tol slider removed — convenient stops removed
   $('add-missionssion').addEventListener('click',addMission);
   $('calc-btn').addEventListener('click',calculate);
   $('clear-all').addEventListener('click',()=>{missions=[];renderMissions();});
@@ -4318,9 +1998,6 @@ async function init(){
   $('tab-loop').addEventListener('click',()=>switchTab('loop'));
   $('tab-route').addEventListener('click',()=>switchTab('route'));
   $('tab-boxes').addEventListener('click',()=>switchTab('boxes'));
-
-  // facSel inicializado arriba junto al rank-sel
-  // listener de facSel movido arriba
 
   const syncRank=$('sync-rank');
   RANK_ORDER.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;syncRank.appendChild(o);});
@@ -4332,19 +2009,16 @@ async function init(){
     else prog.xp[prog.f]=base+Math.round(CONTRACT_RANKS[rank].xpReq*(pct/100));
     saveProg();renderXP();renderRankGuide();
   });
-  // Update valor sugerido de XP por mission según rango y facción
+  
   function updateXpHint(){
     const r=CONTRACT_RANKS[currentRank];
     const base=r?r.xpMission:0;
     const frac=deliveryMode==='full'?1:partialPct/100;
-    const suggested=Math.round(base*frac);
-    // xp-amount ya no existe en el DOM, el XP se calcula automáticamente
     const hint=$('xp-hint');if(hint)hint.textContent=base>0?`≈${base.toLocaleString()} XP/mission en ${currentRank} (${prog.f})`:'';
   }
-  // XP se agrega automáticamente al completar mission (botón ✓ en cada contrato)
+  
   $('xp-reset').addEventListener('click',()=>{prog.xp[prog.f]=0;saveProg();renderXP();renderRankGuide();});
 
-  // Manifiesto con desglose de boxes (tu versión)
   $('share-btn').addEventListener('click',()=>{
     if(!lastRouteResult)return;
     const ship=$('ship-sel').value;const cap=getCap();
@@ -4361,7 +2035,7 @@ async function init(){
     });
     navigator.clipboard.writeText(text).then(()=>{
       const btn=$('share-btn');const orig=btn.innerHTML;
-      btn.innerHTML='<i class="ti ti-check"></i> Copied to clipboard!';btn.style.background='#04342C';btn.style.color='#fff';
+      btn.innerHTML='<i class="ti ti-check"></i> Copied!';btn.style.background='#04342C';btn.style.color='#fff';
       setTimeout(()=>{btn.innerHTML=orig;btn.style.background='transparent';btn.style.color='#378ADD';},2000);
     });
   });
@@ -4370,10 +2044,10 @@ async function init(){
     oneBoxMode=!oneBoxMode;
     $('btn-onebox').classList.toggle('on',oneBoxMode);
     $('onebox-badge').style.display=oneBoxMode?'inline':'none';
-    // En one-box el % no aplica — siempre es 1 box
     $('pct-line').classList.toggle('dim',oneBoxMode||deliveryMode==='full');
     renderMissions();renderCapacityAlert();
   });
+  
   $('btn-session-start').addEventListener('click', startSession);
   $('btn-session-stop').addEventListener('click', stopSession);
   $('btn-save-route').addEventListener('click', saveCurrentRoute);
@@ -4382,14 +2056,11 @@ async function init(){
   renderSavedRoutes();
 
   applyRank();renderSizeRow();
-  // No pre-load contract — start empty
   renderMissions();renderXP();renderRankGuide();
   renderSessionBar();
   renderSessionHistory();
   initTheme();
   initSmartPanel();
-  // Check de parche en background (no bloquea)
-  setTimeout(checkPatchVersion, 2000);
 }
 init();
 </script>
