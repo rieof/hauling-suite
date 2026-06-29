@@ -9,35 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
 <style>
-/* ── Variables ────────────────────────────────────────── */
 :root{
   --font-mono:'IBM Plex Mono',ui-monospace,monospace;
   --font-sans:'IBM Plex Sans',system-ui,sans-serif;
-  --c-text-1:#e8ecf3;
-  --c-text-2:#aab3c2;
-  --c-text-3:#6b7484;
-  --c-bg-1:#14171c;
-  --c-bg-2:#1d222a;
-  --c-bg-3:#242a33;
-  --c-border-1:#3a414d;
-  --c-border-2:#2a313b;
-  --c-border-3:#1e242c;
-  --c-info-bg:#042C53;
-  --c-info-text:#B5D4F4;
-  --c-ok-bg:#04342C;
-  --c-ok-text:#9FE1CB;
-  --c-warn-bg:#3D2800;
-  --c-warn-text:#FAC775;
-  --c-err-bg:#3D0D0D;
-  --c-err-text:#FCA5A5;
-  --c-blue:#378ADD;
-  --c-green:#1D9E75;
-  --c-red:#E84040;
-  --c-orange:#F5A623;
-  --r-sm:6px;
-  --r-md:9px;
-  --r-lg:13px;
-  /* acento facción — se anula por JS */
+  --c-text-1:#e8ecf3;--c-text-2:#aab3c2;--c-text-3:#6b7484;
+  --c-bg-1:#14171c;--c-bg-2:#1d222a;--c-bg-3:#242a33;
+  --c-border-1:#3a414d;--c-border-2:#2a313b;--c-border-3:#1e242c;
+  --c-info-bg:#042C53;--c-info-text:#B5D4F4;
+  --c-ok-bg:#04342C;--c-ok-text:#9FE1CB;
+  --c-warn-bg:#3D2800;--c-warn-text:#FAC775;
+  --c-err-bg:#3D0D0D;--c-err-text:#FCA5A5;
+  --c-blue:#378ADD;--c-green:#1D9E75;--c-red:#E84040;--c-orange:#F5A623;
+  --r-sm:6px;--r-md:9px;--r-lg:13px;
   --c-faction:#378ADD;
 }
 @media(prefers-color-scheme:light){
@@ -51,976 +34,215 @@
     --c-err-bg:#ffe5e5;--c-err-text:#9b1c1c;
   }
 }
-
-/* ── Reset / Base ─────────────────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{margin:0;padding:0;}
-body{
-  font-family:var(--font-sans);color:var(--c-text-1);min-height:100vh;
-  background:
-    radial-gradient(1400px 700px at 85% -5%, rgba(55,138,221,.12),transparent 60%),
-    radial-gradient(800px 600px at -5% 110%, rgba(29,158,117,.09),transparent 55%),
-    var(--c-bg-1);
-  background-attachment:fixed;
-}
-select,input[type=number]{
-  width:100%;font-family:var(--font-mono);font-size:12px;
-  padding:6px 8px;border-radius:var(--r-sm);
-  border:1px solid var(--c-border-2);
-  background:var(--c-bg-1);color:var(--c-text-1);
-  transition:border-color .15s;
-}
+body{font-family:var(--font-sans);color:var(--c-text-1);min-height:100vh;background:radial-gradient(1400px 700px at 85% -5%, rgba(55,138,221,.12),transparent 60%),radial-gradient(800px 600px at -5% 110%, rgba(29,158,117,.09),transparent 55%),var(--c-bg-1);background-attachment:fixed;}
+select,input[type=number]{width:100%;font-family:var(--font-mono);font-size:12px;padding:6px 8px;border-radius:var(--r-sm);border:1px solid var(--c-border-2);background:var(--c-bg-1);color:var(--c-text-1);transition:border-color .15s;}
 select:focus,input:focus{outline:none;border-color:var(--c-faction);}
-
-/* ── Layout ───────────────────────────────────────────── */
 .page-wrap{max-width:960px;margin:0 auto;padding:0 18px 72px;}
 .page-foot{text-align:center;font-size:11px;color:var(--c-text-3);font-family:var(--font-mono);padding:28px 0 0;line-height:1.7;}
 .app{padding:1.5rem 0;}
-
-/* ── Topbar ───────────────────────────────────────────── */
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;gap:8px;}
 .topbar h1{font-size:21px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,var(--c-text-1) 60%,var(--c-text-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.topbar p{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);}
 .disclaimer{font-size:10px;color:var(--c-text-3);background:var(--c-bg-2);border-radius:var(--r-md);padding:8px 12px;margin-bottom:1rem;line-height:1.5;border:1px solid var(--c-border-3);}
-
-/* ── Ship bar ─────────────────────────────────────────── */
-.ship-bar{
-  background:var(--c-bg-2);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:10px;
-  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;
-  border:1px solid var(--c-border-2);
-}
+.ship-bar{background:var(--c-bg-2);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;border:1px solid var(--c-border-2);}
 .sg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:140px;}
-.sg label{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);letter-spacing:.04em;text-transform:uppercase;}
-.cap-display{
-  text-align:center;background:var(--c-bg-1);border-radius:var(--r-md);padding:7px;
-  border:1px solid var(--c-border-2);position:relative;overflow:hidden;
-}
-.cap-display::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(55,138,221,.06),transparent);pointer-events:none;}
+.sg label{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);text-transform:uppercase;}
+.cap-display{text-align:center;background:var(--c-bg-1);border-radius:var(--r-md);padding:7px;border:1px solid var(--c-border-2);position:relative;overflow:hidden;cursor:pointer;}
 .cap-display .cv{font-size:20px;font-weight:600;font-family:var(--font-mono);color:var(--c-faction);}
-.cap-display .cl{font-size:9px;color:var(--c-text-3);letter-spacing:.05em;}
-
-/* ── Rank bar ─────────────────────────────────────────── */
-.rank-bar{
-  background:var(--c-bg-2);border:1px solid var(--c-border-2);
-  border-radius:var(--r-lg);padding:12px 16px;margin-bottom:10px;
-  border-left:3px solid var(--c-faction);
-}
+.cap-display .cl{font-size:9px;color:var(--c-text-3);}
+.rank-bar{background:var(--c-bg-2);border:1px solid var(--c-border-2);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:10px;border-left:3px solid var(--c-faction);}
 .rank-bar .rb-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.rank-bar label{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;}
-.rank-bar select{max-width:240px;}
-.rank-faction-badge{font-size:10px;font-family:var(--font-mono);padding:2px 8px;border-radius:99px;font-weight:600;background:color-mix(in srgb,var(--c-faction) 15%,transparent);color:var(--c-faction);border:1px solid color-mix(in srgb,var(--c-faction) 30%,transparent);}
+.rank-bar label{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);text-transform:uppercase;}
 .rank-info{font-size:11px;color:var(--c-text-3);margin-top:8px;font-family:var(--font-mono);display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
-.rank-info b{color:var(--c-text-1);}
-.rank-info .ri-xp{color:var(--c-faction);font-weight:600;}
-
-/* ── Position + Mode row ──────────────────────────────── */
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .panel{background:var(--c-bg-2);border-radius:var(--r-lg);padding:12px 14px;border:1px solid var(--c-border-3);}
-.ptitle{font-size:10px;font-family:var(--font-mono);letter-spacing:.06em;color:var(--c-text-3);margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;}
-.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.sys-tabs{display:flex;gap:4px;margin-bottom:6px;}
-.sys-tab{font-size:10px;padding:3px 9px;border-radius:var(--r-sm);border:1px solid var(--c-border-2);background:transparent;cursor:pointer;color:var(--c-text-3);font-family:var(--font-mono);}
-.sys-tab.on{background:var(--c-faction);color:#fff;border-color:var(--c-faction);}
-
-/* ── Mode entrega ─────────────────────────────────────── */
+.ptitle{font-size:10px;font-family:var(--font-mono);color:var(--c-text-3);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .mode-seg{display:flex;gap:6px;margin-bottom:8px;}
-.mode-seg button{
-  flex:1;font-size:11px;padding:8px 6px;
-  border:1px solid var(--c-border-2);background:var(--c-bg-1);
-  border-radius:var(--r-md);cursor:pointer;color:var(--c-text-3);
-  font-family:var(--font-mono);line-height:1.4;transition:all .15s;
-}
-.mode-seg button.on{
-  background:color-mix(in srgb,var(--c-faction) 12%,var(--c-bg-1));
-  color:var(--c-faction);border-color:var(--c-faction);font-weight:600;
-}
-.mode-seg button b{display:block;font-size:14px;margin-bottom:1px;}
+.mode-seg button{flex:1;font-size:11px;padding:8px 6px;border:1px solid var(--c-border-2);background:var(--c-bg-1);border-radius:var(--r-md);cursor:pointer;color:var(--c-text-3);font-family:var(--font-mono);transition:all .15s;}
+.mode-seg button.on{background:color-mix(in srgb,var(--c-faction) 12%,var(--c-bg-1));color:var(--c-faction);border-color:var(--c-faction);font-weight:600;}
+.mode-seg button b{display:block;font-size:14px;}
 .pct-slider-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
-.pct-slider-row input[type=range]{flex:1;cursor:pointer;accent-color:var(--c-faction);}
+.pct-slider-row input[type=range]{flex:1;cursor:pointer;}
 .pct-slider-row .pct-val{font-size:13px;font-weight:600;font-family:var(--font-mono);min-width:36px;text-align:right;color:var(--c-faction);}
-.pct-slider-row.dim{opacity:.4;pointer-events:none;}
-.pct-line{display:none;} /* ocultar el viejo campo numérico */
-
-/* ── Dest toggle ──────────────────────────────────────── */
 .dest-toggle{display:flex;align-items:center;gap:8px;background:var(--c-bg-2);border-radius:var(--r-md);padding:9px 14px;margin-bottom:10px;border:1px solid var(--c-border-3);}
-.dest-toggle input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--c-faction);}
-.dest-toggle label{font-size:12px;color:var(--c-text-2);cursor:pointer;}
 .dest-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
 .dest-fields.hidden{display:none;}
-
-/* ── Session bar ──────────────────────────────────────── */
-#session-bar{
-  display:none;align-items:center;gap:12px;flex-wrap:wrap;
-  background:color-mix(in srgb,var(--c-faction) 8%,var(--c-bg-2));
-  border:1px solid color-mix(in srgb,var(--c-faction) 25%,transparent);
-  border-radius:var(--r-md);padding:7px 14px;
-  font-size:11px;font-family:var(--font-mono);margin-bottom:8px;
-}
-
-/* ── Cap alert ────────────────────────────────────────── */
-#cap-alert{
-  display:none;align-items:center;gap:8px;padding:8px 14px;
-  border-radius:var(--r-md);font-size:11px;font-family:var(--font-mono);
-  margin-bottom:8px;flex-wrap:wrap;
-  background:var(--c-bg-2);border:1px solid var(--c-border-2);
-}
-
-/* ── One-box mode-row ─────────────────────────────────── */
-.mode-row{display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap;}
-.mode-row .lbl{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.04em;}
-.mbtn{
-  font-size:11px;padding:4px 12px;border:1px solid var(--c-border-1);
-  background:transparent;border-radius:var(--r-md);cursor:pointer;
-  color:var(--c-text-3);font-family:var(--font-mono);transition:all .15s;
-}
-.mbtn.on{background:var(--c-bg-2);color:var(--c-text-1);border-color:var(--c-border-1);}
-#btn-onebox.on{background:var(--c-red);color:#fff;border-color:var(--c-red);}
-
-/* ── Add missionssion row ──────────────────────────────────── */
-.section-lbl{font-size:10px;font-family:var(--font-mono);letter-spacing:.06em;color:var(--c-text-3);margin:1rem 0 6px;display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;}
-.section-lbl .hint{color:var(--c-text-3);text-transform:none;letter-spacing:0;font-size:10px;}
+.smart-panel{background:var(--c-bg-2);border:1px solid var(--c-border-2);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:10px;border-top:2px solid var(--c-faction);}
+.smart-input-row{display:flex;gap:6px;align-items:center;}
+.smart-input-row input[type=text]{flex:1;font-family:var(--font-mono);font-size:12px;padding:7px 10px;border-radius:var(--r-sm);border:1px solid var(--c-border-2);background:var(--c-bg-1);color:var(--c-text-1);}
+.smart-btn{padding:7px 12px;border-radius:var(--r-sm);border:none;background:var(--c-faction);color:#fff;cursor:pointer;font-family:var(--font-mono);font-size:11px;display:flex;align-items:center;gap:5px;}
+.smart-status{font-size:11px;color:var(--c-text-3);font-family:var(--font-mono);margin-top:6px;min-height:16px;display:flex;align-items:center;gap:6px;}
+.smart-status.ok{color:var(--c-green);}
+.smart-status.err{color:var(--c-red);}
+#session-bar{display:none;align-items:center;gap:12px;flex-wrap:wrap;background:color-mix(in srgb,var(--c-faction) 8%,var(--c-bg-2));border:1px solid color-mix(in srgb,var(--c-faction) 25%,transparent);border-radius:var(--r-md);padding:7px 14px;font-size:11px;font-family:var(--font-mono);margin-bottom:8px;}
 .add-missionssion-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
-.add-missionssion-row button{font-size:12px;padding:7px 13px;font-weight:500;border-radius:var(--r-md);cursor:pointer;border:1px solid var(--c-border-1);background:var(--c-bg-2);color:var(--c-text-2);font-family:var(--font-mono);transition:all .15s;}
-.add-missionssion-row-btn{font-size:11px;padding:6px 10px;border-radius:var(--r-md);cursor:pointer;border:1px solid var(--c-border-1);background:transparent;color:var(--c-text-2);font-family:var(--font-mono);transition:all .15s;display:flex;align-items:center;gap:4px;}
-.add-missionssion-row button:hover{color:var(--c-text-1);border-color:var(--c-border-1);}
+.add-missionssion-row button{font-size:12px;padding:7px 13px;border-radius:var(--r-md);cursor:pointer;border:1px solid var(--c-border-1);background:var(--c-bg-2);color:var(--c-text-2);font-family:var(--font-mono);transition:all .15s;}
 .add-missionssion-row button.accent{border-color:var(--c-faction);color:var(--c-faction);background:color-mix(in srgb,var(--c-faction) 10%,transparent);}
 .add-missionssion-row button.accent:hover{background:var(--c-faction);color:#fff;}
-.add-missionssion-row button:disabled{opacity:.35;cursor:not-allowed;}
-
-/* ── Contract cards ───────────────────────────────────── */
-.missions-list{display:flex;flex-direction:column;gap:8px;}
-/* ── Timeline card ───────────────────────────────────── */
-.cm-card{
-  background:var(--c-bg-2);border:1px solid var(--c-border-3);
-  border-radius:var(--r-md);padding:0;overflow:hidden;
-  border-left:3px solid var(--c-faction);transition:border-color .2s;
-}
-.cm-card-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px 12px;border-bottom:0.5px solid var(--c-border-3);
-  background:color-mix(in srgb,var(--c-faction) 4%,var(--c-bg-2));
-  gap:8px;flex-wrap:wrap;
-}
-.cm-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.cm-card{background:var(--c-bg-2);border:1px solid var(--c-border-3);border-radius:var(--r-md);padding:0;overflow:hidden;border-left:3px solid var(--c-faction);margin-bottom:8px;}
+.cm-card-header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:0.5px solid var(--c-border-3);background:color-mix(in srgb,var(--c-faction) 4%,var(--c-bg-2));}
 .cm-badge{background:var(--c-faction);color:#fff;padding:2px 7px;border-radius:4px;font-size:10px;font-family:var(--font-mono);}
-.cm-scu-badge{font-size:10px;padding:2px 7px;border-radius:99px;font-family:var(--font-mono);
-  background:var(--c-bg-3);color:var(--c-text-2);border:0.5px solid var(--c-border-2);}
-.cm-mat-badge{font-size:10px;padding:2px 8px;border-radius:99px;
-  background:color-mix(in srgb,var(--c-blue) 12%,transparent);
-  color:var(--c-blue);border:0.5px solid color-mix(in srgb,var(--c-blue) 25%,transparent);}
-.cm-pay-badge{font-size:10px;padding:2px 8px;border-radius:99px;
-  background:color-mix(in srgb,var(--c-green) 12%,transparent);
-  color:var(--c-green);border:0.5px solid color-mix(in srgb,var(--c-green) 25%,transparent);
-  cursor:text;}
-.cm-timer{font-size:10px;font-family:var(--font-mono);color:var(--c-text-3);
-  display:flex;align-items:center;gap:3px;}
-.cm-timer.running{color:var(--c-faction);}
-.cm-actions{display:flex;gap:3px;}
-.cm-actions button{font-size:10px;padding:3px 8px;border-radius:var(--r-sm);
-  border:0.5px solid var(--c-border-2);background:transparent;
-  color:var(--c-text-3);cursor:pointer;font-family:var(--font-mono);
-  display:flex;align-items:center;gap:3px;transition:all .12s;}
-.cm-actions button.js-done{color:var(--c-green);border-color:color-mix(in srgb,var(--c-green) 40%,transparent);}
-.cm-actions button.js-done:hover{background:var(--c-green);color:#fff;}
-.cm-actions button.js-clone{color:var(--c-blue);border-color:color-mix(in srgb,var(--c-blue) 40%,transparent);}
-.cm-actions button.js-clone:hover{background:var(--c-blue);color:#fff;}
-.cm-actions button.js-rm:hover{color:var(--c-red);border-color:var(--c-red);}
-/* Timeline body */
+.cm-scu-badge{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--c-bg-3);color:var(--c-text-2);border:0.5px solid var(--c-border-2);font-family:var(--font-mono);}
+.cm-mat-badge{font-size:10px;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--c-blue) 12%,transparent);color:var(--c-blue);border:0.5px solid color-mix(in srgb,var(--c-blue) 25%,transparent);}
 .cm-timeline{padding:10px 12px;display:flex;flex-direction:column;gap:0;}
 .cm-tl-item{display:flex;gap:10px;align-items:stretch;}
 .cm-tl-dot-col{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0;}
-.cm-tl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.cm-tl-dot{width:12px;height:12px;border-radius:50%;margin-top:7px;}
 .cm-tl-dot.pickup{background:var(--c-blue);}
 .cm-tl-dot.delivery{background:#C2410C;}
 .cm-tl-dot.delivery.nearest{background:var(--c-green);}
 .cm-tl-line{width:2px;background:var(--c-border-2);flex:1;min-height:8px;margin:2px auto;}
 .cm-tl-content{flex:1;padding-bottom:8px;}
-.cm-tl-label{font-size:9px;color:var(--c-text-3);font-family:var(--font-mono);
-  text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
-.cm-tl-search{display:flex;gap:4px;align-items:center;flex-wrap:wrap;}
-.cm-tl-add{font-size:10px;padding:2px 8px;border-radius:4px;border:0.5px dashed var(--c-border-1);
-  background:transparent;color:var(--c-text-3);cursor:pointer;font-family:var(--font-mono);
-  margin-top:4px;display:inline-flex;align-items:center;gap:3px;}
-.cm-pay-input{font-size:11px;padding:3px 7px;border-radius:4px;border:0.5px solid var(--c-border-2);
-  background:transparent;color:var(--c-text-1);font-family:var(--font-mono);width:100px;
-  cursor:text;}
-.cm-pay-input:focus{outline:none;border-color:var(--c-green);}
-/* ── Mapa SVG ─────────────────────────────────────────── */
-.map-wrap{background:var(--c-bg-2);border:1px solid var(--c-border-2);
-  border-radius:var(--r-lg);padding:12px;margin-bottom:1rem;overflow:hidden;}
-.map-wrap svg{width:100%;height:auto;display:block;}
-/* ── Historial sesiones ───────────────────────────────── */
-.hist-table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--font-mono);}
-.hist-table th{text-align:left;color:var(--c-text-3);font-weight:500;
-  padding:4px 8px;border-bottom:1px solid var(--c-border-2);font-size:10px;text-transform:uppercase;}
-.hist-table td{padding:5px 8px;border-bottom:0.5px solid var(--c-border-3);color:var(--c-text-2);}
-.hist-table tr:last-child td{border-bottom:none;}
-.hist-table td:first-child{color:var(--c-text-3);font-size:10px;}
-.hist-best{color:var(--c-green)!important;font-weight:500;}
-.cm-mini-btn{background:transparent;border:none;color:var(--c-text-3);cursor:pointer;font-size:14px;padding:0 2px;}
-.cm-mini-btn:hover{color:var(--c-red);}
-.no-missions{font-size:12px;color:var(--c-text-3);text-align:center;padding:20px;border:1px dashed var(--c-border-2);border-radius:var(--r-md);}
-
-/* ── Tabs ─────────────────────────────────────────────── */
-.tabs{display:flex;gap:0;margin:1rem 0;border-bottom:1px solid var(--c-border-2);flex-wrap:wrap;}
-.tab{font-size:12px;padding:8px 16px;border:none;background:transparent;cursor:pointer;color:var(--c-text-3);font-family:var(--font-mono);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:6px;}
-.tab:hover{color:var(--c-text-2);}
+.tabs{display:flex;margin:1rem 0;border-bottom:1px solid var(--c-border-2);flex-wrap:wrap;}
+.tab{font-size:12px;padding:8px 16px;border:none;background:transparent;cursor:pointer;color:var(--c-text-3);font-family:var(--font-mono);border-bottom:2px solid transparent;margin-bottom:-1px;}
 .tab.on{color:var(--c-faction);border-bottom-color:var(--c-faction);font-weight:600;}
-
-/* ── Route tab ────────────────────────────────────────── */
-.tol-row{display:flex;align-items:center;gap:8px;margin:0 0 1rem;background:var(--c-bg-2);padding:10px 14px;border-radius:var(--r-md);border:1px solid var(--c-border-3);}
-.tol-row label{font-size:11px;color:var(--c-text-2);white-space:nowrap;}
-.tol-row input[type=range]{flex:1;cursor:pointer;accent-color:var(--c-faction);}
-.tol-row span{font-size:12px;font-weight:500;min-width:34px;font-family:var(--font-mono);text-align:right;color:var(--c-faction);}
-.cand-list{display:flex;flex-direction:column;gap:6px;}
-.cand{background:var(--c-bg-1);border:1px solid var(--c-border-3);border-radius:var(--r-lg);padding:9px 13px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;}
-.cand-name{font-size:13px;font-weight:500;color:var(--c-text-1);margin-bottom:2px;}
-.cand-meta{font-size:11px;color:var(--c-text-3);display:flex;gap:8px;flex-wrap:wrap;}
-.csv{font-size:14px;font-weight:500;font-family:var(--font-mono);color:var(--c-text-1);text-align:right;}
-.csu{font-size:10px;color:var(--c-text-3);text-align:right;}
-.badge{font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500;margin-right:4px;display:inline-block;vertical-align:middle;}
-.b-lagrange{background:#26215C;color:#CECBF6;}.b-station{background:#04342C;color:#9FE1CB;}
-.b-outpost{background:#4A1B0C;color:#F5C4B3;}.b-habitat{background:#412402;color:#FAC775;}
-.calc-btn{width:100%;margin:1rem 0 0;font-size:14px;font-weight:600;padding:13px;border:none;border-radius:var(--r-md);cursor:pointer;background:var(--c-faction);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .15s;}
-.calc-btn:hover{filter:brightness(1.1);}
-.alert{padding:10px 14px;border-radius:var(--r-md);font-size:12px;margin-bottom:1rem;margin-top:1.5rem;display:flex;align-items:center;gap:8px;}
-.alert.bad{background:var(--c-err-bg);color:var(--c-err-text);}
-.alert.ok{background:var(--c-ok-bg);color:var(--c-ok-text);}
+.calc-btn{width:100%;font-size:14px;font-weight:600;padding:13px;border:none;border-radius:var(--r-md);cursor:pointer;background:var(--c-faction);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.25rem;}
 .stat{background:var(--c-bg-2);border-radius:var(--r-md);padding:8px 12px;border:1px solid var(--c-border-3);}
 .stat .sv{font-size:17px;font-weight:600;font-family:var(--font-mono);color:var(--c-text-1);}
-.stat .sl{font-size:10px;color:var(--c-text-3);margin-top:2px;}
-.stat.danger .sv{color:var(--c-err-text);}
-.route-vis{display:flex;align-items:center;overflow-x:auto;padding:16px;background:var(--c-bg-2);border-radius:var(--r-lg);margin-bottom:1.25rem;border:1px solid var(--c-border-3);}
-.rv-node{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:84px;}
-.rv-dot{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;}
-.rv-dot.origin{background:var(--c-green);}.rv-dot.dest{background:#D85A30;}
-.rv-dot.pickup{background:var(--c-blue);}.rv-dot.dropoff{background:#C2410C;}
-.rv-label{font-size:9px;color:var(--c-text-2);text-align:center;max-width:82px;line-height:1.3;font-family:var(--font-mono);}
-.rv-seg{display:flex;flex-direction:column;align-items:center;flex:1;min-width:20px;margin-bottom:18px;}
-.rv-line{width:100%;height:2px;background:var(--c-border-2);border-radius:2px;}
-.rv-segdist{font-size:9px;color:var(--c-text-3);font-family:var(--font-mono);white-space:nowrap;}
-.rv-segload{font-size:8px;color:var(--c-text-3);font-family:var(--font-mono);white-space:nowrap;margin-top:2px;}
-.step-list{display:flex;flex-direction:column;gap:0;}
+.stat .sl{font-size:10px;color:var(--c-text-3);}
 .step-wrap{display:flex;gap:0;align-items:stretch;}
 .step-left{width:46px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
-.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;z-index:1;margin-top:10px;}
-.step-vline{width:2px;background:var(--c-border-2);flex:1;min-height:6px;}
-.step-card{flex:1;border-radius:12px;border:0.5px solid var(--c-border-1);margin:5px 0;overflow:hidden;cursor:pointer;transition:opacity .15s;}
-.step-card:hover{border-color:var(--c-border-2);}
-.step-card.done{opacity:.38;}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin-top:10px;}
+.step-card{flex:1;border-radius:12px;border:0.5px solid var(--c-border-1);margin:5px 0;overflow:hidden;cursor:pointer;}
+.step-card.done{opacity:0.4;}
 .sc-head{padding:10px 14px;display:flex;align-items:center;gap:10px;}
-.sc-head.origin{background:var(--c-bg-2);}
-.sc-head.load{background:color-mix(in srgb,var(--c-blue) 12%,var(--c-bg-1));}
-.sc-head.deliver{background:color-mix(in srgb,#D85A30 10%,var(--c-bg-1));}
-.sc-head.deliver-near{background:color-mix(in srgb,var(--c-green) 10%,var(--c-bg-1));}
-.sc-head.jump-hd{background:color-mix(in srgb,#7F77DD 10%,var(--c-bg-1));}
-.sc-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-.sc-icon.load{background:color-mix(in srgb,var(--c-blue) 25%,transparent);}
-.sc-icon.deliver{background:color-mix(in srgb,#D85A30 20%,transparent);}
-.sc-icon.deliver-near{background:color-mix(in srgb,var(--c-green) 25%,transparent);}
-.sc-icon.origin{background:var(--c-bg-3);}
-.sc-icon.jump{background:color-mix(in srgb,#7F77DD 20%,transparent);}
-.sc-text{flex:1;min-width:0;}
-.sc-name{font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.sc-sub{font-size:11px;margin-top:2px;color:var(--c-text-3);}
-.sc-scu{text-align:right;flex-shrink:0;}
-.sc-scu-val{font-size:22px;font-weight:500;line-height:1;}
-.sc-head.load .sc-scu-val{color:var(--c-blue);}
-.sc-head.deliver .sc-scu-val{color:#C2410C;}
-.sc-head.deliver-near .sc-scu-val{color:var(--c-green);}
-.sc-scu-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--c-text-3);}
-.sc-check{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--c-border-1);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--c-text-3);flex-shrink:0;}
-.step-card.done .sc-check{background:color-mix(in srgb,var(--c-green) 15%,transparent);border-color:var(--c-green);color:var(--c-green);}
-.sc-body{display:flex;gap:10px;padding:10px 14px;background:var(--c-bg-2);border-top:0.5px solid var(--c-border-3);}
-.sc-boxes{flex:1;display:flex;flex-direction:column;gap:3px;}
-.sc-boxes-lbl{font-size:10px;color:var(--c-text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
-.sc-box-row{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;border-radius:6px;border:0.5px solid;}
-.sc-box-row.load{background:color-mix(in srgb,var(--c-blue) 8%,var(--c-bg-1));border-color:color-mix(in srgb,var(--c-blue) 25%,transparent);}
-.sc-box-row.deliver{background:color-mix(in srgb,#D85A30 7%,var(--c-bg-1));border-color:color-mix(in srgb,#D85A30 20%,transparent);}
-.sc-box-row.deliver-near{background:color-mix(in srgb,var(--c-green) 8%,var(--c-bg-1));border-color:color-mix(in srgb,var(--c-green) 25%,transparent);}
-.sc-box-name{font-size:12px;font-weight:500;color:var(--c-text-1);}
-.sc-box-qty{font-size:13px;font-weight:600;color:var(--c-text-2);}
-.sc-box-row.load .sc-box-qty{color:var(--c-blue);}
-.sc-box-row.deliver .sc-box-qty{color:#C2410C;}
-.sc-box-row.deliver-near .sc-box-qty{color:var(--c-green);}
-.sc-hold{width:110px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;justify-content:center;}
-.sc-hold-lbl{font-size:10px;color:var(--c-text-3);text-transform:uppercase;letter-spacing:.04em;}
-.sc-hold-nums{font-size:11px;color:var(--c-text-2);font-family:var(--font-mono);}
-.sc-hold-bar{height:6px;border-radius:3px;background:var(--c-bg-3);border:0.5px solid var(--c-border-3);overflow:hidden;}
-.sc-hold-fill{height:100%;border-radius:3px;background:var(--c-blue);}
-.sc-hold-fill.over{background:var(--c-err-text);}
-.sc-hold-pct{font-size:10px;color:var(--c-text-3);}
-.step-num{width:30px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:var(--font-mono);color:#fff;}
-.sn-o{background:var(--c-green);}.sn-p{background:var(--c-blue);}.sn-dr{background:#C2410C;}.sn-d{background:#D85A30;}
-.step-name{font-size:13px;font-weight:500;color:var(--c-text-1);margin-bottom:2px;}
-.step-meta{font-size:11px;color:var(--c-text-3);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.step-action{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;}
-.act-load{background:var(--c-info-bg);color:var(--c-info-text);}
-.act-unload{background:#4A1B0C;color:#F5C4B3;}
-.load-pill{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;background:var(--c-bg-2);color:var(--c-text-2);font-family:var(--font-mono);}
-.load-pill.over{background:var(--c-err-bg);color:var(--c-err-text);}
-.sdv{font-size:14px;font-weight:600;font-family:var(--font-mono);color:var(--c-text-1);text-align:right;}
-.sdu{font-size:10px;color:var(--c-text-3);text-align:right;}
-.empty{padding:2rem;text-align:center;color:var(--c-text-3);font-size:12px;border:1px dashed var(--c-border-2);border-radius:var(--r-lg);}
-.note{font-size:11px;color:var(--c-text-3);margin-top:1rem;line-height:1.5;}
-
-/* ── Boxes tab ────────────────────────────────────────── */
-.size-label{font-size:11px;color:var(--c-text-2);font-family:var(--font-mono);margin:0 0 7px;}
-.size-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
-.szbtn{font-size:12px;padding:6px 14px;border:1px solid var(--c-border-2);background:transparent;border-radius:var(--r-md);cursor:pointer;color:var(--c-text-3);font-family:var(--font-mono);transition:all .12s;}
-.szbtn:hover{border-color:var(--c-faction);color:var(--c-faction);}
-.szbtn.on{background:var(--c-text-1);color:var(--c-bg-1);border-color:var(--c-text-1);font-weight:600;}
-.szbtn.disabled{opacity:.3;cursor:not-allowed;}
-.com-table{display:flex;flex-direction:column;gap:7px;}
-.com-card{background:var(--c-bg-1);border:1px solid var(--c-border-3);border-radius:var(--r-lg);padding:11px 14px;}
-.com-card.best-combo{border-color:var(--c-green);box-shadow:0 0 0 1px rgba(29,158,117,.3);}
-.mhead-num{width:22px;height:22px;border-radius:50%;background:var(--c-faction);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--font-mono);margin-right:8px;vertical-align:middle;}
-.com-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.com-name{font-size:13px;font-weight:600;color:var(--c-text-1);}
-.com-scu{font-size:12px;color:var(--c-text-3);font-family:var(--font-mono);}
-.cgroup{margin-top:8px;padding-top:8px;border-top:1px solid var(--c-border-3);}
-.cgroup:first-of-type{border-top:none;padding-top:0;}
-.cgroup-head{display:flex;justify-content:space-between;align-items:baseline;}
-.cgroup-mat{font-size:12px;font-weight:500;color:var(--c-text-1);}
-.cgroup-box{font-size:15px;font-weight:700;font-family:var(--font-mono);color:var(--c-text-1);}
-.cgroup-box .x{font-size:11px;color:var(--c-text-3);}
-.cgroup-detail{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);margin-top:3px;}
-.cgroup-sub{font-size:10px;font-family:var(--font-mono);color:var(--c-text-2);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.cgroup-sub .d{width:6px;height:6px;border-radius:50%;background:#C2410C;}
-.grand-total{background:var(--c-bg-2);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:1.25rem;display:flex;gap:24px;flex-wrap:wrap;align-items:baseline;border:1px solid var(--c-border-3);}
-.grand-total .gtv{font-size:26px;font-weight:700;font-family:var(--font-mono);color:var(--c-text-1);}
-.grand-total .gtl{font-size:11px;color:var(--c-text-3);}
-
-/* ── XP / Progress tab ────────────────────────────────── */
-.xp-card{background:var(--c-bg-2);border-radius:var(--r-lg);padding:16px;margin-bottom:1rem;border:1px solid var(--c-border-2);}
-.xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--c-border-3);padding-bottom:10px;}
-.xp-rank{font-size:13px;font-family:var(--font-mono);color:var(--c-text-2);}
-.xp-rank b{color:var(--c-faction);font-size:20px;}
-.xp-next{font-size:11px;color:var(--c-text-3);font-family:var(--font-mono);}
-.xp-bar-wrap{height:10px;background:var(--c-bg-3);border-radius:99px;overflow:hidden;margin-bottom:5px;}
-.xp-bar{height:100%;background:linear-gradient(90deg,var(--c-faction),color-mix(in srgb,var(--c-faction) 60%,var(--c-green)));border-radius:99px;transition:width .4s;}
-.xp-bar-text{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);text-align:center;}
-.xp-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:center;}
-.xp-add-grp{display:flex;gap:6px;align-items:center;background:var(--c-bg-1);border-radius:var(--r-md);padding:4px 8px;}
-.xp-add-grp input{width:70px;font-size:12px;}
-.xp-add-grp button{background:var(--c-green);color:#fff;border:none;border-radius:var(--r-md);cursor:pointer;font-size:11px;padding:5px 10px;font-family:var(--font-mono);}
-.reset-btn{background:transparent;border:1px solid var(--c-border-2);color:var(--c-text-3);border-radius:var(--r-md);cursor:pointer;font-size:11px;padding:6px 10px;font-family:var(--font-mono);transition:all .15s;}
-.reset-btn:hover{border-color:var(--c-text-3);color:var(--c-text-1);}
-.xp-edit{font-size:10px;color:var(--c-text-3);margin-top:8px;line-height:1.5;}
-.sync-panel{margin-top:12px;padding-top:12px;border-top:1px dashed var(--c-border-2);display:flex;flex-direction:column;gap:10px;}
-.sync-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.sync-slider-container{display:flex;align-items:center;gap:12px;background:var(--c-bg-1);padding:8px 12px;border-radius:var(--r-md);flex:1;border:1px solid var(--c-border-3);}
-.sync-slider-container input[type=range]{flex:1;cursor:pointer;accent-color:var(--c-faction);}
-.rank-guide{display:flex;flex-direction:column;gap:6px;margin-top:1rem;}
-.rg-card{background:var(--c-bg-1);border:1px solid var(--c-border-3);border-radius:var(--r-lg);padding:11px 14px;}
-.rg-card.cur{border-color:var(--c-faction);box-shadow:0 0 0 1px color-mix(in srgb,var(--c-faction) 20%,transparent);}
-.rg-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;}
-.rg-name{font-size:13px;font-weight:700;color:var(--c-text-1);}
-.rg-scu{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);}
-.rg-ship{font-size:11px;color:var(--c-text-2);margin-top:5px;}
-.rg-ship b{color:var(--c-text-1);}
-.saved-route-card{display:flex;justify-content:space-between;align-items:center;background:var(--c-bg-1);border:1px solid var(--c-border-3);border-radius:var(--r-md);padding:7px 10px;gap:8px;}
-
-/* ── Panel ingreso inteligente ───────────────────────── */
-.smart-panel{background:var(--c-bg-2);border:1px solid var(--c-border-2);
-  border-radius:var(--r-lg);padding:12px 14px;margin-bottom:10px;
-  border-top:2px solid var(--c-faction);}
-.smart-tabs{display:flex;gap:4px;margin-bottom:10px;}
-.smart-tab{font-size:11px;padding:4px 12px;border-radius:var(--r-sm);
-  border:0.5px solid var(--c-border-2);background:transparent;
-  cursor:pointer;color:var(--c-text-3);font-family:var(--font-mono);transition:all .12s;}
-.smart-tab.on{background:var(--c-faction);color:#fff;border-color:var(--c-faction);}
-.smart-input-row{display:flex;gap:6px;align-items:center;}
-.smart-input-row input[type=text]{flex:1;font-family:var(--font-mono);font-size:12px;
-  padding:7px 10px;border-radius:var(--r-sm);border:1px solid var(--c-border-2);
-  background:var(--c-bg-1);color:var(--c-text-1);}
-.smart-input-row input:focus{border-color:var(--c-faction);outline:none;}
-.smart-btn{padding:7px 12px;border-radius:var(--r-sm);border:none;
-  background:var(--c-faction);color:#fff;cursor:pointer;
-  font-family:var(--font-mono);font-size:11px;white-space:nowrap;
-  display:flex;align-items:center;gap:5px;transition:filter .15s;}
-.smart-btn:hover{filter:brightness(1.1);}
-.smart-btn:disabled{opacity:.4;cursor:not-allowed;filter:none;}
-.smart-hint{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);
-  margin-top:7px;line-height:1.6;}
-.smart-hint b{color:var(--c-faction);}
-.smart-status{font-size:11px;color:var(--c-text-3);font-family:var(--font-mono);
-  margin-top:6px;min-height:16px;display:flex;align-items:center;gap:6px;}
-.smart-status.ok{color:var(--c-green);}
-.smart-status.err{color:var(--c-red);}
-.ocr-drop{border:2px dashed var(--c-border-1);border-radius:var(--r-md);
-  padding:24px;text-align:center;cursor:pointer;transition:all .15s;
-  color:var(--c-text-3);font-size:12px;}
-.ocr-drop:hover,.ocr-drop.drag{border-color:var(--c-faction);color:var(--c-faction);
-  background:color-mix(in srgb,var(--c-faction) 5%,transparent);}
-.ocr-drop i{font-size:28px;display:block;margin-bottom:6px;}
-
-
-/* ── Tema forzado (override de prefers-color-scheme) ─── */
-html.force-dark{
-  --c-text-1:#e8ecf3;--c-text-2:#aab3c2;--c-text-3:#6b7484;
-  --c-bg-1:#14171c;--c-bg-2:#1d222a;--c-bg-3:#242a33;
-  --c-border-1:#3a414d;--c-border-2:#2a313b;--c-border-3:#1e242c;
-}
-html.force-light{
-  --c-text-1:#1a1d23;--c-text-2:#4a5160;--c-text-3:#8a92a3;
-  --c-bg-1:#f5f7fa;--c-bg-2:#ebeef3;--c-bg-3:#dde2ea;
-  --c-border-1:#c5ccd6;--c-border-2:#dde2e9;--c-border-3:#e8ecf1;
-}
-/* ── Vista compacta ────────────────────────────────────── */
-.compact-mode .cm-card{border-radius:var(--r-sm);}
-.compact-mode .cm-timeline{display:none;}
-.compact-mode .cm-pay-row{display:none;}
-.compact-mode .cm-card-header{padding:5px 10px;border-bottom:none;}
-.compact-mode .cm-card-header .cm-tl-add{display:none;}
-.compact-mode .cm-compact-line{display:flex!important;}
-.cm-compact-line{display:none;font-size:11px;color:var(--c-text-3);
-  font-family:var(--font-mono);padding:0 10px 6px;gap:8px;align-items:center;flex-wrap:wrap;}
-.cm-compact-line .cl-loc{color:var(--c-text-2);}
-.cm-compact-line .cl-arrow{color:var(--c-text-3);}
-/* ── Stack rápido ──────────────────────────────────────── */
-.stack-panel{background:var(--c-bg-2);border:1px solid var(--c-border-2);
-  border-radius:var(--r-md);padding:10px 12px;margin-bottom:8px;
-  border-left:3px solid var(--c-faction);}
-/* ── Patch badge ───────────────────────────────────────── */
-.patch-badge{display:none;font-size:10px;padding:3px 10px;border-radius:99px;
-  background:color-mix(in srgb,var(--c-orange,#F5A623) 15%,transparent);
-  color:var(--c-orange,#F5A623);border:0.5px solid var(--c-orange,#F5A623);
-  cursor:pointer;font-family:var(--font-mono);}
-/* ── Checklist de ruta ────────────────────────────── */
-.step-card{cursor:default;transition:opacity .2s;}
-.step-card.done{opacity:.45;}
-.step-card.done .step-name{text-decoration:line-through;}
-.step-check{width:22px;height:22px;border:2px solid var(--c-border-2);border-radius:50%;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:all .15s;background:transparent;}
-.step-check:hover{border-color:var(--c-green);background:color-mix(in srgb,var(--c-green) 10%,transparent);}
-.step-check.done{border-color:var(--c-green);background:var(--c-green);}
-.step-check.done::after{content:"✓";color:#fff;font-size:12px;font-weight:700;}
-/* ── Commodity guide ───────────────────────────────── */
-.commodity-guide{background:var(--c-bg-2);border:1px solid var(--c-border-2);
-  border-radius:var(--r-lg);padding:12px 14px;margin-bottom:10px;}
-.cg-stop{padding:8px 10px;border-radius:var(--r-sm);margin-bottom:6px;
-  border-left:3px solid var(--c-blue);}
-.cg-stop.dropoff{border-left-color:#C2410C;}
-.cg-action{font-size:12px;font-weight:600;color:var(--c-text-1);margin-bottom:4px;}
-.cg-items{font-size:11px;color:var(--c-text-2);font-family:var(--font-mono);}
-/* ── Ruta visual mejorada ──────────────────────────── */
-.rv2-wrap{overflow-x:auto;padding-bottom:8px;}
-.rv2{display:flex;align-items:center;min-width:max-content;padding:16px 0;}
-.rv2-node{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;max-width:100px;}
-.rv2-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid transparent;}
-.rv2-label{font-size:9px;color:var(--c-text-2);text-align:center;line-height:1.3;
-  font-family:var(--font-mono);max-width:90px;word-break:break-word;}
-.rv2-seg{display:flex;flex-direction:column;align-items:center;flex:1;min-width:40px;}
-.rv2-line{width:100%;height:2px;background:var(--c-border-1);border-radius:2px;}
-.rv2-dist{font-size:9px;color:var(--c-text-3);font-family:var(--font-mono);
-  white-space:nowrap;margin-top:3px;}
-.rv2-load{font-size:9px;color:var(--c-text-3);font-family:var(--font-mono);}
-
-/* ── Distancias km/m ───────────────────────────────── */
-
-/* ── Ship autocomplete ─────────────────────────────── */
-.ship-opt{padding:7px 10px;font-size:12px;font-family:var(--font-mono);
-  cursor:pointer;color:var(--c-text-1);display:flex;justify-content:space-between;
-  align-items:center;border-bottom:0.5px solid var(--c-border-3);}
-.ship-opt:hover,.ship-opt.active{background:color-mix(in srgb,var(--c-faction) 10%,var(--c-bg-2));}
-.ship-opt-scu{font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);}
-
-/* ── Box plan panel en cards ──────────────────────── */
-.box-plan{padding:8px 12px;border-top:0.5px solid var(--c-border-3);
-  font-size:11px;font-family:var(--font-mono);display:flex;flex-direction:column;gap:6px;}
-.box-plan-row{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;}
-.bp-label{font-size:9px;text-transform:uppercase;letter-spacing:.05em;
-  color:var(--c-text-3);white-space:nowrap;padding-top:1px;}
-.bp-min{background:color-mix(in srgb,var(--c-green) 10%,var(--c-bg-3));
-  border:1px solid color-mix(in srgb,var(--c-green) 30%,transparent);
-  border-radius:var(--r-sm);padding:4px 8px;flex:1;}
-.bp-full{background:color-mix(in srgb,var(--c-blue) 10%,var(--c-bg-3));
-  border:1px solid color-mix(in srgb,var(--c-blue) 30%,transparent);
-  border-radius:var(--r-sm);padding:4px 8px;flex:1;}
-.bp-title{font-size:9px;color:var(--c-text-3);margin-bottom:2px;}
-.bp-val{font-size:12px;font-weight:600;color:var(--c-text-1);}
-.bp-sub{font-size:10px;color:var(--c-text-2);margin-top:1px;}
-.bp-deliveries{display:flex;flex-direction:column;gap:3px;margin-top:4px;
-  padding-top:6px;border-top:0.5px solid var(--c-border-3);}
-.bp-stop{display:flex;justify-content:space-between;align-items:center;
-  background:var(--c-bg-3);border-radius:4px;padding:3px 7px;gap:8px;}
-.bp-stop-loc{font-size:10px;color:var(--c-text-1);overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap;flex:1;}
-.bp-stop-detail{font-size:10px;color:var(--c-blue);white-space:nowrap;font-weight:600;}
-.bp-stop-mat{font-size:9px;color:var(--c-text-3);}
-
-/* ── Cargo pad badges ─────────────────────────────── */
-.pad-ext{font-size:9px;padding:1px 5px;border-radius:3px;
-  background:color-mix(in srgb,var(--c-green) 15%,transparent);
-  color:var(--c-green);border:0.5px solid color-mix(in srgb,var(--c-green) 30%,transparent);
-  white-space:nowrap;font-family:var(--font-mono);}
-.pad-int{font-size:9px;padding:1px 5px;border-radius:3px;
-  background:color-mix(in srgb,var(--c-orange) 12%,transparent);
-  color:var(--c-orange);border:0.5px solid color-mix(in srgb,var(--c-orange) 30%,transparent);
-  white-space:nowrap;font-family:var(--font-mono);}
-
-/* ── Responsive*/
-/* ── Responsive */
-/* ── Responsive ───────────────────────────────────────── */
-@media(max-width:580px){
-  .ship-bar{flex-direction:column;align-items:stretch;}
-  .row2{grid-template-columns:1fr;}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
-  .op-grid{grid-template-columns:1fr;}
-}
-@keyframes spin{100%{transform:rotate(360deg);}}
-.spin{animation:spin 1s linear infinite;display:inline-block;}
-@keyframes xpflash{0%,100%{box-shadow:none;}50%{box-shadow:0 0 16px var(--c-faction);}}
-.xp-bar-wrap.flash{animation:xpflash .5s ease;}
-#btn-refresh:hover{color:var(--c-faction);border-color:var(--c-faction);}
-#btn-refresh:disabled{opacity:.4;cursor:not-allowed;}
-
-/* ── Location autocomplete ────────────────────────────── */
-.loc-wrap{position:relative;flex:1;min-width:120px;}
-.loc-input{width:100%;font-family:var(--font-mono);font-size:11px;padding:4px 24px 4px 7px;height:27px;border:1px solid var(--c-border-2);border-radius:var(--r-sm);background:var(--c-bg-1);color:var(--c-text-1);transition:border-color .15s;}
-.loc-input:focus{outline:none;border-color:var(--c-faction);}
-.loc-input.resolved{border-color:var(--c-green);background:color-mix(in srgb,var(--c-green) 5%,var(--c-bg-1));}
-.loc-input.unresolved{border-color:var(--c-red);}
-.loc-clear{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--c-text-3);cursor:pointer;font-size:13px;padding:0;line-height:1;}
+.sc-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sc-text{flex:1;}
+.sc-name{font-size:14px;font-weight:500;}
+.sc-sub{font-size:11px;color:var(--c-text-3);}
+.loc-wrap{position:relative;flex:1;}
+.loc-input{width:100%;font-family:var(--font-mono);font-size:11px;padding:4px 24px 4px 7px;height:27px;border:1px solid var(--c-border-2);border-radius:var(--r-sm);background:var(--c-bg-1);color:var(--c-text-1);}
 .loc-dropdown{position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:999;background:var(--c-bg-2);border:1px solid var(--c-border-1);border-radius:var(--r-md);box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:220px;overflow-y:auto;display:none;}
 .loc-dropdown.open{display:block;}
-.loc-opt{padding:6px 10px;font-size:11px;font-family:var(--font-mono);cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:var(--c-text-1);gap:8px;}
-.loc-opt:hover,.loc-opt.active{background:color-mix(in srgb,var(--c-faction) 12%,var(--c-bg-2));}
-.loc-opt-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.loc-opt-name b{color:var(--c-faction);}
-.loc-opt-tag{font-size:9px;color:var(--c-text-3);white-space:nowrap;background:var(--c-bg-3);padding:1px 5px;border-radius:3px;}
-
-/* ── Location autocomplete ────────────────────────────── */
-.loc-wrap{position:relative;flex:1;min-width:120px;}
-.loc-input{
-  width:100%;font-family:var(--font-mono);font-size:11px;
-  padding:4px 24px 4px 7px;height:27px;
-  border:1px solid var(--c-border-2);border-radius:var(--r-sm);
-  background:var(--c-bg-1);color:var(--c-text-1);
-  transition:border-color .15s;
-}
-.loc-input:focus{outline:none;border-color:var(--c-faction);}
-.loc-input.resolved{border-color:var(--c-green);background:color-mix(in srgb,var(--c-green) 5%,var(--c-bg-1));}
-.loc-input.unresolved{border-color:var(--c-red);}
-.loc-clear{position:absolute;right:5px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--c-text-3);cursor:pointer;font-size:13px;padding:0;line-height:1;display:none;}
-.loc-wrap:hover .loc-clear,.loc-input:focus ~ .loc-clear{display:block;}
-.loc-dropdown{
-  position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:999;
-  background:var(--c-bg-2);border:1px solid var(--c-border-1);
-  border-radius:var(--r-md);box-shadow:0 8px 24px rgba(0,0,0,.35);
-  max-height:220px;overflow-y:auto;display:none;
-}
-.loc-dropdown.open{display:block;}
-.loc-opt{
-  padding:6px 10px;font-size:11px;font-family:var(--font-mono);
-  cursor:pointer;display:flex;justify-content:space-between;align-items:center;
-  color:var(--c-text-1);gap:8px;
-}
-.loc-opt:hover,.loc-opt.active{background:color-mix(in srgb,var(--c-faction) 12%,var(--c-bg-2));}
-.loc-opt-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.loc-opt-name b{color:var(--c-faction);}
-.loc-opt-tag{font-size:9px;color:var(--c-text-3);white-space:nowrap;background:var(--c-bg-3);padding:1px 5px;border-radius:3px;}
-
-/* ── Hotspots posición actual ─────────────────────── */
-.hotspots-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px;}
-.hotspot-btn{font-size:10px;padding:3px 9px;border-radius:99px;
-  border:0.5px solid var(--c-border-2);background:transparent;
-  color:var(--c-text-3);cursor:pointer;font-family:var(--font-mono);
-  display:flex;align-items:center;gap:4px;transition:all .12s;}
-.hotspot-btn:hover{border-color:var(--c-faction);color:var(--c-faction);}
-.hotspot-btn.active{background:var(--c-faction);color:#fff;border-color:var(--c-faction);}
-.hotspot-btn .hb-missions{font-size:9px;opacity:.75;}
-.pos-sys{font-size:10px;color:var(--c-faction);font-family:var(--font-mono);
-  margin-left:4px;font-weight:500;}
-
-.version-banner{position:fixed;bottom:8px;right:8px;font-size:10px;
-  font-family:var(--font-mono);padding:3px 8px;border-radius:4px;z-index:9999;
-  background:color-mix(in srgb,var(--c-blue) 15%,transparent);
-  color:var(--c-blue);border:0.5px solid var(--c-blue);pointer-events:none;}
+.loc-opt{padding:6px 10px;font-size:11px;font-family:var(--font-mono);cursor:pointer;}
+.loc-opt:hover{background:color-mix(in srgb,var(--c-faction) 12%,var(--c-bg-2));}
+.spin{animation:spin 1s linear infinite;display:inline-block;}
+@keyframes spin{100%{transform:rotate(360deg);}}
+@media(max-width:580px){.ship-bar{flex-direction:column;align-items:stretch;} .row2{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="page-wrap">
 <div class="app">
   <div class="topbar">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:10px;">
       <h1>🚀 Hauling Suite</h1>
-      <span id="api-badge" style="display:none;font-size:10px;padding:2px 8px;border-radius:99px;
-        font-family:var(--font-mono);color:#fff;transition:all .3s"></span>
+      <span id="api-badge" style="display:none;font-size:10px;padding:2px 8px;border-radius:99px;font-family:var(--font-mono);color:#fff;"></span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-      <p style="margin:0">Stanton · Pyro · Nyx</p>
-      <span id="patch-badge" class="patch-badge" onclick="forceUpdate()" title="Clic para actualizar"></span>
-      <button id="btn-theme" title="Cambiar tema claro/oscuro"
-        style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);
-        background:transparent;color:var(--c-text-3);cursor:pointer;font-size:14px;line-height:1">
-        🌗
-      </button>
-      <button id="btn-compact" title="Vista compacta"
-        style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);
-        background:transparent;color:var(--c-text-3);cursor:pointer;font-size:11px;font-family:var(--font-mono)">
-        <i class="ti ti-layout-list"></i>
-      </button>
-      <button id="btn-export" title="Exportar configuración"
-        style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);
-        background:transparent;color:var(--c-text-3);cursor:pointer;font-size:11px;font-family:var(--font-mono)">
-        <i class="ti ti-download"></i>
-      </button>
-      <label id="btn-import" title="Importar configuración"
-        style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);
-        background:transparent;color:var(--c-text-3);cursor:pointer;font-size:11px;font-family:var(--font-mono);display:inline-flex">
-        <i class="ti ti-upload"></i>
-        <input type="file" accept=".json" id="import-file" style="display:none">
-      </label>
-      <button onclick="resetGeminiKey()" title="Borrar API Key de Gemini"
-        style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);
-        background:transparent;color:var(--c-text-3);cursor:pointer;font-size:11px;font-family:var(--font-mono)">
-        <i class="ti ti-key"></i>
-      </button>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button id="btn-theme" title="Tema" style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);background:transparent;color:var(--c-text-3);cursor:pointer;">🌗</button>
+      <button id="btn-export" title="Backup" style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);background:transparent;color:var(--c-text-3);cursor:pointer;"><i class="ti ti-download"></i></button>
+      <button onclick="resetGeminiKey()" title="Borrar API Key" style="padding:4px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);background:transparent;color:var(--c-text-3);cursor:pointer;"><i class="ti ti-key"></i></button>
     </div>
   </div>
-  <div class="disclaimer"><i class="ti ti-map-2" aria-hidden="true"></i> Set material and quantity in <b>Pickup</b>; <b>total and boxes</b> are calculated automatically. Mode <b>100%</b> = deliver everything (max aUEC). Mode <b>25%</b> = XP/blueprint farming: system picks optimal commodity (fewest boxes) and delivers to nearest location, counting the missionssion as complete.</div>
 
   <div class="ship-bar">
     <div class="sg">
-      <label><i class="ti ti-rocket" aria-hidden="true" style="font-size:12px"></i> Ship</label>
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-        <div id="ship-search-wrap" style="position:relative;flex:1;min-width:160px">
-          <input id="ship-search-inp" type="text" autocomplete="off" spellcheck="false" placeholder="Search ship…" style="width:100%;font-family:var(--font-mono);font-size:12px;padding:6px 8px;border-radius:var(--r-sm);border:1px solid var(--c-border-2);background:var(--c-bg-1);color:var(--c-text-1);transition:border-color .15s;">
-          <div id="ship-dropdown" style="display:none;position:absolute;top:calc(100%+3px);left:0;right:0;z-index:999;background:var(--c-bg-2);border:1px solid var(--c-border-1);border-radius:var(--r-md);box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:200px;overflow-y:auto;"></div>
-          <select id="ship-sel" style="display:none"></select>
-        </div>
-        <button id="btn-refresh" title="Forzar actualización de naves y commodities desde la API" style="flex-shrink:0;padding:5px 8px;border-radius:var(--r-sm);border:0.5px solid var(--c-border-1);background:transparent;color:var(--c-text-3);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;transition:all .15s">
-          <i class="ti ti-refresh" id="refresh-icon"></i>
-          <span>Update</span>
-        </button>
+      <label><i class="ti ti-rocket" style="font-size:12px"></i> Ship</label>
+      <div style="position:relative;flex:1;">
+        <input id="ship-search-inp" type="text" autocomplete="off" spellcheck="false" placeholder="Search ship…">
+        <div id="ship-dropdown" class="loc-dropdown"></div>
+        <select id="ship-sel" style="display:none"></select>
       </div>
     </div>
-    
     <div class="sg">
-      <label><i class="ti ti-dashboard" aria-hidden="true" style="font-size:12px"></i> Q. Drive</label>
-      <select id="drive-sel" title="Quantum Drive — affects estimated travel time" style="font-size:11px;padding:4px 6px;border:1px solid var(--c-border-2);border-radius:var(--r-sm);background:var(--c-bg-1);color:var(--c-text-1);font-family:var(--font-mono);height:27px;">
-        <!-- populated by poblarNaves() -->
-      </select>
+      <label><i class="ti ti-dashboard" style="font-size:12px"></i> Q. Drive</label>
+      <select id="drive-sel" style="height:27px;"></select>
     </div>
-
     <div class="sg">
-      <label><i class="ti ti-route" aria-hidden="true" style="font-size:12px"></i> Optimizar por</label>
-      <select id="opt-mode-sel" style="font-size:11px;padding:4px 6px;border:1px solid var(--c-border-2);border-radius:var(--r-sm);background:var(--c-bg-1);color:var(--c-text-1);font-family:var(--font-mono);height:27px;">
+      <label><i class="ti ti-route" style="font-size:12px"></i> Optimizar por</label>
+      <select id="opt-mode-sel" style="height:27px;">
         <option value="time">⏳ Menor Tiempo</option>
         <option value="dist">📏 Menor Distancia</option>
       </select>
     </div>
-
-    <div class="sg" style="justify-content:flex-end;">
-      <div class="cap-display" title="Cargo Capacity SCU (editable)" style="height:27px;padding:2px 8px;display:flex;align-items:center;justify-content:center;gap:4px;cursor:pointer;" onclick="const v=prompt('Capacidad SCU:', $('cap-input').value); if(v){$('cap-input').value=v;$('cap-show').textContent=v;}">
-        <div class="cv" id="cap-show" style="font-size:14px;line-height:1">696</div><div class="cl" style="font-size:10px">SCU</div>
+    <div class="sg" style="flex:0;min-width:70px">
+      <label style="text-align:center">Hold</label>
+      <div class="cap-display" onclick="const v=prompt('Capacidad SCU:', $('cap-input').value); if(v){$('cap-input').value=v;$('cap-show').textContent=v;}">
+        <div class="cv" id="cap-show" style="font-size:14px;line-height:1">696</div>
       </div>
-      <input type="number" id="cap-input" value="696" min="1" style="display:none">
+      <input type="number" id="cap-input" value="696" style="display:none">
     </div>
   </div>
 
   <div class="rank-bar">
     <div class="rb-top">
-      <label><i class="ti ti-building-factory-2" aria-hidden="true" style="font-size:12px"></i> Faction</label>
-      <select id="faction-sel"></select>
-      <span style="color:var(--c-border-1);font-size:14px;padding:0 2px">·</span>
-      <label><i class="ti ti-medal" aria-hidden="true" style="font-size:12px"></i> Rank</label>
-      <select id="rank-sel"></select>
+      <label>Faction</label> <select id="faction-sel"></select>
+      <label>Rank</label> <select id="rank-sel"></select>
     </div>
-    <div class="rank-info" id="rank-info"></div>
   </div>
 
   <div class="row2">
     <div class="panel">
-      <div class="ptitle"><i class="ti ti-current-location" aria-hidden="true" style="font-size:12px"></i> CURRENT POSITION</div>
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-        <div id="o-search-wrap" style="flex:1"></div>
-        <span class="pos-sys" id="pos-sys-label"></span>
-      </div>
+      <div class="ptitle">CURRENT POSITION</div>
+      <div id="o-search-wrap"></div>
       <input type="hidden" id="o-loc" value="">
-      <div class="hotspots-row" id="hotspots-row"></div>
     </div>
     <div class="panel">
-      <div class="ptitle"><i class="ti ti-adjustments" aria-hidden="true" style="font-size:12px"></i> DELIVERY MODE</div>
+      <div class="ptitle">DELIVERY MODE</div>
       <div class="mode-seg">
         <button id="mode-full"><b>100%</b><span style="font-size:10px">max aUEC</span></button>
-        <button id="mode-partial" class="on"><b id="pct-label">25%</b><span style="font-size:10px">XP farming</span></button>
+        <button id="mode-partial" class="on"><b>25%</b><span style="font-size:10px">XP farming</span></button>
       </div>
-      <div class="pct-slider-row" id="pct-line">
-        <input type="range" id="pct-input" min="1" max="100" value="25" step="1">
-        <span class="pct-val" id="pct-display">25%</span>
-      </div>
+      <input type="range" id="pct-input" min="1" max="100" value="25" style="width:100%;margin-top:5px;accent-color:var(--c-faction);">
     </div>
   </div>
 
   <div class="dest-toggle">
-    <input type="checkbox" id="use-dest">
-    <label for="use-dest"><i class="ti ti-flag" aria-hidden="true" style="font-size:12px;color:#D85A30"></i> End at a fixed destination (auto-fills deliveries with this location).</label>
+    <input type="checkbox" id="use-dest"> <label for="use-dest">End at a fixed destination</label>
   </div>
   <div class="dest-fields hidden" id="dest-fields"><div id="d-search-wrap"></div><input type="hidden" id="d-loc" value=""></div>
 
-  <!-- ── Panel de Ingreso Inteligente ── -->
-  <!-- Quick Entry — dos secciones siempre visibles, sin tabs -->
-  <div class="smart-panel" id="smart-panel" style="display:flex;flex-direction:column;gap:10px">
-
-    <!-- TEXTO -->
-    <div>
-      <div style="font-size:10px;font-family:var(--font-mono);letter-spacing:.05em;
-        color:var(--c-text-3);text-transform:uppercase;margin-bottom:6px;
-        display:flex;align-items:center;gap:5px">
-        <i class="ti ti-terminal-2" style="color:var(--c-faction)"></i> Paste contract text
+  <!-- Panel Inteligente -->
+  <div class="smart-panel" id="smart-panel">
+    <div style="display:grid;grid-template-columns:1fr;gap:12px">
+      <div>
+        <label style="font-size:10px;color:var(--c-text-3);">Paste contract text</label>
+        <div class="smart-input-row" style="margin-top:4px">
+          <input type="text" id="smart-text-input" placeholder="Paste text and press Enter…">
+          <button class="smart-btn" id="smart-parse-btn"><i class="ti ti-sparkles"></i> Parse</button>
+        </div>
+        <div id="smart-text-status" class="smart-status"></div>
       </div>
-      <div class="smart-input-row">
-        <input type="text" id="smart-text-input" placeholder="Paste the mobiGlas contract text here and press Enter…">
-        <button class="smart-btn" id="smart-parse-btn">
-          <i class="ti ti-sparkles"></i> Create
-        </button>
+      <div style="border-top:1px solid var(--c-border-3);padding-top:10px">
+        <label style="font-size:10px;color:var(--c-text-3);">Or Upload Screenshot (Auto-resizer active)</label>
+        <label style="display:block;margin-top:6px;padding:14px;border-radius:var(--r-md);text-align:center;border:2px dashed var(--c-faction);color:var(--c-faction);cursor:pointer;font-family:var(--font-mono);font-size:12px;">
+          <i class="ti ti-photo-up" style="font-size:20px;display:block;margin-bottom:4px"></i> Select screenshot file
+          <input type="file" id="ocr-file-input" accept="image/*" style="display:none">
+        </label>
+        <div id="smart-ocr-status" class="smart-status"></div>
       </div>
-      <div class="smart-status" id="smart-text-status" style="margin-top:5px"></div>
-    </div>
-
-    <!-- SEPARADOR -->
-    <div style="border-top:1px solid var(--c-border-3);position:relative">
-      <span style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);
-        background:var(--c-bg-2);padding:0 8px;font-size:10px;
-        color:var(--c-text-3);font-family:var(--font-mono)">OR</span>
-    </div>
-
-    <!-- SCREENSHOT — usa node servidor.js para CORS -->
-    <div>
-      <div style="font-size:10px;font-family:var(--font-mono);letter-spacing:.05em;
-        color:var(--c-text-3);text-transform:uppercase;margin-bottom:8px;
-        display:flex;align-items:center;gap:5px">
-        <i class="ti ti-scan" style="color:var(--c-faction)"></i> Screenshot of contract
-      </div>
-
-      <!-- Instrucciones simples -->
-      <div style="font-size:11px;color:var(--c-text-3);font-family:var(--font-mono);
-        margin-bottom:8px;line-height:1.6;background:var(--c-bg-3);
-        border-radius:var(--r-sm);padding:8px 10px;">
-        <b style="color:var(--c-text-2)">How to use:</b><br>
-        1. Capture the contract with <b>Win+Shift+S</b> → save as file (PNG)<br>
-        2. Click <b>Select screenshot</b> below<br>
-        3. Also needs: <b>node servidor.js</b> running (for Claude AI to read the image)
-      </div>
-
-      <!-- Botón principal: file input -->
-      <label style="display:flex;align-items:center;justify-content:center;gap:8px;
-        padding:14px;border-radius:var(--r-md);cursor:pointer;width:100%;
-        border:2px dashed var(--c-faction);
-        background:color-mix(in srgb,var(--c-faction) 6%,var(--c-bg-1));
-        color:var(--c-faction);font-family:var(--font-mono);font-size:13px;font-weight:600;
-        transition:all .15s;box-sizing:border-box">
-        <i class="ti ti-photo-up" style="font-size:20px"></i>
-        Select screenshot file
-        <input type="file" id="ocr-file-input" accept="image/*" style="display:none">
-      </label>
-
-      <!-- Zona drag & drop -->
-      <div id="ocr-drop-zone" style="margin-top:6px;padding:8px;border-radius:var(--r-sm);
-        border:1px dashed var(--c-border-1);text-align:center;
-        font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);
-        cursor:pointer;transition:all .15s">
-        or drag and drop the image here
-      </div>
-
-      <!-- Preview -->
-      <div id="ocr-preview" style="display:none;margin-top:8px">
-        <canvas id="ocr-canvas" style="max-width:100%;border-radius:var(--r-sm);
-          border:0.5px solid var(--c-border-2);display:block"></canvas>
-      </div>
-
-      <!-- Status -->
-      <div class="smart-status" id="smart-ocr-status" style="margin-top:6px"></div>
-    </div>
-
-  </div>
-
-  <!-- Barra de sesión -->
-  <div id="session-bar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 12px;margin-bottom:8px;"></div>
-
-  <div class="section-lbl"><span>CONTRACT LIST <span id="mcount" style="color:var(--c-text-3)"></span></span><span class="hint">max 10 missions</span></div>
-
-  <div id="cap-alert"></div>
-
-  <div class="mode-row" style="margin-bottom:6px">
-    <span class="lbl">Rep:</span>
-    <button class="mbtn" id="btn-onebox">
-      <i class="ti ti-box-seam"></i> One-box rep
-      <span id="onebox-badge" style="display:none;background:var(--c-red);color:#fff;
-        border-radius:4px;font-size:9px;padding:1px 5px;margin-left:4px">ON</span>
-    </button>
-    <span style="font-size:10px;color:var(--c-text-3);margin-left:6px">1 SCU/missionssion = XP without full load</span>
-  </div>
-
-  <!-- Stack rápido -->
-  <div class="stack-panel" id="stack-panel" style="display:none">
-    <div style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);
-      text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;
-      display:flex;justify-content:space-between;align-items:center">
-      <span><i class="ti ti-stack-2"></i> Quick Stack — same pickup, N contracts</span>
-      <button onclick="document.getElementById('stack-panel').style.display='none'"
-        style="background:none;border:none;color:var(--c-text-3);cursor:pointer;font-size:14px">✕</button>
-    </div>
-    <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
-      <div style="flex:1;min-width:120px">
-        <div style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);margin-bottom:3px">Pickup</div>
-        <div id="stack-pickup-wrap"></div>
-      </div>
-      <div style="min-width:60px">
-        <div style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);margin-bottom:3px">Contracts</div>
-        <input type="number" id="stack-count" value="5" min="1" max="10"
-          style="width:60px;font-family:var(--font-mono);font-size:13px;padding:5px 7px;text-align:center">
-      </div>
-      <div style="min-width:70px">
-        <div style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);margin-bottom:3px">SCU each</div>
-        <input type="number" id="stack-scu" value="64" min="1"
-          style="width:70px;font-family:var(--font-mono);font-size:13px;padding:5px 7px;text-align:center">
-      </div>
-      <button id="stack-create" style="padding:6px 14px;background:var(--c-faction);color:#fff;
-        border:none;border-radius:var(--r-sm);cursor:pointer;font-family:var(--font-mono);
-        font-size:12px;white-space:nowrap">
-        <i class="ti ti-stack-push"></i> Create stack
-      </button>
-    </div>
-    <div style="font-size:10px;color:var(--c-text-3);margin-top:6px;font-family:var(--font-mono)">
-      Creates N contracts with the same pickup. Fill in deliveries for each one.
     </div>
   </div>
 
-  <div class="add-missionssion-row">
-    <button class="accent" id="add-missionssion"><i class="ti ti-plus" aria-hidden="true"></i> New Contract</button>
-    <button id="clear-all"><i class="ti ti-trash" aria-hidden="true"></i> Clear all</button>
-    <button id="btn-session-start" class="add-missionssion-row-btn" style="background:var(--c-green);color:#fff;border-color:var(--c-green)"><i class="ti ti-player-play"></i> Start session</button>
-    <button id="btn-session-stop" class="add-missionssion-row-btn" style="display:none;background:var(--c-red);color:#fff;border-color:var(--c-red)"><i class="ti ti-player-stop"></i> End session</button>
-    <button id="btn-save-route" class="add-missionssion-row-btn" style="color:var(--c-blue);border-color:var(--c-blue)"><i class="ti ti-bookmark"></i> Save route</button>
+  <div class="add-missionssion-row" style="margin-top:15px">
+    <button class="accent" id="add-missionssion"><i class="ti ti-plus"></i> New Contract</button>
+    <button id="clear-all"><i class="ti ti-trash"></i> Clear all</button>
   </div>
+
   <div class="missions-list" id="missions-list"></div>
 
   <div class="tabs">
-    <button class="tab" id="tab-loop"><i class="ti ti-trophy" aria-hidden="true"></i> Progress / XP</button>
-    <button class="tab on" id="tab-route"><i class="ti ti-route" aria-hidden="true"></i> Optimal Route</button>
-    <button class="tab" id="tab-boxes"><i class="ti ti-box" aria-hidden="true"></i> Cargo Boxes</button>
+    <button class="tab on" id="tab-route"><i class="ti ti-route"></i> Optimal Route</button>
   </div>
 
-  <!-- PESTAÑA XP -->
-  <div id="loop-tab" style="display:none">
-    <div class="xp-card">
-      <div class="xp-top">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <i class="ti ti-trophy" aria-hidden="true" style="color:var(--c-faction);font-size:14px"></i>
-          <span style="font-size:13px;font-weight:600;color:var(--c-text-1)" id="xp-faction-label"></span>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-        <div class="xp-rank">Current rank: <b id="xp-rank-name">Trainee</b></div><div class="xp-next" id="xp-next"></div>
-      </div>
-      <div class="xp-bar-wrap" id="xp-bar-wrap"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div>
-      <div class="xp-bar-text" id="xp-bar-text"></div>
-      <div class="xp-actions">
-        <div id="xp-auto-info" style="flex:1;font-size:11px;font-family:var(--font-mono);color:var(--c-text-2);line-height:1.5"></div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <button class="reset-btn" id="xp-reset"><i class="ti ti-rotate" aria-hidden="true"></i> Reset</button>
-        </div>
-      </div>
-      <div style="font-size:10px;color:var(--c-text-3);padding:2px 0 4px" id="xp-hint"></div>
-      <div class="sync-panel">
-        <div class="sync-row">
-          <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);">Sync with Delphi:</span>
-          <select id="sync-rank" style="width:auto;font-size:11px;padding:4px 8px;"></select>
-        </div>
-        <div class="sync-row">
-          <div class="sync-slider-container">
-            <input type="range" id="sync-slider" min="0" max="100" value="0">
-            <span id="sync-slider-val" style="font-size:13px;font-weight:600;font-family:var(--font-mono);min-width:40px;text-align:right;">0%</span>
-          </div>
-          <button class="reset-btn" id="sync-btn" style="background:#1D9E75;border-color:#1D9E75;color:#fff;padding:8px 14px;font-weight:500;">Set State</button>
-        </div>
-        <div class="xp-edit"><i class="ti ti-info-circle" aria-hidden="true"></i> Your current state is shown in the slider. Para actualizarlo, selecciona tu rango, mueve la barra hasta que coincida con lo que ves en tu mobiGlas y presiona Set State.</div>
-      </div>
-    </div>
-
-    <!-- SAVED ROUTES -->
-    <div style="margin-top:10px">
-      <div class="section-lbl"><span>SAVED ROUTES</span><span class="hint">saved in this browser</span></div>
-      <div id="saved-routes-list" style="display:flex;flex-direction:column;gap:6px;margin-top:4px"></div>
-    </div>
-    <!-- SESSION HISTORY -->
-    <div style="margin-top:14px">
-      <div class="section-lbl">
-        <span>SESSION HISTORY</span>
-        <button onclick="localStorage.removeItem('sc_session_history');renderSessionHistory()"
-          style="font-size:10px;padding:2px 7px;border-radius:4px;border:0.5px solid var(--c-border-2);
-          background:transparent;color:var(--c-text-3);cursor:pointer">
-          <i class="ti ti-trash"></i> Clear
-        </button>
-      </div>
-      <div id="session-history" style="margin-top:6px;overflow-x:auto"></div>
-    </div>
-
-    <!-- FARMING COMBOS -->
-    <div id="farm-combos-wrap">
-      <div class="section-lbl"><span>COMBOS DE FARMEO</span><span class="hint">which contracts to combine (25% mode)</span></div>
-      <div class="com-table" id="farm-combos"></div>
-    </div>
-
-    <div class="section-lbl"><span>SHIP GUIDE BY RANK</span></div>
-    <div class="rank-guide" id="rank-guide"></div>
-  </div>
-
-  <!-- ROUTE TAB -->
   <div id="route-tab">
-    <button class="calc-btn" id="calc-btn" style="margin-bottom:10px">
-      <i class="ti ti-route"></i> Calculate Best Route
-    </button>
+    <button class="calc-btn" id="calc-btn" style="margin:10px 0;"><i class="ti ti-route"></i> Calculate Route</button>
     <div id="output" style="display:none">
-      <div id="alert-box"></div>
+      <div id="alert-box" style="margin-bottom:10px"></div>
       <div class="stats-row" id="stats"></div>
-
-      <!-- Commodity guide — what to load/deliver at each stop -->
-      <div id="commodity-guide" style="margin-bottom:12px"></div>
-
-      <!-- Visual route rv2 -->
-      <div class="section-lbl" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span>ROUTE OVERVIEW</span>
-        <span style="display:flex;gap:6px;align-items:center">
-          <button onclick="showElevatorTip()" style="font-size:10px;padding:2px 8px;border-radius:4px;
-            border:0.5px solid var(--c-orange);background:transparent;color:var(--c-orange);cursor:pointer;font-family:var(--font-mono)">
-            ⚠ Elevator guide
-          </button>
-          <button class="reset-btn" id="share-btn" style="display:none;border-color:#378ADD;color:#378ADD;font-size:11px;padding:4px 10px;">
-            <i class="ti ti-clipboard"></i> Copy Manifest
-          </button>
-        </span>
-      </div>
       <div class="route-vis" id="route-vis"></div>
-
-      <!-- Step by step checklist -->
-      <div class="section-lbl" id="steps-lbl" style="margin-top:12px"><span>STEP BY STEP</span><span class="hint">click any step to check it off</span></div>
       <div class="step-list" id="step-list"></div>
     </div>
   </div>
-
-  <!-- PESTAÑA CAJAS -->
-  <div id="boxes-tab" style="display:none">
-    <div class="mode-row"><span class="lbl">Boxes:</span><button class="mbtn on" id="bmode-optimal">Automatic (1–32, mixed)</button><button class="mbtn" id="bmode-single">Fixed size</button></div>
-    <div id="size-wrap" style="display:none"><div class="size-label" id="size-lbl"><i class="ti ti-resize" aria-hidden="true" style="font-size:12px"></i> Tamaño de box</div><div class="size-row" id="size-row"></div></div>
-    <div class="grand-total" id="grand-total"></div>
-    <div class="section-lbl"><span>BOXES PER MISSION AND COMMODITY</span><span class="hint" id="boxes-hint"></span></div>
-    <div class="com-table" id="com-table"></div>
-    <div class="note" id="box-note"></div>
-  </div>
 </div>
-<div class="page-foot">Hauling Suite · unofficial tool for Star Citizen · your progress is saved in this browser</div>
 </div>
 
 <script>
-// ── VARIABLES GLOBALES VACÍAS (Se llenan al iniciar) ──
+const $ = id => document.getElementById(id);
+
+// ── Variables Globales ──
 let SHIPS = [];
 let QUANTUM_DRIVES = {};
 let MATERIALS = [];
@@ -1028,41 +250,52 @@ let FACTION_DATA = {};
 let ALL_LOCS = {};
 let STATIONS = [];
 
-// ── CARGA ASÍNCRONA DE DATOS (Arquitectura Limpia JSON) ──
+const ALL_BOX_SIZES = [1, 2, 4, 8, 16, 24, 32];
+const MAX_MISSIONS = 10;
+const FACTIONS = ["Covalex Shipping", "Red Wind Linehaul", "Ling Family Hauling"];
+
+let missionSeq=0, pickSeq=0, delivSeq=0, missions=[];
+let boxSize=16, boxMode='optimal', useDest=false, deliveryMode='partial', partialPct=25;
+let currentRank="Trainee", oneBoxMode=false, oneBoxSize=1;
+let lastRouteResult=null;
+let prog={ f: FACTIONS[0], xp: { "Covalex Shipping": 0, "Red Wind Linehaul": 0, "Ling Family Hauling": 0 } };
+
+let _activeFactionKey = "Covalex Shipping";
+function factionKey(f){ return Object.keys(FACTION_DATA).find(k=>f.startsWith(k)) || "Covalex Shipping"; }
+function getRanks(){ return FACTION_DATA[_activeFactionKey]?.ranks || {}; }
+
+let CONTRACT_RANKS = {};
+let RANK_ORDER = [];
+let RANK_CUM = [];
+
+// ── Carga de Datos Segura ──
 async function loadGameData() {
   try {
-    setBadge('sync', 'Cargando base de datos...');
-    
-    // Descargamos todos los archivos en paralelo desde la carpeta /data/
+    setBadge('sync', 'Cargando JSONs...');
     const [shipsRes, drivesRes, matsRes, factionsRes, locsRes] = await Promise.all([
-      fetch('data/ships.json'),
-      fetch('data/drives.json'),
-      fetch('data/materials.json'),
-      fetch('data/factions.json'),
-      fetch('data/locations.json')
+      fetch('data/ships.json').catch(()=>null),
+      fetch('data/drives.json').catch(()=>null),
+      fetch('data/materials.json').catch(()=>null),
+      fetch('data/factions.json').catch(()=>null),
+      fetch('data/locations.json').catch(()=>null)
     ]);
 
-    // Parseo de los JSON
-    if(shipsRes.ok) { const sd = await shipsRes.json(); SHIPS = sd.ships || sd; }
-    if(drivesRes.ok) { const dd = await drivesRes.json(); QUANTUM_DRIVES = dd.drives || dd; }
-    if(matsRes.ok) { const md = await matsRes.json(); MATERIALS = md.materials || md; }
-    if(factionsRes.ok) { FACTION_DATA = await factionsRes.json(); }
+    if(shipsRes && shipsRes.ok) { const sd = await shipsRes.json(); SHIPS = sd.ships || sd; }
+    if(drivesRes && drivesRes.ok) { const dd = await drivesRes.json(); QUANTUM_DRIVES = dd.drives || dd; }
+    if(matsRes && matsRes.ok) { const md = await matsRes.json(); MATERIALS = md.materials || md; }
+    if(factionsRes && factionsRes.ok) { FACTION_DATA = await factionsRes.json(); }
     
-    if(locsRes.ok) {
+    if(locsRes && locsRes.ok) {
       const rawLocs = await locsRes.json();
-      const locList = rawLocs.locations || []; // Soporta el formato de sc-data si lo pegas tal cual
+      const locList = rawLocs.locations || []; 
       let _i = 0;
-      
-      // Si el JSON es un Array (como SC-Data)
       if (Array.isArray(locList) && locList.length > 0) {
           locList.forEach(l => {
               const loc = { id: 'loc' + (_i++), label: l.name, sys: l.system, planet: l.parent, type: l.type, pad: l.pad || 'efe', x: l.x, y: l.y, z: l.z };
               ALL_LOCS[loc.id] = loc;
               if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
           });
-      } 
-      // Si el JSON es un Diccionario (Formato que usamos en el paso anterior)
-      else {
+      } else {
           Object.entries(rawLocs).forEach(([label, data]) => {
             const loc = { id: 'loc' + (_i++), label: label, name: label, ...data };
             ALL_LOCS[loc.id] = loc;
@@ -1070,137 +303,48 @@ async function loadGameData() {
           });
       }
     }
-
-    console.log("[Data] Archivos JSON cargados correctamente.");
     setBadge('hidden', '');
-    return true;
-
   } catch (error) {
-    console.warn("[Data] No se encontraron archivos JSON locales en /data/. Usando base de datos interna.", error);
-    // Si falla el fetch (porque no creaste la carpeta), llamará a una función de Fallback para no romper la web.
-    loadFallbackData(); 
-    return false;
+    console.warn("Fallo carga de JSON", error);
+  }
+
+  // Fallback si los JSONs no existían o fallaron
+  if (!SHIPS.length) {
+    SHIPS = [{name:"Cutlass Black", scu:46, qFuel:2500, size:2}, {name:"Hercules C2", scu:696, qFuel:88000, size:3}];
+  }
+  if (Object.keys(QUANTUM_DRIVES).length === 0) {
+    QUANTUM_DRIVES = { "Atlas": {speed: 0.18, fuelConsumption: 1.0, size:2} };
+  }
+  if (!MATERIALS.length) MATERIALS = ["— Select commodity —", "Processed Food", "Iron", "Gold", "Laranite"];
+  if (Object.keys(FACTION_DATA).length === 0) {
+    FACTION_DATA = { "Covalex Shipping": { color:"#378ADD", ranks: { "Trainee": {scuMin:1, scuMax:10, maxBox:1, xpReq:50, typical:8} } } };
+  }
+  if (Object.keys(ALL_LOCS).length === 0) {
+    const fallbackLocs = { "Everus Harbor": {x:0.12, y:0.10, z:0, sys:"Stanton", type:"station", pad:"efe"}, "Lorville": {x:12.85, y:-0.0008, z:0.0006, sys:"Stanton", type:"habitat", pad:"int"} };
+    let i=0; Object.entries(fallbackLocs).forEach(([l, d])=>{ const loc={id:'L'+i++, label:l, ...d}; ALL_LOCS[loc.id]=loc; STATIONS.push(loc); });
   }
 }
 
-// ============================================================================
-// FUNCION DE EMERGENCIA (FALLBACK) - Si no existen los archivos /data/
-// ============================================================================
-function loadFallbackData() {
-  SHIPS = [
-    {name:"Avenger Titan",scu:8,qFuel:583}, {name:"Cutlass Black",scu:46,qFuel:2500},
-    {name:"Spirit C1",scu:64,qFuel:2500}, {name:"Freelancer MAX",scu:120,qFuel:2500},
-    {name:"Zeus Mk II CL",scu:128,qFuel:2500}, {name:"Constellation Taurus",scu:174,qFuel:3000},
-    {name:"Argo RAFT",scu:192,qFuel:3000}, {name:"Caterpillar",scu:576,qFuel:11000},
-    {name:"Hercules C2",scu:696,qFuel:88000}, {name:"Ironclad",scu:2204,qFuel:88000},
-    {name:"Hull C",scu:4608,qFuel:88000}, {name:"Personalizado",scu:0,qFuel:5000}
-  ];
-  
-  const rawDrives = {
-    "Atlas": {speed:0.18, fuelConsumption:1.0}, "Crossfield": {speed:0.22, fuelConsumption:1.8},
-    "TS-2": {speed:0.24, fuelConsumption:2.0}, "VK-00": {speed:0.28, fuelConsumption:2.5}
-  };
-  QUANTUM_DRIVES = rawDrives;
-  
-  MATERIALS = ["— Select commodity —","Acryliplex Composite","Agricium","Agricultural Supplies","Aluminum","Ammonia","Argon","Beryl","Chlorine","Construction Materials","Copper","Corundum","Distilled Spirits","Fluorine","Gold","Helium","Hydrogen","Iodine","Iron","Laranite","Medical Supplies","Processed Food","Quantanium","Quartz","Recycled Material Composite","Scrap","Steel","Titanium","Tungsten","Waste"];
-  
-  FACTION_DATA = {
-    "Covalex Shipping": { zone:"Stanton", color:"#378ADD", emoji:"📦", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:50, ship:"Spirit C1", strat:"1 mission intro"} } },
-    "Red Wind Linehaul": { zone:"Pyro", color:"#E84040", emoji:"🔴", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:60, ship:"Golem OX", strat:"1 mission intro"} } },
-    "Ling Family Hauling": { zone:"microTech / Stanton", color:"#4DB56A", emoji:"🟢", ranks: { "Trainee": {scuMin:1, scuMax:10, typical:8, maxBox:1, xpReq:50, xpMission:50, ship:"Cutlass", strat:"1 mission intro"} } }
-  };
-
-  const rawLocs = {
-    "Rat's Nest": {x: 3.7326, y: -42.7669, z: 0.0185, sys: "Pyro", planet: "Pyro V", type: "station", pad: "efe"},
-    "Endgame": {x: 48.2968, y: 48.292, z: 0.0027, sys: "Pyro", planet: "Terminus", type: "station", pad: "efe"},
-    "Gaslight": {x: 46.4944, y: -8.1909, z: 0.0177, sys: "Pyro", planet: "Pyro V", type: "station", pad: "efe"},
-    "Ruin Station": {x: -52.3368, y: -43.9179, z: -0.0001, sys: "Pyro", planet: "Terminus", type: "station", pad: "efe"},
-    "Everus Harbor": {x: 12.8499, y: -0.0009, z: 0.0005, sys: "Stanton", planet: "Hurston", type: "station", pad: "efe"},
-    "Baijini Point": {x: 18.5869, y: -22.1522, z: -0.0004, sys: "Stanton", planet: "ArcCorp", type: "station", pad: "efe"}
-  };
-  let _i = 0;
-  Object.entries(rawLocs).forEach(([label, data]) => {
-    const loc = { id: 'loc' + (_i++), label: label, name: label, ...data };
-    ALL_LOCS[loc.id] = loc;
-    if (['station', 'lagrange', 'habitat', 'outpost'].includes(loc.type)) STATIONS.push(loc);
-  });
-}
-// ============================================================================
-
-
-const $=id=>document.getElementById(id);
-const ALL_BOX_SIZES=[1,2,4,8,16,24,32];
-const TYPE_LBL={lagrange:"Lagrange",station:"Station",outpost:"Outpost",habitat:"Habitat",moon:"Luna",planet:"Planeta"};
-
-let _activeFactionKey="Covalex Shipping";
-function factionKey(f){return Object.keys(FACTION_DATA).find(k=>f.startsWith(k))||"Covalex Shipping";}
-function getRanks(){return FACTION_DATA[_activeFactionKey]?.ranks || {};}
-let CONTRACT_RANKS=getRanks();
-let RANK_ORDER=Object.keys(CONTRACT_RANKS);
-let RANK_CUM=[];
 function rebuildRankData(fk){
-  _activeFactionKey=fk||_activeFactionKey;
-  CONTRACT_RANKS=getRanks();
-  RANK_ORDER=Object.keys(CONTRACT_RANKS);
-  RANK_CUM=[];let acc=0;
-  RANK_ORDER.forEach(r=>{RANK_CUM.push(acc);acc+=CONTRACT_RANKS[r].xpReq;});
-  const fd=FACTION_DATA[_activeFactionKey];
-  if(typeof document!=='undefined' && fd){
-    document.documentElement.style.setProperty('--c-faction',fd.color);
-    const badge=document.getElementById('rank-faction-badge');
-    if(badge){badge.textContent=fd.emoji+' '+_activeFactionKey;}
-  }
-  if(typeof renderHotspots==='function')renderHotspots();
+  _activeFactionKey = fk || _activeFactionKey;
+  CONTRACT_RANKS = getRanks();
+  RANK_ORDER = Object.keys(CONTRACT_RANKS);
+  RANK_CUM = []; let acc = 0;
+  RANK_ORDER.forEach(r => { RANK_CUM.push(acc); acc += CONTRACT_RANKS[r].xpReq || 0; });
 }
 
-function renderHotspots(){
-  const row=document.getElementById('hotspots-row');
-  const sysLbl=document.getElementById('pos-sys-label');
-  if(!row)return;
-  const fd=FACTION_DATA[_activeFactionKey];
-  const zone=fd?.zone||'Stanton';
-  const sysFilt=zone==='Pyro'?['Pyro']:zone==='microTech'?['Stanton']:['Stanton'];
-  const tops=STATIONS
-    .filter(l=>sysFilt.includes(l.sys)&&(l.missionssionCount||0)>0)
-    .sort((a,b)=>(b.missionssionCount||0)-(a.missionssionCount||0))
-    .slice(0,6);
-  if(!tops.length){row.style.display='none';return;}
-  row.style.display='flex';
-  const curId=document.getElementById('o-loc')?.value;
-  if(sysLbl)sysLbl.textContent=zone;
-  row.innerHTML=tops.map(l=>`
-    <button class="hotspot-btn${curId===l.id?' active':''}" onclick="selectHotspot('${l.id}','${l.label.replace(/'/g,"\'")}')">
-      ${l.label.split(' ')[0]} ${l.missionssionCount>0?`<span class="hb-missions">${l.missionssionCount}</span>`:''}
-    </button>`).join('');
+function setBadge(state, msg) {
+  const b = $('api-badge'); if(!b) return;
+  b.textContent = msg; b.style.display = state==='hidden'?'none':'inline-block';
 }
 
-function selectHotspot(id,label){
-  document.getElementById('o-loc').value=id;
-  const wrap=document.getElementById('o-search-wrap');
-  if(wrap){const inp=wrap.querySelector('.loc-input');if(inp){inp.value=label;inp.className='loc-input resolved';}}
-  renderHotspots();
-  refreshCandidates();
-}
-
-const MAX_MISSIONS=10;
-const FACTIONS=["Covalex Shipping","Red Wind Linehaul","Ling Family Hauling"];
-
-let missionSeq=0,pickSeq=0,delivSeq=0,missions=[],boxSize=16,boxMode='optimal',useDest=false,deliveryMode='partial',partialPct=25,currentRank="Trainee",oneBoxMode=false,oneBoxSize=1;
-let lastRouteResult=null;
-let prog={f:FACTIONS[0],xp:{"Covalex Shipping":0,"Red Wind Linehaul":0,"Ling Family Hauling":0}};
-
-function saveProg(){try{localStorage.setItem('sc_hauling_xp',JSON.stringify(prog));}catch(e){}}
-function loadProg(){try{const v=localStorage.getItem('sc_hauling_xp');if(v){const p=JSON.parse(v);if(typeof p.xp==='number'){prog.xp["Covalex Shipping"]=p.xp;}else{
-const km={"Covalex Shipping (Crusader)":"Covalex Shipping","Red Wind Linehaul (Hurston)":"Red Wind Linehaul","Ling Family Hauling (microTech)":"Ling Family Hauling"};
-prog={f:FACTIONS.includes(p.f)?p.f:factionKey(p.f||'')||FACTIONS[0],xp:{"Covalex Shipping":0,"Red Wind Linehaul":0,"Ling Family Hauling":0}};
-Object.entries(p.xp||{}).forEach(([k,v])=>{const nk=km[k]||k;if(prog.xp[nk]!==undefined)prog.xp[nk]=v;});}}}catch(e){}}
-
-// ── Distancias exactas estilo Star Citizen (m, km, Mm, Gm) ──
 function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
 function sysOf(n){return n.sys||'';}
-function legGm(a,b){return sysOf(a)===sysOf(b)?dist3(a,b):0;}
-function gatewayLoc(thisSys,fromSys){const id=findLoc(fromSys+' Gateway ('+thisSys+')');return id?locById(id):null;}
-
+function locById(id){return ALL_LOCS[id];}
+function findLoc(sub){
+  const found = Object.values(ALL_LOCS).find(l => l.label.includes(sub));
+  return found ? found.id : null;
+}
 function fmtDist(gm) {
   if (gm == null || isNaN(gm)) return '?';
   if (gm <= 0) return '0 m';
@@ -1209,861 +353,301 @@ function fmtDist(gm) {
   if (mm >= 1) return parseFloat(mm.toFixed(2)) + ' Mm';
   const km = gm * 1000000;
   if (km >= 1) return Math.round(km).toLocaleString('es-CL') + ' km';
-  const m = gm * 1000000000;
-  return Math.round(m) + ' m';
-}
-function fmtGm(gm) { return fmtDist(gm); }
-
-
-// ══════════════════════════════════════════════════════════
-// EL CEREBRO: WORKER DE RUTEO (Tiempo vs Distancia)
-// ══════════════════════════════════════════════════════════
-const workerCode=`
-  function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
-  function sysOf(n){return n.sys||'';}
-  
-  // 1. Costo por TIEMPO (Prioriza evitar hangares internos)
-  function timeCost(a,b,qSpeed){
-    const d=dist3(a,b);
-    const qtTime=d/qSpeed;
-    let p=150;if(b.pad==='int')p=240;else if(b.pad==='efe')p=90;
-    if(b.type==='outpost')p+=120;
-    return qtTime+p;
-  }
-  
-  // 2. Costo por DISTANCIA (Prioriza combustible)
-  function distCost(a,b){
-    const d=dist3(a,b);
-    let p=0.02;if(b.pad==='int')p=0.05;else if(b.pad==='efe')p=0;
-    return d+p;
-  }
-  
-  // Selector dinámico
-  function getCost(a,b,qSpeed,opt){return opt==='dist'?distCost(a,b):timeCost(a,b,qSpeed);}
-  
-  function rdPhysical(s){let d=0;for(let i=0;i<s.length-1;i++)d+=dist3(s[i],s[i+1]);return d;}
-  function rdTime(s,qSpeed){let d=0;for(let i=0;i<s.length-1;i++)d+=timeCost(s[i],s[i+1],qSpeed);return d;}
-  function rdOpt(s,qSpeed,opt){let d=0;for(let i=0;i<s.length-1;i++)d+=getCost(s[i],s[i+1],qSpeed,opt);return d;}
-
-  function vs(seq,cap){const g={};let l=0;for(const n of seq){if(n.role==='pickup'){g[n.mid]=(g[n.mid]||0)+n.scu;l+=n.scu;if(l>cap+1e-6)return false;}else if(n.role==='dropoff'){if((g[n.mid]||0)+1e-6<n.scu)return false;g[n.mid]-=n.scu;l-=n.scu;}}return true;}
-
-  function nn(o,dest,nodes,cap,qSpeed,opt){
-    const rem=new Set(nodes);const route=[o];const hold={};let load=0;
-    while(rem.size>0){
-      const cur=route[route.length-1];let best=null,bc=Infinity;
-      for(const n of rem){
-        if(n.role==='pickup'&&load+n.scu>cap+1e-6)continue;
-        if(n.role==='dropoff'&&(hold[n.mid]||0)<n.scu-1e-6)continue;
-        let cost=getCost(cur,n,qSpeed,opt);
-        if(n.role==='dropoff'&&(hold[n.mid]||0)>=n.scu-1e-6)cost*=0.85;
-        if(n.role==='dropoff'&&load/cap>0.7)cost*=0.90;
-        if(sysOf(n)===sysOf(cur))cost*=0.95;
-        if(cost<bc){bc=cost;best=n;}
-      }
-      if(!best){for(const n of rem){if(n.role!=='pickup')continue;const d=getCost(cur,n,qSpeed,opt);if(d<bc){bc=d;best=n;}}if(!best)break;}
-      route.push(best);rem.delete(best);
-      if(best.role==='pickup'){hold[best.mid]=(hold[best.mid]||0)+best.scu;load+=best.scu;}else if(best.role==='dropoff'){hold[best.mid]=(hold[best.mid]||0)-best.scu;load-=best.scu;}
-    }
-    if(dest)route.push(dest);return route;
-  }
-  function nnMulti(o,dest,nodes,cap,qSpeed,opt){
-    let best=nn(o,dest,nodes,cap,qSpeed,opt);let bd=rdOpt(best,qSpeed,opt);
-    const picks=nodes.filter(n=>n.role==='pickup').map(p=>({p,d:getCost(o,p,qSpeed,opt)})).sort((a,b)=>a.d-b.d).slice(0,3);
-    for(const {p} of picks){
-      const reord=[p,...nodes.filter(n=>n!==p)];
-      const r=nn({...o},dest,reord,cap,qSpeed,opt);const d=rdOpt(r,qSpeed,opt);
-      if(d<bd){bd=d;best=r;}
-    }
-    return best;
-  }
-  function twoOpt(r,dest,cap,qSpeed,opt){
-    let best=rdOpt(r,qSpeed,opt);const lf=dest?1:0;let imp=true,g=0;
-    while(imp&&g++<200){
-      imp=false;
-      for(let i=1;i<r.length-1-lf;i++){
-        for(let k=i+1;k<r.length-lf;k++){
-          const c=r.slice(0,i).concat(r.slice(i,k+1).reverse(),r.slice(k+1));
-          if(!vs(c,cap))continue;const dd=rdOpt(c,qSpeed,opt);if(dd<best-1e-9){r=c;best=dd;imp=true;}
-        }
-      }
-    }
-    return r;
-  }
-  function optimize(o,dest,nodes,cap,qSpeed,opt){
-    if(!nodes.length)return null;
-    let r=nnMulti(o,dest,nodes,cap,qSpeed,opt);
-    const f=vs(r,cap);
-    r=twoOpt(r,dest,cap,qSpeed,opt);
-    return{seq:r,dist:rdPhysical(r),timeSeconds:rdTime(r,qSpeed),feasible:f};
-  }
-  self.onmessage=function(e){self.postMessage(optimize(e.data.o,e.data.dest,e.data.nodes,e.data.cap,e.data.qSpeed,e.data.opt));};
-`;
-
-let routerWorker=null;
-try{routerWorker=new Worker(URL.createObjectURL(new Blob([workerCode],{type:'application/javascript'})));}catch(e){routerWorker=null;}
-
-function runOptimizeAsync(o,dest,nodes,cap,qSpeed,opt){
-  return new Promise(resolve=>{
-    if(!routerWorker){ resolve({seq:[],dist:0,timeSeconds:0,feasible:false}); return; }
-    let done=false;
-    const to=setTimeout(()=>{if(!done){done=true;resolve(null);}},4000);
-    routerWorker.onmessage=e=>{if(!done){done=true;clearTimeout(to);resolve(e.data);}};
-    routerWorker.onerror=()=>{if(!done){done=true;clearTimeout(to);resolve(null);}};
-    routerWorker.postMessage({o,dest,nodes,cap,qSpeed,opt});
-  });
+  return Math.round(gm * 1000000000) + ' m';
 }
 
-async function optimizeMultiSystemAsync(o,dest,nodes,cap,qSpeed,optMode){
-  if(!nodes.length)return null;
-  const groups={};nodes.forEach(n=>{(groups[sysOf(n)]=groups[sysOf(n)]||[]).push(n);});
-  const originSys=sysOf(o);const others=Object.keys(groups).filter(s=>s!==originSys);const ordered=[originSys,...others];
-  const sysWithNodes=ordered.filter(s=>groups[s]&&groups[s].length);const lastSys=sysWithNodes[sysWithNodes.length-1];
-  let fullSeq=[o];let feasible=true,jumps=0;let prevSys=originSys;
-  let totalTime = 0; let totalDist = 0;
-  
-  for(let si=0;si<ordered.length;si++){
-    const sys=ordered[si];const gnodes=groups[sys];if(!gnodes||!gnodes.length)continue;
-    let startForOpt;
-    if(sys===originSys&&si===0)startForOpt=o;
-    else{jumps++;const gw=gatewayLoc(sys,prevSys);startForOpt=gw?{...gw}:gnodes[0];}
-    const useDestHere=dest&&sysOf(dest)===sys&&sys===lastSys;
-    
-    const res=await runOptimizeAsync(startForOpt,useDestHere?dest:null,gnodes,cap,qSpeed,optMode);
-    if(!res||!res.feasible)feasible=false;
-    let seq=(res&&res.seq)?res.seq.slice():[];
-    if(seq.length>0){
-      if(sys===originSys&&si===0){ fullSeq=fullSeq.concat(seq.slice(1)); totalTime+=res.timeSeconds; totalDist+=res.dist; }
-      else{seq[0]={...seq[0],role:seq[0].role||'gateway',isJump:true,jumpFrom:prevSys};fullSeq=fullSeq.concat(seq); totalTime+=res.timeSeconds; totalDist+=res.dist;}
-    }
-    prevSys=sys;
-  }
-  return{seq:fullSeq,dist:totalDist,timeSeconds:totalTime,jumps,feasible};
-}
-
-
-function ptToSeg(p,a,b){const ab={x:b.x-a.x,y:b.y-a.y,z:b.z-a.z};const ap={x:p.x-a.x,y:p.y-a.y,z:p.z-a.z};const l2=ab.x**2+ab.y**2+ab.z**2;if(l2===0)return dist3(p,a);const t=Math.max(0,Math.min(1,(ap.x*ab.x+ap.y*ab.y+ap.z*ab.z)/l2));return dist3(p,{x:a.x+t*ab.x,y:a.y+t*ab.y,z:a.z+t*ab.z});}
-function fmt(n){return Number.isInteger(n)?n.toString():n.toFixed(2).replace(/\.?0+$/,'');}
-function locById(id){return ALL_LOCS[id];}
-function findLoc(sub){for(const sys of Object.values(DATA))for(const z of Object.values(sys)){const f=z.locs?.find(l=>l.label.includes(sub));if(f)return f.id;}return null;}
-function maxBox(){return CONTRACT_RANKS[currentRank]?.maxBox||8;}
-function allowedBoxes(){return ALL_BOX_SIZES.filter(s=>s<=maxBox());}
-function rankFromXP(xp){let idx=0;for(let i=0;i<RANK_ORDER.length;i++){if(xp>=RANK_CUM[i])idx=i;}return idx;}
-
-function boxesForSingle(total,size){const ceilN=Math.ceil(total/size-1e-9);const exact=Math.abs(total/size-Math.round(total/size))<1e-9;return{n:ceilN,exact,capacity:ceilN*size,rem:ceilN*size-total};}
-function boxesOptimal(total){let rem=total;const used=[];allowedBoxes().sort((a,b)=>b-a).forEach(size=>{const n=Math.floor((rem+1e-9)/size);if(n>0){used.push({size,n});rem-=n*size;}});if(rem>1e-9){const sm=allowedBoxes()[0];used.push({size:sm,n:1});}return used;}
-function boxCount(total){if(boxMode==='single')return boxesForSingle(total,boxSize).n;return boxesOptimal(total).reduce((a,u)=>a+u.n,0);}
-function roundToBox(scu){const base=boxMode==='single'?boxSize:1;return Math.ceil(scu/base-1e-9)*base;}
-function getBoxText(scu){if(boxMode==='single'){const r=boxesForSingle(scu,boxSize);return r.exact?`${r.n}×${boxSize} SCU`:`${r.n}×${boxSize} SCU (sobran ${fmt(r.rem)})`;}return boxesOptimal(scu).map(u=>`${u.n}×${u.size} SCU`).join(' · ');}
-
-function missionssionTotal(m){return m.pickups.reduce((a,p)=>a+p.scu,0);}
-function bestCommodityPlan(m){
-  const total=missionssionTotal(m);if(!total)return null;
-  const target=roundToBox(total*partialPct/100);
-  const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,locId:p.locId});byMat[p.material].scu+=p.scu;});
-  const drops=m.deliveries.map(d=>locById(d.locId)).filter(Boolean);
-  let best=null;
-  Object.entries(byMat).forEach(([mat,info])=>{
-    const amt=roundToBox(Math.min(info.scu,target));
-    const boxes=boxCount(amt);
-    const pickLoc=locById(info.locId);
-    let nd=null,ndDist=Infinity;drops.forEach(dl=>{const dd=dist3(pickLoc,dl);if(dd<ndDist){ndDist=dd;nd=dl;}});
-    const cand={mat,amt,boxes,nd,ndDist,avail:info.scu,pickLoc};
-    if(!best||cand.boxes<best.boxes||(cand.boxes===best.boxes&&cand.ndDist<best.ndDist))best=cand;
-  });
-  return{target,best};
-}
-
+// ── Search & UI Helpers ──
 function searchLocs(q){
   if(!q||q.length<1)return[];
-  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const nq=norm(q);
+  const nq=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const results=[];
   Object.values(ALL_LOCS).forEach(l=>{
-    const nl=norm(l.label);
-    const idx=nl.indexOf(nq);
-    if(idx>=0)results.push({...l,_matchIdx:idx,_exact:nl===nq});
+    const nl = l.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    const idx = nl.indexOf(nq);
+    if(idx>=0) results.push({...l, _matchIdx:idx, _exact:nl===nq});
   });
   results.sort((a,b)=>{
-    if(a._exact!==b._exact)return a._exact?-1:1;
-    if(a._matchIdx!==b._matchIdx)return a._matchIdx-b._matchIdx;
-    return a.label.localeCompare(b.label);
+    if(a._exact!==b._exact) return a._exact?-1:1;
+    return a._matchIdx - b._matchIdx;
   });
   return results.slice(0,12);
 }
 
-function highlightMatch(label,q){
-  const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-  const idx=norm(label).indexOf(norm(q));
-  if(idx<0)return label;
-  return label.slice(0,idx)+'<b>'+label.slice(idx,idx+q.length)+'</b>'+label.slice(idx+q.length);
-}
-
-function locTypeTag(l){
-  const tags={station:'station',lagrange:'lagrange',habitat:'city',outpost:'outpost',moon:'moon',planet:'planet'};
-  const padTag=l.pad==='efe'?' 🅿EFE':l.pad==='int'?' 🅿hgr':'';
-  return (tags[l.type]||l.type)+padTag+' · '+l.sys;
-}
-
-function createMatSearch(initialMat, onSelect){
-  const wrap=document.createElement('div');wrap.className='loc-wrap';wrap.style.marginTop='3px';
-  const inp=document.createElement('input');
-  inp.type='text';
-  inp.className='loc-input'+(initialMat&&initialMat!=='— Select commodity —'?' resolved':'');
-  inp.placeholder='Commodity (optional)…';
-  inp.value=(initialMat&&initialMat!=='— Select commodity —')?initialMat:'';
-  inp.autocomplete='off';inp.spellcheck=false;
-  const clearBtn=document.createElement('button');
-  clearBtn.className='loc-clear';clearBtn.type='button';
-  clearBtn.innerHTML='<i class="ti ti-x"></i>';
-  const drop=document.createElement('div');drop.className='loc-dropdown';
-
-  let _cur=initialMat,_activeIdx=-1,_results=[],_closeTimer=null;
-  function showDrop(q){
-    const nq=(q||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    _results=MATERIALS.filter(m=>m!=='— Select commodity —'&&m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(nq)).slice(0,12);
-    _activeIdx=-1;
-    if(!_results.length){drop.classList.remove('open');return;}
-    drop.innerHTML=_results.map((m,i)=>`<div class="loc-opt" data-i="${i}"><span class="loc-opt-name">${m}</span></div>`).join('');
-    drop.querySelectorAll('.loc-opt').forEach(el=>{el.addEventListener('mousedown',e=>{e.preventDefault();selectMat(parseInt(el.dataset.i));});});
+function createLocSearch(initId, onSel){
+  const w = document.createElement('div'); w.className = 'loc-wrap';
+  const l = locById(initId);
+  w.innerHTML = `
+    <input type="text" class="loc-input ${l?'resolved':''}" value="${l?l.label:''}" placeholder="Buscar ubicación...">
+    <div class="loc-dropdown"></div>`;
+  const inp = w.querySelector('input');
+  const drop = w.querySelector('.loc-dropdown');
+  
+  inp.addEventListener('input', () => {
+    const q = inp.value.trim();
+    if(!q) { drop.classList.remove('open'); return; }
+    const res = searchLocs(q);
+    if(!res.length) { drop.classList.remove('open'); return; }
+    drop.innerHTML = res.map((r,i) => `<div class="loc-opt" data-i="${i}" data-id="${r.id}">${r.label}</div>`).join('');
     drop.classList.add('open');
-  }
-  function selectMat(i){
-    const m=_results[i];if(!m)return;
-    _cur=m;inp.value=m;inp.className='loc-input resolved';
-    drop.classList.remove('open');onSelect(m);
-  }
-  inp.addEventListener('input',()=>{inp.className='loc-input';showDrop(inp.value);});
-  inp.addEventListener('focus',()=>{clearTimeout(_closeTimer);showDrop(inp.value);});
-  inp.addEventListener('blur',()=>{_closeTimer=setTimeout(()=>{drop.classList.remove('open');if(_cur&&_cur!=='— Select commodity —'){inp.value=_cur;inp.className='loc-input resolved';}else{inp.className='loc-input';}},150);});
-  inp.addEventListener('keydown',e=>{
-    const opts=drop.querySelectorAll('.loc-opt');
-    if(e.key==='ArrowDown'){e.preventDefault();_activeIdx=Math.min(_activeIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
-    else if(e.key==='ArrowUp'){e.preventDefault();_activeIdx=Math.max(_activeIdx-1,-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
-    else if(e.key==='Enter'){e.preventDefault();if(_activeIdx>=0)selectMat(_activeIdx);else if(_results.length===1)selectMat(0);}
-    else if(e.key==='Escape'){drop.classList.remove('open');}
+    drop.querySelectorAll('.loc-opt').forEach(opt => {
+      opt.addEventListener('mousedown', e => {
+        e.preventDefault();
+        inp.value = opt.textContent;
+        inp.className = 'loc-input resolved';
+        drop.classList.remove('open');
+        onSel(opt.getAttribute('data-id'));
+      });
+    });
   });
-  clearBtn.addEventListener('click',()=>{_cur='';inp.value='';inp.className='loc-input';drop.classList.remove('open');onSelect('— Select commodity —');});
-  wrap.appendChild(inp);wrap.appendChild(clearBtn);wrap.appendChild(drop);
-  return wrap;
+  inp.addEventListener('blur', () => setTimeout(()=>drop.classList.remove('open'), 200));
+  return w;
 }
 
-function createLocSearch(initialLocId, onSelect){
-  const wrap=document.createElement('div');wrap.className='loc-wrap';
-  const initLoc=locById(initialLocId);
-  const inp=document.createElement('input');
-  inp.type='text';inp.className='loc-input'+(initLoc?' resolved':'');
-  inp.placeholder='Search location…';
-  inp.value=initLoc?initLoc.label:'';
-  inp.autocomplete='off';inp.spellcheck=false;
-  const clearBtn=document.createElement('button');
-  clearBtn.className='loc-clear';clearBtn.type='button';
-  clearBtn.innerHTML='<i class="ti ti-x"></i>';
-  const drop=document.createElement('div');drop.className='loc-dropdown';
-
-  let _currentId=initialLocId, _activeIdx=-1, _results=[], _closeTimer=null;
-  function showDrop(q){
-    _results=searchLocs(q);
-    _activeIdx=-1;
-    if(!_results.length){drop.classList.remove('open');return;}
-    drop.innerHTML=_results.map((l,i)=>
-      `<div class="loc-opt" data-i="${i}">
-        <span class="loc-opt-name">${highlightMatch(l.label,q)}</span>
-        <span class="loc-opt-tag">${locTypeTag(l)}</span>
-      </div>`
-    ).join('');
-    drop.querySelectorAll('.loc-opt').forEach(el=>{el.addEventListener('mousedown',e=>{e.preventDefault();selectResult(parseInt(el.dataset.i));});});
-    drop.classList.add('open');
-  }
-  function selectResult(i){
-    const l=_results[i];if(!l)return;
-    _currentId=l.id;inp.value=l.label;inp.className='loc-input resolved';
-    drop.classList.remove('open');_activeIdx=-1;onSelect(l.id);
-  }
-  function clearSearch(){
-    _currentId=null;inp.value='';inp.className='loc-input unresolved';inp.focus();
-    drop.classList.remove('open');onSelect(null);
-  }
-  inp.addEventListener('input',()=>{const q=inp.value.trim();inp.className='loc-input'+(q?'':' unresolved');if(q)showDrop(q);else drop.classList.remove('open');});
-  inp.addEventListener('keydown',e=>{
-    const opts=drop.querySelectorAll('.loc-opt');
-    if(e.key==='ArrowDown'){e.preventDefault();_activeIdx=Math.min(_activeIdx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));if(opts[_activeIdx])opts[_activeIdx].scrollIntoView({block:'nearest'});}
-    else if(e.key==='ArrowUp'){e.preventDefault();_activeIdx=Math.max(_activeIdx-1,-1);opts.forEach((o,i)=>o.classList.toggle('active',i===_activeIdx));}
-    else if(e.key==='Enter'){e.preventDefault();if(_activeIdx>=0)selectResult(_activeIdx);else if(_results.length===1)selectResult(0);}
-    else if(e.key==='Escape'){drop.classList.remove('open');if(_currentId){const l=locById(_currentId);if(l)inp.value=l.label;}}
-  });
-  inp.addEventListener('focus',()=>{clearTimeout(_closeTimer);const q=inp.value.trim();if(q&&!drop.classList.contains('open'))showDrop(q);});
-  inp.addEventListener('blur',()=>{_closeTimer=setTimeout(()=>{drop.classList.remove('open');if(_currentId){const l=locById(_currentId);if(l){inp.value=l.label;inp.className='loc-input resolved';}}else if(inp.value.trim()){inp.className='loc-input unresolved';}},150);});
-  clearBtn.addEventListener('click',clearSearch);
-  wrap.appendChild(inp);wrap.appendChild(clearBtn);wrap.appendChild(drop);
-  return wrap;
-}
-
-function getSelLoc(pId,lId){return locById($(lId).value)||null;}
-function getCap(){return parseInt($('cap-input').value)||0;}
-
-function applyRank(){const r=CONTRACT_RANKS[currentRank];if(!r)return;if(boxSize>r.maxBox)boxSize=r.maxBox;
-const fd=FACTION_DATA[_activeFactionKey];
-$('rank-info').innerHTML=`<span>SCU: <b>${r.scuMin}–${r.scuMax}</b></span><span>max box: <b>${r.maxBox} SCU</b></span><span>ship: <b>${r.ship.split(' / ')[0]}</b></span><span style="color:${fd.color}">XP/mission: <b>≈${r.xpMission>0?r.xpMission.toLocaleString():'—'}</b></span>`;
-renderSizeRow();renderMissions();if(typeof updateXpHint==='function')updateXpHint();}
-function renderSizeRow(){const sr=$('size-row');sr.innerHTML='';const mb=maxBox();ALL_BOX_SIZES.forEach(s=>{const b=document.createElement('button');const disabled=s>mb;b.className='szbtn'+(s===boxSize?' on':'')+(disabled?' disabled':'');b.textContent=s+' SCU';if(!disabled)b.addEventListener('click',()=>{boxSize=s;renderSizeRow();renderMissions();});sr.appendChild(b);});$('size-lbl').innerHTML=`<i class="ti ti-resize" aria-hidden="true" style="font-size:12px"></i> Tamaño de box <span style="color:var(--c-text-3)">(máx ${mb} en ${currentRank})</span>`;}
-
-function renderXP(){
-  const xp=prog.xp[prog.f]||0;const idx=rankFromXP(xp);const rname=RANK_ORDER[idx];
-  if(!rname)return;
-  $('xp-rank-name').textContent=rname;
-  if(idx>=RANK_ORDER.length-1){$('xp-bar').style.width='100%';$('xp-next').textContent='Max rank reached';$('xp-bar-text').textContent=`${xp.toLocaleString()} XP total · Master!`;}
-  else{const start=RANK_CUM[idx];const next=RANK_CUM[idx+1];const span=next-start;const inLvl=xp-start;const pct=Math.max(0,Math.min(100,(inLvl/span)*100));$('xp-bar').style.width=pct+'%';$('xp-next').textContent=`Need ${(next-xp).toLocaleString()} XP for ${RANK_ORDER[idx+1]}`;$('xp-bar-text').textContent=`${inLvl.toLocaleString()} / ${span.toLocaleString()} XP en ${rname} (${Math.round(pct)}%)`;}
-  updateSyncUI();
-}
-function updateSyncUI(){
-  const xp=prog.xp[prog.f]||0;const idx=rankFromXP(xp);const rname=RANK_ORDER[idx];
-  const rSel=$('sync-rank');if(rSel)rSel.value=rname;
-  const s=$('sync-slider');const sv=$('sync-slider-val');
-  if(s&&sv){if(idx>=RANK_ORDER.length-1){s.value=100;sv.textContent='100%';}else{const start=RANK_CUM[idx];const span=CONTRACT_RANKS[rname].xpReq;const inLvl=xp-start;const pct=Math.max(0,Math.min(100,Math.round((inLvl/span)*100)));s.value=pct;sv.textContent=pct+'%';}}
-}
-function renderRankGuide(){
-  const el=$('rank-guide');el.innerHTML='';const xp=prog.xp[prog.f]||0;const idx=rankFromXP(xp);
-  const fd=FACTION_DATA[_activeFactionKey];
-  RANK_ORDER.forEach((rk,i)=>{const r=CONTRACT_RANKS[rk];const cur=i===idx;const d=document.createElement('div');d.className='rg-card'+(cur?' cur':'');
-    const xpLine=r.xpReq>0?`${r.xpReq.toLocaleString()} XP for siguiente`:'Rank final';
-    const xpM=r.xpMission>0?`<span style="color:${fd.color};font-weight:600">≈${r.xpMission.toLocaleString()} XP/mission</span>`:'<span style="color:var(--c-text-3)">—</span>';
-    d.innerHTML=`<div class="rg-head"><span class="rg-name" style="${cur?'color:'+fd.color:''}">${rk}${cur?' ◂ you are here':''}</span><span class="rg-scu">${r.scuMin}–${r.scuMax} SCU · max box ${r.maxBox} SCU</span></div><div class="rg-ship" style="display:flex;gap:12px;align-items:center">${xpM} <span style="color:var(--c-text-3);font-size:10px">${xpLine}</span></div><div class="rg-ship">Nave: <b>${r.ship}</b></div><div class="rg-ship" style="color:var(--c-text-3);margin-top:3px">${r.strat}</div>`;
-  el.appendChild(d);});
-}
-
-function farmCombos(){
-  if(deliveryMode==='full')return[];
-  const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;
-  const base=(CONTRACT_RANKS[currentRank]?.xpMission)||8000;
-  const xpPer=Math.round(base*(partialPct/100));
-  const items=[];
-  missions.forEach((m,mi)=>{
-    const plan=bestCommodityPlan(m);
-    if(!plan||!plan.best||!plan.best.pickLoc||!plan.best.nd)return;
-    const b=plan.best;
-    items.push({mnum:mi+1,mat:b.mat,amt:b.amt,boxes:b.boxes,pick:b.pickLoc,drop:b.nd,sys:sysOf(b.pickLoc)});
-  });
-  const THRESH=1.5;
-  const clusters=[];
-  items.forEach(it=>{
-    let placed=false;
-    for(const c of clusters){if(c.sys===it.sys&&dist3(c.pick,it.pick)<=THRESH&&dist3(c.drop,it.drop)<=THRESH){c.items.push(it);placed=true;break;}}
-    if(!placed)clusters.push({sys:it.sys,pick:it.pick,drop:it.drop,items:[it]});
-  });
-  const cap=getCap();
-  clusters.forEach(c=>{
-    c.boxes=c.items.reduce((a,x)=>a+x.boxes,0);
-    c.scu=c.items.reduce((a,x)=>a+x.amt,0);
-    c.xp=c.items.length*xpPer;
-    let loop=0,jumps=0;
-    if(o){if(sysOf(o)===c.sys){loop=dist3(o,c.pick)+dist3(c.pick,c.drop);}else{jumps=1;loop=dist3(c.pick,c.drop);}}
-    else{loop=dist3(c.pick,c.drop);}
-    c.jumps=jumps;c.loopGm=loop;c.fits=c.scu<=cap;
-  });
-  clusters.sort((a,b)=>(b.items.length-a.items.length)||(a.loopGm-b.loopGm));
-  return clusters;
-}
-function renderFarmCombos(){
-  const wrap=$('farm-combos-wrap');const el=$('farm-combos');
-  if(!wrap||!el)return;
-  if(deliveryMode==='full'){wrap.style.display='none';return;}
-  wrap.style.display='block';
-  const clusters=farmCombos();
-  if(!clusters.length){el.innerHTML='<div class="empty">Add contracts (in 25% mode) to see which ones to combine.</div>';return;}
-  const cap=getCap();const anyCombo=clusters.some(c=>c.items.length>1);
-  el.innerHTML='';
-  clusters.forEach((c,ci)=>{
-    const best=ci===0&&c.items.length>1;
-    const badges=c.items.map(x=>`<span class="mhead-num">${x.mnum}</span>`).join('');
-    const fitWarn=c.fits?'':`<div class="cgroup-detail" style="color:#FCA5A5"><i class="ti ti-alert-triangle" aria-hidden="true"></i> No cabe completo (${fmt(c.scu)} SCU > ${cap} hold). Lleva un subconjunto.</div>`;
-    const title=c.items.length>1?`${best?'★ Mejor combo':'Combo'} · ${c.items.length} contracts combined`:`Contract ${c.items[0].mnum} (solo)`;
-    const card=document.createElement('div');card.className='com-card'+(best?' best-combo':'');
-    card.innerHTML=`<div class="com-head"><div><span class="com-name">${title}</span><div class="cgroup-sub" style="margin-top:5px">${badges}</div></div><span class="com-scu">+${c.xp.toLocaleString()} XP</span></div>
-      <div class="cgroup-sub"><span class="d" style="background:#378ADD"></span>pick up at <b style="color:var(--c-text-1)">${c.pick.label}</b></div>
-      <div class="cgroup-sub"><span class="d"></span>deliver to <b style="color:var(--c-text-1)">${c.drop.label}</b></div>
-      <div class="cgroup-detail">${c.boxes} boxes · ${fmt(c.scu)} SCU · loop ${fmtDist(c.loopGm)} ${c.jumps?` + ${c.jumps} jump`:''} · ${c.sys}</div>
-      ${fitWarn}`;
+function renderMissions(){
+  const el = $('missions-list');
+  if(!missions.length){ el.innerHTML = '<div class="empty">No contracts yet. Add one.</div>'; return; }
+  el.innerHTML = '';
+  missions.forEach((m, mi) => {
+    const card = document.createElement('div'); card.className = 'cm-card';
+    const scu = m.pickups.reduce((a,p)=>a+p.scu,0);
+    card.innerHTML = `
+      <div class="cm-card-header">
+        <div class="cm-card-meta"><b>M${mi+1}</b> <span class="cm-scu-badge">${scu} SCU</span></div>
+        <div class="cm-actions"><button class="js-rm"><i class="ti ti-trash"></i></button></div>
+      </div>
+      <div class="cm-timeline" id="tl-${m.id}"></div>
+    `;
+    card.querySelector('.js-rm').addEventListener('click', () => { missions = missions.filter(x=>x.id!==m.id); renderMissions(); });
     el.appendChild(card);
+    
+    const tl = card.querySelector('.cm-timeline');
+    m.pickups.forEach(p => {
+      const row = document.createElement('div'); row.className = 'smart-input-row'; row.style.marginBottom='6px';
+      row.innerHTML = `<span style="font-size:10px;width:40px;color:var(--c-blue)">Pick</span> <input type="number" style="width:60px" value="${p.scu}">`;
+      const s = createLocSearch(p.locId, id => { p.locId = id; });
+      row.appendChild(s);
+      tl.appendChild(row);
+      row.querySelector('input').addEventListener('change', e => { p.scu = parseInt(e.target.value)||1; renderMissions(); });
+    });
+    
+    m.deliveries.forEach(d => {
+      const row = document.createElement('div'); row.className = 'smart-input-row';
+      row.innerHTML = `<span style="font-size:10px;width:40px;color:var(--c-orange)">Drop</span>`;
+      const s = createLocSearch(d.locId, id => { d.locId = id; });
+      row.appendChild(s);
+      tl.appendChild(row);
+    });
   });
-  if(!anyCombo){const note=document.createElement('div');note.className='cgroup-detail';note.style.marginTop='4px';note.innerHTML='<i class="ti ti-info-circle" aria-hidden="true"></i> No contracts share the same pickup and delivery area. To combine, take contracts with the same pickup point and nearby delivery.';el.appendChild(note);}
 }
 
-function newMission(){
-  const t=CONTRACT_RANKS[currentRank]?.typical||64;
-  const currentLocId=$('o-loc').value||null;
-  const destLocId=(useDest&&$('d-loc').value)||null;
-  return{
-    id:++missionSeq,
-    pickups:[{id:++pickSeq,material:'— Select commodity —',scu:t,locId:currentLocId}],
-    deliveries:[{id:++delivSeq,locId:destLocId}],
-    pay:0,startedAt:Date.now()
-  };
-}
-function addMission(){if(missions.length>=MAX_MISSIONS)return;missions.push(newMission());renderMissions();}
-function removeMission(id){missions=missions.filter(m=>m.id!==id);renderMissions();}
-function cloneMission(id){
-  if(missions.length>=MAX_MISSIONS){alert('Límite de missions alcanzado ('+MAX_MISSIONS+')');return;}
-  const m=missions.find(x=>x.id===id);if(!m)return;
-  const cloned={id:++missionSeq,pickups:m.pickups.map(p=>({...p,id:++pickSeq})),deliveries:m.deliveries.map(d=>({...d,id:++delivSeq}))};
-  missions.splice(missions.findIndex(x=>x.id===id)+1,0,cloned);
-  renderMissions();
-}
-function addPickup(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups.push({id:++pickSeq,material:'— Select commodity —',scu:Math.round((CONTRACT_RANKS[currentRank]?.typical||64)/2),locId:$('o-loc').value||findLoc('HUR-L1')});renderMissions();}
-function removePickup(mid,pid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups=m.pickups.filter(p=>p.id!==pid);if(!m.pickups.length)removeMission(mid);else renderMissions();}
-function addDelivery(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.deliveries.push({id:++delivSeq,locId:(useDest&&$('d-loc').value)?$('d-loc').value:findLoc('Lorville')});renderMissions();}
-function removeDelivery(mid,did){const m=missions.find(x=>x.id===mid);if(!m)return;m.deliveries=m.deliveries.filter(d=>d.id!==did);renderMissions();}
-
-let session={active:false,start:0,missions:0,xpEarned:0,aUECEarned:0,timerInterval:null};
-function startSession(){
-  if(session.active)return;
-  session={active:true,start:Date.now(),missions:0,xpEarned:0,aUECEarned:0,timerInterval:null};
-  session.timerInterval=setInterval(()=>{renderSessionBar();renderMissionTimers();},1000);
-  renderSessionBar();
-  $('session-bar').style.display='flex';
-  $('btn-session-start').style.display='none';
-  $('btn-session-stop').style.display='';
-}
-function stopSession(){
-  clearInterval(session.timerInterval);
-  session.active=false;
-  $('session-bar').style.display='none';
-  $('btn-session-start').style.display='';
-  $('btn-session-stop').style.display='none';
-  if(session.missions>0){
-    const dur=Math.round((Date.now()-session.start)/60000);
-    const xph=dur>0?Math.round(session.xpEarned/(dur/60)):session.xpEarned;
-    const mph=dur>0?Math.round(session.missions/(dur/60)*10)/10:session.missions;
-    const auph=dur>0?Math.round(session.aUECEarned/(dur/60)):session.aUECEarned;
-    saveSessionHistory({ts:Date.now(),faction:prog.f,missions:session.missions,xp:session.xpEarned,aUEC:session.aUECEarned,dur,xph,mph,auph});
-    renderSessionHistory();
+// ── El Worker Matemático ──
+const workerCode=`
+  function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
+  function timeCost(a,b,qSpeed){
+    const d=dist3(a,b); const qtTime=d/qSpeed;
+    let p=150; if(b.pad==='int')p=240; else if(b.pad==='efe')p=90;
+    return qtTime+p;
   }
-}
-function saveSessionHistory(entry){
-  try{const h=JSON.parse(localStorage.getItem('sc_session_history')||'[]');h.unshift(entry);localStorage.setItem('sc_session_history',JSON.stringify(h.slice(0,10)));}catch(e){}
-}
-function loadSessionHistory(){try{return JSON.parse(localStorage.getItem('sc_session_history')||'[]');}catch(e){return[];}}
-function renderSessionHistory(){
-  const el=$('session-history');if(!el)return;
-  const hist=loadSessionHistory();
-  if(!hist.length){el.innerHTML='<div style="color:var(--c-text-3);font-size:11px;padding:8px 0">No sessions saved yet.</div>';return;}
-  const bestXph=Math.max(...hist.map(h=>h.xph||0));
-  const bestAuph=Math.max(...hist.map(h=>h.auph||0));
-  el.innerHTML=`<table class="hist-table">
-    <thead><tr><th>Fecha</th><th>Faction</th><th>Mis</th><th>XP</th><th>aUEC</th><th>Tiempo</th><th>XP/h</th><th>aUEC/h</th></tr></thead>
-    <tbody>${hist.map(h=>{
-      const d=new Date(h.ts);
-      const fecha=d.toLocaleDateString('es',{day:'2-digit',month:'2-digit'});
-      const hora=d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
-      const emoji=h.faction?.includes('Red')?'🔴':h.faction?.includes('Ling')?'🟢':'📦';
-      return`<tr><td>${fecha} ${hora}</td><td>${emoji}</td><td>${h.missions}</td><td>${(h.xp||0).toLocaleString()}</td>
-        <td>${h.aUEC>0?(h.aUEC/1000).toFixed(0)+'K':'—'}</td><td>${h.dur}m</td>
-        <td class="${h.xph>=bestXph&&bestXph>0?'hist-best':''}">${(h.xph||0).toLocaleString()}</td>
-        <td class="${h.auph>=bestAuph&&bestAuph>0&&h.auph>0?'hist-best':''}">${h.auph>0?(h.auph/1000).toFixed(0)+'K/h':'—'}</td>
-      </tr>`;}).join('')}
-    </tbody>
-  </table>`;
-}
-function renderSessionBar(){
-  if(!session.active)return;
-  const el=$('session-bar');if(!el)return;
-  const elapsed=Math.floor((Date.now()-session.start)/1000);
-  const m=Math.floor(elapsed/60),s=elapsed%60;
-  const fd=FACTION_DATA[_activeFactionKey];
-  const rank=CONTRACT_RANKS[currentRank];
-  const missionsLeft=rank&&rank.xpReq>0?Math.max(0,Math.ceil((rank.xpReq-(prog.xp[prog.f]-(RANK_CUM[RANK_ORDER.indexOf(currentRank)]||0)))/(rank.xpMission||1))):0;
-  el.innerHTML=`<span style="color:${fd.color};font-weight:600">${fd.emoji} ${session.missions} missions</span><span style="color:var(--c-text-2)">${session.xpEarned.toLocaleString()} XP this session</span><span style="color:var(--c-text-3)">${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>${missionsLeft>0?`<span style="color:#F5A623">≈${missionsLeft} missions → ${RANK_ORDER[RANK_ORDER.indexOf(currentRank)+1]||'Master'}</span>`:'<span style="color:#1D9E75">Rank reached!</span>'}`;
-}
-
-let savedRoutes=[];
-function loadSavedRoutes(){try{const v=localStorage.getItem('sc_saved_routes');if(v)savedRoutes=JSON.parse(v);}catch(e){}}
-function saveSavedRoutes(){try{localStorage.setItem('sc_saved_routes',JSON.stringify(savedRoutes));}catch(e){}}
-function saveCurrentRoute(){
-  if(!missions.length)return;
-  const name=prompt('Name for this route:',`Ruta ${savedRoutes.length+1}`);
-  if(!name)return;
-  savedRoutes.unshift({name,faction:prog.f,rank:currentRank,missions:JSON.parse(JSON.stringify(missions)),ts:Date.now()});
-  if(savedRoutes.length>10)savedRoutes.pop();
-  saveSavedRoutes();renderSavedRoutes();
-}
-function loadRoute(idx){
-  if(!savedRoutes[idx])return;
-  const r=savedRoutes[idx];
-  missions=JSON.parse(JSON.stringify(r.missions));
-  missionSeq=Math.max(...missions.map(m=>m.id),0)+1;
-  pickSeq=Math.max(...missions.flatMap(m=>m.pickups.map(p=>p.id)),0)+1;
-  delivSeq=Math.max(...missions.flatMap(m=>m.deliveries.map(d=>d.id)),0)+1;
-  renderMissions();
-}
-function deleteRoute(idx){savedRoutes.splice(idx,1);saveSavedRoutes();renderSavedRoutes();}
-function renderSavedRoutes(){
-  const el=$('saved-routes-list');if(!el)return;
-  if(!savedRoutes.length){el.innerHTML='<div style="color:var(--c-text-3);font-size:11px;padding:6px 0">No saved routes</div>';return;}
-  el.innerHTML=savedRoutes.map((r,i)=>`<div class="saved-route-card"><div><div style="font-weight:600;font-size:12px">${r.name}</div><div style="font-size:10px;color:var(--c-text-3)">${r.faction} · ${r.rank} · ${r.missions.length} contratos</div></div><div style="display:flex;gap:4px"><button onclick="loadRoute(${i})" style="font-size:10px;padding:3px 8px;background:#378ADD;color:#fff;border:none;border-radius:6px;cursor:pointer">Cargar</button><button onclick="deleteRoute(${i})" style="font-size:10px;padding:3px 6px;background:transparent;color:var(--c-text-3);border:1px solid var(--c-border-2);border-radius:6px;cursor:pointer"><i class="ti ti-trash"></i></button></div></div>`).join('');
-}
-
-// ── Plan de boxes para una mission ─────────────────────────────
-async function calculate(){
-  const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;const dLocId=$('d-loc')?.value;const dest=useDest&&dLocId?{...locById(dLocId),role:'dest'}:null;
-  const cap=getCap();const nodes=buildNodes();
-  if(!o||!nodes.length){
-    $('output').style.display='block';$('alert-box').innerHTML='';$('stats').innerHTML='';$('route-vis').innerHTML='';
-    $('step-list').innerHTML='<div class="empty">Add missions to calculate the route.</div>';
-    $('share-btn').style.display='none';lastRouteResult=null;return;
+  function distCost(a,b){ return dist3(a,b) + (b.pad==='int'?0.05:0); }
+  function getCost(a,b,qSpeed,opt){ return opt==='time' ? timeCost(a,b,qSpeed) : distCost(a,b); }
+  
+  function vs(seq,cap){
+    const g={};let l=0;
+    for(const n of seq){
+      if(n.role==='pickup'){g[n.mid]=(g[n.mid]||0)+n.scu; l+=n.scu; if(l>cap+1e-6)return false;}
+      else if(n.role==='dropoff'){if((g[n.mid]||0)+1e-6<n.scu)return false; g[n.mid]-=n.scu; l-=n.scu;}
+    }
+    return true;
   }
-  
-  // Extraer valores de la UI
-  const driveKey = $('drive-sel')?.value || 'Atlas';
-  const optMode = $('opt-mode-sel')?.value || 'time';
-  const drive = QUANTUM_DRIVES[driveKey] || { speed: 0.18, fuelConsumption: 1.0 };
-  const shipObj = SHIPS.find(x=>x.name===$('ship-sel').value) || {qFuel: 2500};
-  const qFuelMax = shipObj.qFuel;
-
-  const calcBtn=$('calc-btn');const originalText=calcBtn.innerHTML;
-  calcBtn.innerHTML='<i class="ti ti-loader spin"></i> Calculating...';calcBtn.style.pointerEvents='none';calcBtn.style.opacity='0.7';
-  
-  // Ejecutamos la "Mezcla Maestra"
-  const res=await optimizeMultiSystemAsync(o,dest,nodes,cap,drive.speed,optMode);
-  
-  calcBtn.innerHTML=originalText;calcBtn.style.pointerEvents='auto';calcBtn.style.opacity='1';
-  $('output').style.display='block';
-  
-  const{loads,maxLoad}=loadProfile(res.seq);
-  const totalScu=nodes.filter(n=>n.role==='dropoff').reduce((a,n)=>a+n.scu,0);
-  const jumps=res.jumps||0;
-
-  // VERIFICACIÓN DE COMBUSTIBLE
-  let fuelWarnings = 0;
-  res.seq.forEach((n, i) => {
-      if(i < res.seq.length - 1) {
-         const d = dist3(res.seq[i], res.seq[i+1]);
-         // Aproximación del consumo para escalar a números legibles (ajuste base juego)
-         const fuelNeeded = d * (drive.fuelConsumption || drive.fuel || 1.0) * 40; 
-         if (fuelNeeded > qFuelMax) fuelWarnings++;
+  function nn(o,dest,nodes,cap,qSpeed,opt){
+    const rem=new Set(nodes); const route=[o]; const hold={}; let load=0;
+    while(rem.size>0){
+      const cur=route[route.length-1]; let best=null, bc=Infinity;
+      for(const n of rem){
+        if(n.role==='pickup'&&load+n.scu>cap+1e-6)continue;
+        if(n.role==='dropoff'&&(hold[n.mid]||0)<n.scu-1e-6)continue;
+        let cost=getCost(cur,n,qSpeed,opt);
+        if(n.role==='dropoff'&&(hold[n.mid]||0)>=n.scu-1e-6) cost*=0.85;
+        if(cost<bc){bc=cost;best=n;}
       }
+      if(!best){
+         for(const n of rem){
+           if(n.role!=='pickup')continue; 
+           const d=getCost(cur,n,qSpeed,opt); 
+           if(d<bc){bc=d;best=n;}
+         }
+         if(!best)break;
+      }
+      route.push(best); rem.delete(best);
+      if(best.role==='pickup'){hold[best.mid]=(hold[best.mid]||0)+best.scu; load+=best.scu;}
+      else{hold[best.mid]=(hold[best.mid]||0)-best.scu; load-=best.scu;}
+    }
+    if(dest)route.push(dest);
+    return route;
+  }
+  self.onmessage=function(e){
+    const r = nn(e.data.o, e.data.dest, e.data.nodes, e.data.cap, e.data.qSpeed, e.data.opt);
+    let dDist=0, dTime=0;
+    for(let i=0;i<r.length-1;i++){ dDist+=dist3(r[i],r[i+1]); dTime+=timeCost(r[i],r[i+1],e.data.qSpeed); }
+    self.postMessage({seq:r, dist:dDist, timeSeconds:dTime, feasible:vs(r,e.data.cap)});
+  };
+`;
+
+let routerWorker=null;
+try{ routerWorker=new Worker(URL.createObjectURL(new Blob([workerCode],{type:'application/javascript'}))); } catch(e){}
+
+async function calculate(){
+  const oLocId=$('o-loc')?.value; const o=locById(oLocId);
+  const optMode=$('opt-mode-sel').value;
+  const driveKey=$('drive-sel').value;
+  const drive=QUANTUM_DRIVES[driveKey] || {speed:0.18, fuelConsumption:1.0};
+  const cap=parseInt($('cap-input').value)||0;
+  
+  if(!o || !missions.length){ alert('Falta posición actual o misiones.'); return; }
+
+  const nodes = [];
+  missions.forEach((m, mi) => {
+    m.pickups.forEach(p => { const loc=locById(p.locId); if(loc) nodes.push({...loc, role:'pickup', mid:mi, scu:p.scu, mnum:mi+1}); });
+    m.deliveries.forEach(d => { const loc=locById(d.locId); if(loc) nodes.push({...loc, role:'dropoff', mid:mi, scu:m.pickups[0].scu, mnum:mi+1}); }); // simplificado para el render
   });
 
-  const mins = Math.floor(res.timeSeconds / 60);
-  const secs = Math.round(res.timeSeconds % 60);
-
-  let alertHTML = '';
-  if(!res.feasible || maxLoad>cap) {
-    alertHTML = `<div class="alert bad"><i class="ti ti-alert-triangle"></i> Peak load ${maxLoad} SCU exceeds your hold (${cap} SCU). Check or use a larger ship.</div>`;
-  } else if (fuelWarnings > 0) {
-    alertHTML = `<div class="alert bad" style="background:var(--c-warn-bg); color:var(--c-warn-text);"><i class="ti ti-flame"></i> ALERTA DE COMBUSTIBLE: Con el motor ${driveKey} no tienes suficiente Quantum Fuel para un tramo de esta ruta. ¡Deberás recargar en una estación intermedia!</div>`;
-  } else {
-    alertHTML = `<div class="alert ok"><i class="ti ti-circle-check"></i> Ruta Optimizada por ${optMode==='time'?'Menor Tiempo ⏳':'Menor Distancia 📏'}. Max load ${maxLoad}/${cap} SCU.</div>`;
-  }
+  const calcBtn=$('calc-btn'); calcBtn.innerHTML='Calculando...';
   
-  $('alert-box').innerHTML=alertHTML;
-  $('stats').innerHTML=`
-    <div class="stat"><div class="sv">${fmtDist(res.dist)}</div><div class="sl">Distancia Total</div></div>
-    <div class="stat"><div class="sv">${mins}m ${secs}s</div><div class="sl">Tiempo Estimado</div></div>
-    <div class="stat ${maxLoad>cap?'danger':''}"><div class="sv">${maxLoad}<span style="font-size:11px;color:var(--c-text-3)">/${cap}</span></div><div class="sl">SCU peak / hold</div></div>
-    <div class="stat"><div class="sv">${res.seq.filter(n=>n.role==='dropoff').length}</div><div class="sl">entregas</div></div>`;
-  
-  $('route-vis').innerHTML='';
-  $('steps-lbl').innerHTML=`<span>STEP BY STEP — ${res.seq.length} stops · ${totalScu} SCU delivered${jumps>0?` · ${jumps} jump${jumps!==1?'s':''}`:''}</span>`;
-  
-  const cap2=cap;
-  function scBoxes(n){
-    if(!n.boxDetail)return[];
-    return(n.boxDetail||'').split(/\s*\+\s*/).map(s=>{
-      const m=s.match(/(\d+)×(\d+)/);
-      return m?{n:parseInt(m[1]),size:parseInt(m[2])}:null;
-    }).filter(Boolean);
-  }
-
-  const steps=res.seq;
-  let stepHtml='';
-  steps.forEach((n,i)=>{
-    const isO=i===0;const isDest=n.role==='dest';const prev=i>0?steps[i-1]:null;
-    const isJump=prev&&sysOf(prev)!==sysOf(n);const seg=i>0?legGm(prev,n):0;
-    const loadNow=loads[i];const isLast=i===steps.length-1;const isNearest=n._autoNearest||n._isNearest;
-    let dotCls,headCls,iconCls,iconName,dotTxt,scuLabel='';
-    if(isO||isDest){dotCls='dot-o';headCls='origin';iconCls='origin';iconName='ti-map-pin';dotTxt='•';}
-    else if(n.role==='pickup'){dotCls='dot-p';headCls='load';iconCls='load';iconName='ti-package-import';dotTxt='M'+n.mnum;scuLabel=n.scu+' SCU to load';}
-    else if(n.role==='dropoff'){dotCls=isNearest?'dot-dn':'dot-d';headCls=isNearest?'deliver-near':'deliver';iconCls=isNearest?'deliver-near':'deliver';iconName='ti-package-export';dotTxt='M'+n.mnum;scuLabel=n.scu+' SCU to deliver';}
-    else{dotCls='dot-j';headCls='jump-hd';iconCls='jump';iconName='ti-arrows-transfer-up';dotTxt='↗';}
-
-    const dotColors={
-      'dot-o':'background:color-mix(in srgb,var(--c-blue) 15%,var(--c-bg-1));color:var(--c-blue);border:2px solid color-mix(in srgb,var(--c-blue) 40%,transparent)',
-      'dot-p':'background:color-mix(in srgb,var(--c-blue) 15%,var(--c-bg-1));color:var(--c-blue);border:2px solid var(--c-blue)',
-      'dot-d':'background:color-mix(in srgb,#D85A30 12%,var(--c-bg-1));color:#C2410C;border:2px solid #D85A30',
-      'dot-dn':'background:color-mix(in srgb,var(--c-green) 15%,var(--c-bg-1));color:var(--c-green);border:2px solid var(--c-green)',
-      'dot-j':'background:color-mix(in srgb,#7F77DD 15%,var(--c-bg-1));color:#534AB7;border:2px solid #7F77DD',
+  if(routerWorker) {
+    routerWorker.onmessage = e => {
+      const res = e.data;
+      calcBtn.innerHTML='<i class="ti ti-route"></i> Calculate Route';
+      $('output').style.display='block';
+      let html = '';
+      res.seq.forEach((n, i) => {
+        html += `<div class="step-card" style="padding:10px; margin-bottom:5px;">${i===0?'📍 Inicio':n.role==='pickup'?'🔼 Recoger':'🔽 Entregar'} en <b>${n.label}</b> ${n.scu?`(${n.scu} SCU)`:''}</div>`;
+      });
+      $('step-list').innerHTML = html;
+      $('stats').innerHTML = `<div class="stat"><div class="sv">${fmtDist(res.dist)}</div><div class="sl">Distancia Total</div></div>`;
     };
-    const dotStyle=dotColors[dotCls]||'';
-
-    let sub='';
-    if(isO)sub='Your starting position'+(n.sys?` · ${n.sys}`:'');
-    else if(isDest)sub='Destination';
-    else if(n.role==='pickup')sub=`Pick up ${n.material||''}${seg>0?' · +'+fmtDist(seg):''}${n.sys?' · '+n.sys:''}`;
-    else if(n.role==='dropoff')sub=`Deliver ${n.material||''}${seg>0?' · +'+fmtDist(seg):''}`;
-    else if(isJump)sub=`Quantum jump → ${sysOf(n)}`;
-
-    const efeBadge=n.pad==='efe'?'<span class="pad-ext" style="font-size:10px">EFE</span>':
-                   n.pad==='int'?'<span class="pad-int" style="font-size:10px">Hangar</span>':'';
-    const nearBadge=isNearest?'<span style="background:color-mix(in srgb,var(--c-green) 15%,transparent);color:var(--c-green);border-radius:4px;padding:2px 6px;font-size:10px;font-weight:500">★ nearest</span>':'';
-
-    const boxes=scBoxes(n);
-    let boxesHtml='';
-    if(boxes.length&&(n.role==='pickup'||n.role==='dropoff')){
-      const lbl=n.role==='pickup'?'Boxes to grab from elevator':'Boxes to drop in elevator';
-      boxesHtml=`<div class="sc-boxes">
-        <div class="sc-boxes-lbl">${lbl}</div>
-        ${boxes.map(b=>`<div class="sc-box-row ${headCls}">
-          <span class="sc-box-name">${b.size} SCU box</span>
-          <span class="sc-box-qty">× ${b.n}</span>
-        </div>`).join('')}
-      </div>`;
-    }
-
-    const pct=Math.min(100,Math.round(loadNow/cap2*100));
-    const holdHtml=`<div class="sc-hold">
-      <div class="sc-hold-lbl">Hold after</div>
-      <div class="sc-hold-nums">${loadNow} / ${cap2} SCU</div>
-      <div class="sc-hold-bar"><div class="sc-hold-fill${loadNow>cap2?' over':''}" style="width:${pct}%"></div></div>
-      <div class="sc-hold-pct">${pct}% full</div>
-    </div>`;
-
-    const bodyHtml=(boxesHtml&&(n.role==='pickup'||n.role==='dropoff'))
-      ?`<div class="sc-body">${boxesHtml}${holdHtml}</div>`:'';
-
-    // Comprobación de fuel visual para el segmento
-    let fuelWarningBadge = '';
-    if (i > 0 && prev) {
-       const d = dist3(prev, n);
-       const fuelNeeded = d * (drive.fuelConsumption || drive.fuel || 1.0) * 40; 
-       if (fuelNeeded > qFuelMax) {
-           fuelWarningBadge = `<span style="background:var(--c-err-bg); color:var(--c-err-text); font-size:9px; padding: 2px 6px; border-radius: 4px; margin-left: 6px;"><i class="ti ti-flame"></i> Falta Fuel</span>`;
-       }
-    }
-
-    stepHtml+=`<div class="step-wrap">
-      <div class="step-left">
-        <div class="step-dot" style="${dotStyle}">${dotTxt}</div>
-        ${!isLast?'<div class="step-vline"></div>':''}
-      </div>
-      <div class="step-card" data-idx="${i}" onclick="toggleCheck(${i})">
-        <div class="sc-head ${headCls}">
-          <div class="sc-icon ${iconCls}"><i class="ti ${iconName}" aria-hidden="true"></i></div>
-          <div class="sc-text">
-            <div class="sc-name">${n.label}${efeBadge}${nearBadge}${fuelWarningBadge}</div>
-            <div class="sc-sub">${sub}</div>
-          </div>
-          ${scuLabel?`<div class="sc-scu"><div class="sc-scu-val">${n.scu}</div><div class="sc-scu-lbl">${n.role==='pickup'?'to load':'to deliver'}</div></div>`:''}
-          <div class="sc-check"><i class="ti ti-check" aria-hidden="true" style="font-size:12px"></i></div>
-        </div>
-        ${bodyHtml}
-      </div>
-    </div>`;
-  });
-  $('step-list').innerHTML=stepHtml;
-  lastRouteResult=res.seq;const sb=$('share-btn');if(sb)sb.style.display='inline-block';
-  renderRouteVisual2(res.seq,loads,cap);
-  renderRouteMap(res.seq);
-  initChecklist(res.seq);
-  renderCommodityGuide(res.seq);
+    routerWorker.postMessage({ o, dest:null, nodes, cap, qSpeed: drive.speed, opt: optMode });
+  }
 }
 
-// Inicialización
-async function init(){
-  // 1. Archivos JSON Locales + Fallback
+// ── Image Resizer para evitar CORS/Payload errors en Gemini ──
+function resizeImage(base64Str, maxWidth = 1200) {
+  return new Promise((resolve) => {
+    let img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      let canvas = document.createElement('canvas');
+      let scale = maxWidth / img.width;
+      if (scale >= 1) return resolve(base64Str);
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+      let ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.8));
+    };
+  });
+}
+
+function setSmartStatus(mode, type, msg) {
+  const el = $(mode === 'text' ? 'smart-text-status' : 'smart-ocr-status');
+  if (!el) return;
+  el.className = 'smart-status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+  el.innerHTML = type === 'sync' ? `<span class="spin" style="font-size:12px">⟳</span> ${msg}` : msg;
+}
+
+function getGeminiKey() {
+  let key = localStorage.getItem('sc_gemini_key');
+  if (!key) {
+    key = prompt("API Key de Gemini (se guarda localmente):");
+    if (key) { key = key.trim(); localStorage.setItem('sc_gemini_key', key); }
+  }
+  return key;
+}
+
+async function runOCR(imageSource) {
+  const apiKey = getGeminiKey();
+  if (!apiKey) { setSmartStatus('ocr', 'err', 'Se requiere API Key de Gemini.'); return; }
+  setSmartStatus('ocr', 'sync', 'Procesando imagen (reduciendo tamaño)...');
+  
+  try {
+    const resizedImage = await resizeImage(imageSource);
+    const base64Data = resizedImage.split(',')[1];
+    
+    setSmartStatus('ocr', 'sync', 'Analizando con IA...');
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: 'Extrae SCU, Material, Pickups y Deliveries de este contrato de Star Citizen en JSON: {"scu":10, "material":"Gold", "pickups":["Loc 1"], "deliveries":["Loc 2"]}' }, { inline_data: { mime_type: "image/jpeg", data: base64Data } }] }],
+        generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
+      })
+    });
+
+    if (!res.ok) throw new Error('API Error ' + res.status + '. Revisa tu Key o AdBlock.');
+    const data = await res.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    const parsed = JSON.parse(rawText.trim());
+    
+    const pId = findLoc(parsed.pickups?.[0]||'') || Object.keys(ALL_LOCS)[0];
+    const dId = findLoc(parsed.deliveries?.[0]||'') || Object.keys(ALL_LOCS)[1];
+    
+    missions.push({
+      id: ++missionSeq,
+      pickups: [{id: ++pickSeq, locId: pId, scu: parsed.scu||1}],
+      deliveries: [{id: ++delivSeq, locId: dId}]
+    });
+    renderMissions();
+    setSmartStatus('ocr', 'ok', `✓ Éxito: ${parsed.scu||'?'} SCU de ${parsed.material||'Unknown'}`);
+  } catch (e) {
+    setSmartStatus('ocr', 'err', 'Fallo de red/API. Si usas Brave, baja los escudos. Detalle: ' + e.message);
+  }
+}
+
+// ── Inits ──
+$('ocr-file-input').addEventListener('change', e => {
+  if(e.target.files[0]) {
+    const reader = new FileReader();
+    reader.onload = ev => runOCR(ev.target.result);
+    reader.readAsDataURL(e.target.files[0]);
+  }
+});
+
+document.addEventListener('paste', e => {
+  const item = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/'));
+  if (item) {
+    const reader = new FileReader();
+    reader.onload = ev => runOCR(ev.target.result);
+    reader.readAsDataURL(item.getAsFile());
+  }
+});
+
+$('add-missionssion').addEventListener('click', () => {
+  missions.push({ id: ++missionSeq, pickups: [{id: ++pickSeq, locId: Object.keys(ALL_LOCS)[0], scu: 16}], deliveries: [{id: ++delivSeq, locId: Object.keys(ALL_LOCS)[1]}] });
+  renderMissions();
+});
+
+$('clear-all').addEventListener('click', () => { missions = []; renderMissions(); });
+$('calc-btn').addEventListener('click', calculate);
+
+async function init() {
   await loadGameData();
   
-  // 2. Progreso de usuario
-  loadProg();
-  rebuildRankData(factionKey(prog.f));
-
-  // 3. UI y Naves
-  poblarNaves(); 
+  const shipSel = $('ship-sel');
+  const dSel = $('drive-sel');
+  const facSel = $('faction-sel');
   
-  const shipSel=$('ship-sel');
-  shipSel.addEventListener('change',()=>{
-    const s=SHIPS.find(x=>x.name===shipSel.value);
-    if(s){
-      if(s.scu>0){$('cap-input').value=s.scu;$('cap-show').textContent=s.scu;renderCapacityAlert();}
-      const driveSel=$('drive-sel');
-      if(driveSel&&s.size){
-        const defDrive=Object.entries(QUANTUM_DRIVES).find(([k,v])=>
-          v.size===s.size&&k.includes('Atlas')
-        )||Object.entries(QUANTUM_DRIVES).find(([k,v])=>v.size===s.size);
-        if(defDrive)driveSel.value=defDrive[0];
-      }
-    }
-  });
-  initShipSearch();
-  $('cap-input').addEventListener('input',e=>{$('cap-show').textContent=e.target.value;renderCapacityAlert();});
-  $('btn-refresh').addEventListener('click',forceUpdate);
-  $('btn-theme').addEventListener('click',cycleTheme);
-  $('btn-compact').addEventListener('click',toggleCompact);
-  $('btn-export').addEventListener('click',exportConfig);
-  document.getElementById('import-file').addEventListener('change',e=>{
-    if(e.target.files[0])importConfig(e.target.files[0]);
-    e.target.value='';
-  });
-
-  const stackBtn=document.createElement('button');
-  stackBtn.className='add-missionssion-row-btn';
-  stackBtn.innerHTML='<i class="ti ti-stack-2"></i> Stack';
-  stackBtn.title='Crear varios contratos con el missionsmo pickup';
-  stackBtn.addEventListener('click',()=>{
-    const p=document.getElementById('stack-panel');
-    p.style.display=p.style.display==='none'?'block':'none';
-    if(p.style.display==='block')initStackPanel();
-  });
-  document.getElementById('add-missionssion').parentNode.appendChild(stackBtn);
-
-  const facSel=$('faction-sel');
-  const FAC_LABELS={"Covalex Shipping":"📦 Covalex Shipping","Red Wind Linehaul":"🔴 Red Wind Linehaul","Ling Family Hauling":"🟢 Ling Family Hauling"};
-  FACTIONS.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=FAC_LABELS[f]||f;facSel.appendChild(o);});
-  facSel.value=FACTIONS.includes(prog.f)?prog.f:FACTIONS[0];
-  facSel.addEventListener('change',()=>{
-    prog.f=facSel.value;
-    rebuildRankData(factionKey(prog.f));
-    fillRankSel();
-    saveProg();applyRank();renderXP();renderRankGuide();updateXpHint();
-    updateXpFactionLabel();
-  });
-
-  const rk=$('rank-sel');
-  function fillRankSel(){rk.innerHTML='';RANK_ORDER.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r+' ('+CONTRACT_RANKS[r].scuMin+'–'+CONTRACT_RANKS[r].scuMax+' SCU)';rk.appendChild(o);});if(!RANK_ORDER.includes(currentRank))currentRank=RANK_ORDER[Math.floor(RANK_ORDER.length/2)];rk.value=currentRank;}
-  fillRankSel();
-  rk.addEventListener('change',()=>{currentRank=rk.value;applyRank();renderRankGuide();updateXpHint();});
-
-  function updateXpFactionLabel(){
-    const lbl=$('xp-faction-label');
-    if(!lbl)return;
-    const fd=FACTION_DATA[_activeFactionKey];
-    lbl.textContent=fd.emoji+' '+_activeFactionKey+' — Reputation progress';
-    lbl.style.color=fd.color;
-  }
-
-  $('use-dest').addEventListener('change',e=>{useDest=e.target.checked;$('dest-fields').classList.toggle('hidden',!useDest);refreshCandidates();});
-
-  function getDefaultPosId(){
-    const fd=FACTION_DATA[_activeFactionKey];
-    const zone=fd.zone||'Stanton';
-    const sysFilt=zone==='Pyro'?['Pyro']:zone==='microTech'?['Stanton']:['Stanton'];
-    const best=STATIONS.filter(l=>sysFilt.includes(l.sys)).sort((a,b)=>(b.missionssionCount||0)-(a.missionssionCount||0))[0];
-    return best?.id||findLoc('HUR-L2')||STATIONS[0]?.id;
-  }
-
-  const oWrap=$('o-search-wrap');
-  if(oWrap&&!oWrap.hasChildNodes()){
-    const lastPosId=localStorage.getItem('sc_last_pos_id');
-    const lastPosLabel=localStorage.getItem('sc_last_pos_label');
-    const oInitId=lastPosId||null;
-    $('o-loc').value=oInitId||'';
-    const oSearch=createLocSearch(oInitId,(id)=>{
-      if(id){
-        $('o-loc').value=id;
-        const l=locById(id);
-        if(l){localStorage.setItem('sc_last_pos_id',id);localStorage.setItem('sc_last_pos_label',l.label);}
-        refreshCandidates();
-      }
-    });
-    oSearch.querySelector('.loc-input').style.fontSize='12px';
-    oSearch.querySelector('.loc-input').placeholder='Where are you now?';
-    if(lastPosId&&lastPosLabel){
-      const inp=oSearch.querySelector('.loc-input');
-      if(inp){inp.value=lastPosLabel;inp.className='loc-input resolved';}
-    }
-    oWrap.appendChild(oSearch);
-  }
-
-  const dWrap=$('d-search-wrap');
-  if(dWrap&&!dWrap.hasChildNodes()){
-    const dInitId=findLoc('Everus')||STATIONS[0]?.id;
-    $('d-loc').value=dInitId||'';
-    const dSearch=createLocSearch(dInitId,(id)=>{if(id){$('d-loc').value=id;refreshCandidates();}});
-    dSearch.querySelector('.loc-input').placeholder='Escribe destino final…';
-    dWrap.appendChild(dSearch);
-  }
-
-  renderHotspots();
-  $('mode-full').addEventListener('click',()=>setMode('full'));
-  $('mode-partial').addEventListener('click',()=>setMode('partial'));
-  $('pct-input').addEventListener('input',e=>{
-    partialPct=Math.max(1,Math.min(100,parseInt(e.target.value)||25));
-    const disp=$('pct-display');if(disp)disp.textContent=partialPct+'%';
-    const lbl=$('pct-label');if(lbl)lbl.textContent=partialPct+'%';
-    renderMissions();updateXpHint();
-  });
-  $('add-missionssion').addEventListener('click',addMission);
-  $('calc-btn').addEventListener('click',calculate);
-  $('clear-all').addEventListener('click',()=>{missions=[];renderMissions();});
-  $('bmode-optimal').addEventListener('click',()=>{boxMode='optimal';$('bmode-optimal').classList.add('on');$('bmode-single').classList.remove('on');renderMissions();});
-  $('bmode-single').addEventListener('click',()=>{boxMode='single';$('bmode-single').classList.add('on');$('bmode-optimal').classList.remove('on');renderMissions();});
-  $('tab-loop').addEventListener('click',()=>switchTab('loop'));
-  $('tab-route').addEventListener('click',()=>switchTab('route'));
-  $('tab-boxes').addEventListener('click',()=>switchTab('boxes'));
-
-  const syncRank=$('sync-rank');
-  RANK_ORDER.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;syncRank.appendChild(o);});
-  $('sync-slider').addEventListener('input',e=>{$('sync-slider-val').textContent=e.target.value+'%';});
-  $('sync-btn').addEventListener('click',()=>{
-    const rank=syncRank.value;const pct=parseInt($('sync-slider').value)||0;
-    const idx=RANK_ORDER.indexOf(rank);const base=RANK_CUM[idx];
-    if(idx>=RANK_ORDER.length-1)prog.xp[prog.f]=base;
-    else prog.xp[prog.f]=base+Math.round(CONTRACT_RANKS[rank].xpReq*(pct/100));
-    saveProg();renderXP();renderRankGuide();
-  });
+  SHIPS.forEach(s => { const o = document.createElement('option'); o.value=s.name; o.textContent=s.name; shipSel.appendChild(o); });
+  Object.entries(QUANTUM_DRIVES).forEach(([k,v]) => { const o = document.createElement('option'); o.value=k; o.textContent=`${k} — ${v.speed} Gm/s`; dSel.appendChild(o); });
+  FACTIONS.forEach(f => { const o = document.createElement('option'); o.value=f; o.textContent=f; facSel.appendChild(o); });
   
-  function updateXpHint(){
-    const r=CONTRACT_RANKS[currentRank];
-    const base=r?r.xpMission:0;
-    const frac=deliveryMode==='full'?1:partialPct/100;
-    const hint=$('xp-hint');if(hint)hint.textContent=base>0?`≈${base.toLocaleString()} XP/mission en ${currentRank} (${prog.f})`:'';
-  }
-  
-  $('xp-reset').addEventListener('click',()=>{prog.xp[prog.f]=0;saveProg();renderXP();renderRankGuide();});
+  const oSearch = createLocSearch(Object.keys(ALL_LOCS)[0], id => $('o-loc').value = id);
+  $('o-search-wrap').appendChild(oSearch);
+  $('o-loc').value = Object.keys(ALL_LOCS)[0];
 
-  $('share-btn').addEventListener('click',()=>{
-    if(!lastRouteResult)return;
-    const ship=$('ship-sel').value;const cap=getCap();
-    let text=`📦 MANIFIESTO DE VUELO\n🚀 Nave: ${ship} (Bodega: ${cap} SCU)\n🛣️ Puntos de ruta: ${lastRouteResult.length}\n\n`;
-    lastRouteResult.forEach((n,i)=>{
-      if(i===0){text+=`📍 ${i+1}. ${n.label} (Start)\n\n`;}
-      else if(n.role==='dest'){text+=`🏁 ${i+1}. ${n.label} (Destination Final)\n\n`;}
-      else if(n.isJump){text+=`🌌 SALTO CUÁNTICO -> ${sysOf(n)}\n\n`;}
-      else{
-        text+=`📍 ${i+1}. ${n.label}\n`;
-        if(n.role==='pickup')text+=`  🔼 [CARGAR] ${n.scu} SCU · ${n.material}\n      ↳ (Sacar: ${getBoxText(n.scu)})\n\n`;
-        if(n.role==='dropoff')text+=`  🔽 [ENTREGAR] ${n.scu} SCU · ${n.material}\n      ↳ (Bajar: ${getBoxText(n.scu)})\n\n`;
-      }
-    });
-    navigator.clipboard.writeText(text).then(()=>{
-      const btn=$('share-btn');const orig=btn.innerHTML;
-      btn.innerHTML='<i class="ti ti-check"></i> Copied!';btn.style.background='#04342C';btn.style.color='#fff';
-      setTimeout(()=>{btn.innerHTML=orig;btn.style.background='transparent';btn.style.color='#378ADD';},2000);
-    });
-  });
-
-  $('btn-onebox').addEventListener('click',()=>{
-    oneBoxMode=!oneBoxMode;
-    $('btn-onebox').classList.toggle('on',oneBoxMode);
-    $('onebox-badge').style.display=oneBoxMode?'inline':'none';
-    $('pct-line').classList.toggle('dim',oneBoxMode||deliveryMode==='full');
-    renderMissions();renderCapacityAlert();
-  });
-  
-  $('btn-session-start').addEventListener('click', startSession);
-  $('btn-session-stop').addEventListener('click', stopSession);
-  $('btn-save-route').addEventListener('click', saveCurrentRoute);
-
-  loadSavedRoutes();
-  renderSavedRoutes();
-
-  applyRank();renderSizeRow();
-  renderMissions();renderXP();renderRankGuide();
-  renderSessionBar();
-  renderSessionHistory();
-  initTheme();
-  initSmartPanel();
+  renderMissions();
 }
-init();
+
+window.onload = init;
 </script>
-<div class="version-banner">🌐 rieof.github.io</div>
 </body>
 </html>
