@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SC Hauling Suite · Star Citizen Cargo Planner</title>
+<title>Hauling Suite · Star Citizen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -2589,7 +2589,9 @@ function buildNodes(){
 }
 
 function refreshCandidates(){
-  const o=getSelLoc('o-planet','o-loc');const el=$('cand-list');
+  const el=$('cand-list');
+  if(!el)return; // cand-list removed — no-op
+  const o=getSelLoc('o-planet','o-loc');
   if(!o){el.innerHTML='<div class="empty">Selecciona tu posición.</div>';return;}
   let target;const drops=[];missions.forEach(m=>m.deliveries.forEach(d=>{const l=locById(d.locId);if(l)drops.push(l);}));
   if(useDest)target=getSelLoc('d-planet','d-loc');
@@ -3117,102 +3119,77 @@ function loadTesseract(cb){
 }
 
 async function runOCR(imageSource, sourceCanvas){
-  // Estrategia: Claude Vision directamente sobre la imagen
-  // (más preciso que Tesseract para contratos de SC con fondos oscuros)
-  setSmartStatus('ocr','sync','Analyzing screenshot…');
-  try{
-    const base64=imageSource.split(',')[1];
-    const mime=imageSource.split(';')[0].split(':')[1]||'image/png';
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',max_tokens:500,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mime,data:base64}},
-          {type:'text',text:`You are extracting data from a Star Citizen hauling contract screenshot.
-Return ONLY valid JSON (no markdown, no explanation):
-{"scu":NUMBER,"material":"COMMODITY_NAME","pickups":["Location Name"],"deliveries":["Loc1","Loc2"],"pay":NUMBER}
+  setSmartStatus('ocr','sync','Reading image…');
 
-Rules:
-- scu: the number from "X SCU or smaller" or highest "Deliver 0/X SCU" value
-- material: commodity name (Hydrogen, Waste, Copper, Processed Food, Scrap, etc.)
-- pickups: ALL pickup locations — from "PICK UP LOCATIONS" list OR "Collect X from Y" lines. Use exact location names only, no planet suffixes like "on Pyro III"
-- deliveries: ALL delivery locations — from "DROP OFF LOCATIONS" list OR "Deliver X SCU of Y to Z" lines. Use exact location names, strip "on Pyro X" / "at the L2 Lagrange of..."
-- pay: reward number (digits only, no commas)
-- Deduplicate: if same location appears multiple times in pickups, include it once
-Only the JSON object.`}
-        ]}]
-      })
-    });
-    if(!res.ok){
-      // CORS error from file:// — fall back to Tesseract+text
-      throw new Error('fetch_failed');
-    }
-    const data=await res.json();
-    const raw=(data.content?.[0]?.text||'{}').replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(raw);
-    if(!parsed.scu&&!parsed.pickups?.length&&!parsed.deliveries?.length)
-      throw new Error('empty_result');
-    if(createMissionFromParsed(parsed)){
-      const p=parsed.pickups?.length||0;
-      const d=parsed.deliveries?.length||0;
-      setSmartStatus('ocr','ok',
-        '✓ '+parsed.scu+' SCU '+(parsed.material||'')+
-        ' · '+p+' pickup'+' · '+d+' deliver'+(d!==1?'ies':'y'));
-    }
-  }catch(err){
-    const isCORS=err.message.includes('fetch')||err.message.includes('Failed')||err.message==='fetch_failed';
-    if(isCORS){
-      setSmartStatus('ocr','err',
-        '❌ Blocked by browser security (CORS). '+
-        'Open with: node servidor.js  OR  VS Code → Go Live  OR  install "Allow CORS" extension in Chrome'
-      );
-      return;
-    }
-    let rawText='';
-    try{
-      await new Promise((res2,rej2)=>{
-        loadTesseract(async(e)=>{
-          if(e){rej2(e);return;}
-          try{
-            let src=imageSource;
-            if(sourceCanvas){
-              try{src=preprocessImageForOCR(sourceCanvas).toDataURL('image/png');}catch(_){}
+  // ── PASO 1: Tesseract local (siempre funciona, sin red) ──────
+  let rawText='';
+  try{
+    await new Promise((resolve,reject)=>{
+      loadTesseract(async(err)=>{
+        if(err){reject(err);return;}
+        try{
+          // Pre-procesar imagen para mejorar contraste
+          let src=imageSource;
+          if(sourceCanvas){
+            try{src=preprocessImageForOCR(sourceCanvas).toDataURL('image/png');}
+            catch(_){}
+          }
+          setSmartStatus('ocr','sync','OCR in progress…');
+          const result=await _tesseract.recognize(src,'eng',{
+            logger:m=>{
+              if(m.status==='recognizing text')
+                setSmartStatus('ocr','sync','OCR '+(Math.round((m.progress||0)*100))+'%…');
             }
-            const r=await _tesseract.recognize(src,'eng',{
-              logger:m=>{if(m.status==='recognizing text')
-                setSmartStatus('ocr','sync','OCR '+Math.round((m.progress||0)*100)+'%');}
-            });
-            rawText=r?.data?.text||'';res2();
-          }catch(e2){rej2(e2);}
-        });
+          });
+          rawText=result?.data?.text||'';
+          resolve();
+        }catch(e){reject(e);}
       });
-    }catch(e2){
-      setSmartStatus('ocr','err','OCR failed: '+e2.message+' — use Text tab instead');
+    });
+  }catch(e){
+    setSmartStatus('ocr','err','Could not load OCR engine: '+e.message);
+    return;
+  }
+
+  if(!rawText||rawText.trim().length<10){
+    setSmartStatus('ocr','err','No text found in image. Make sure the screenshot shows the contract text clearly.');
+    return;
+  }
+
+  console.info('[OCR] Text extracted ('+rawText.length+' chars):\n'+rawText.slice(0,500));
+
+  // ── PASO 2: Parser local especializado (sin red) ─────────────
+  const local=parseContractText(rawText);
+  const hasData=(local.pickups?.length||0)+(local.deliveries?.length||0);
+  console.info('[OCR] Local parse:',local);
+
+  if(hasData>=1&&(local.scu||local.material)){
+    // Parser local funcionó bien
+    if(createMissionFromParsed(local)){
+      const p=local.pickups?.length||0;
+      const d=local.deliveries?.length||0;
+      setSmartStatus('ocr','ok',
+        '✓ '+( local.scu||'?')+' SCU '+(local.material||'')+
+        ' · '+p+' pickup · '+d+' deliver'+(d!==1?'ies':'y'));
       return;
     }
-    if(!rawText||rawText.trim().length<10){
-      setSmartStatus('ocr','err','No text detected. Use Text tab and paste contract text.');
-      return;
+  }
+
+  // ── PASO 3: Intentar Claude con el TEXTO (no imagen) ─────────
+  // Texto plano no tiene problema de CORS
+  setSmartStatus('ocr','sync','Interpreting with Claude…');
+  try{
+    await parseTextInput(rawText);
+    setSmartStatus('ocr','ok','✓ Contract created from screenshot');
+  }catch(e){
+    // ── PASO 4: Fallback — poner el texto en el campo de texto ──
+    const inp=$('smart-text-input');
+    if(inp&&rawText){
+      inp.value=rawText.replace(/\n/g,' ').slice(0,400).trim();
+      inp.focus();
     }
-    console.info('[OCR Tesseract]',rawText.slice(0,400));
-    const local=parseContractText(rawText);
-    console.info('[OCR local parse]',local);
-    const ok=(local.pickups?.length||0)+(local.deliveries?.length||0);
-    if(ok&&createMissionFromParsed(local)){
-      setSmartStatus('ocr','ok','✓ '+local.scu+' SCU '+(local.material||'')+
-        ' · '+(local.pickups?.length||0)+' pickup · '+(local.deliveries?.length||0)+' delivery');
-    }else{
-      // Last resort: put OCR text in the text field above
-      const inp=$('smart-text-input');
-      if(inp)inp.value=rawText.replace(/\n/g,' ').slice(0,300).trim();
-      setSmartStatus('ocr','err','OCR text moved to the text field — review and press Enter');
-    }
+    setSmartStatus('ocr','err',
+      'OCR text moved to the text field above — check and press Enter');
   }
 }
 
