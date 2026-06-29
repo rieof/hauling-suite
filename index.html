@@ -3503,484 +3503,233 @@ function createMissionFromParsed(parsed){
   return true;
 }
 
-// ── Mode texto: parseo con Claude API ──────────────────────
-async function parseTextInput(text){
-  if(!text.trim())return;
-  setSmartStatus('text','sync','Parsing contract…');
-  $('smart-parse-btn').disabled=true;
+// ══════════════════════════════════════════════════════════
+// INGRESO INTELIGENTE (TEXTO E IMAGEN) CON GOOGLE GEMINI
+// ══════════════════════════════════════════════════════════
 
-  try{
-    // Intentar parseo local rápido primero (regex)
-    const local=parseTextLocal(text);
-    if(local&&local.pickups?.length){
-      createMissionFromParsed(local);
-      $('smart-text-input').value='';
-      setSmartStatus('text','ok',`✓ Contract created — ${local.scu} SCU ${local.material||''} from ${local.pickups[0]||'?'} → ${local.deliveries?.[0]||'?'}`);
-      $('smart-parse-btn').disabled=false;return;
-    }
-
-    // Fallback: Claude API para lenguaje más libre
-    const safeText=text.replace(/`/g,"'").replace(/\\/g,'').slice(0,800);
-    const prompt='Extract data from this Star Citizen hauling contract text.\n'+
-      'Return ONLY valid JSON, no markdown:\n'+
-      '{"scu":NUMBER,"material":"STRING","pickups":["loc1","loc2"],"deliveries":["loc1"],"pay":NUMBER}\n'+
-      'scu=max SCU from contract (the number from "X SCU or smaller"). '+
-      'pickups=ALL pickup locations (exact names, no planet suffix). '+
-      'deliveries=ALL delivery locations (exact names, no planet suffix). '+
-      'pay=reward in aUEC (digits only). Use null if not found.\n'+
-      'Text: '+safeText;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',max_tokens:300,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data=await res.json();
-    const raw=data.content?.[0]?.text?.trim()||'{}';
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    if(createMissionFromParsed(parsed)){
-      $('smart-text-input').value='';
-      setSmartStatus('text','ok',`✓ Contract creado — ${parsed.scu||'?'} SCU ${parsed.material||''}`);
-    }
-  }catch(e){
-    // Si Claude falla, intentar parseo local de emergencia
-    const local=parseTextLocalFallback(text);
-    if(local){createMissionFromParsed(local);$('smart-text-input').value='';
-      setSmartStatus('text','ok','✓ Contract creado (parseo local)');}
-    else setSmartStatus('text','err','Could not parse. Try: "120 scrap from ruin to gaslight"');
-  }
-  $('smart-parse-btn').disabled=false;
+function setSmartStatus(mode, type, msg) {
+  const el = $(mode === 'text' ? 'smart-text-status' : 'smart-ocr-status');
+  if (!el) return;
+  el.className = 'smart-status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+  el.innerHTML = type === 'sync' ? `<span class="spin" style="font-size:12px">⟳</span> ${msg}` : msg;
 }
 
-// ── Parseo local rápido (regex) ─────────────────────────────
-function parseTextLocal(text){
-  const t=text.toLowerCase();
-  // Patrón: [SCU] [material] de/from [pickup] a/to [entrega]
-  const m=t.match(/^(\d+)\s+([a-záéíóúñ\s]+?)\s+(?:de|from|en)\s+([\w\s]+?)\s+(?:a|to|→|->)\s+([\w\s]+?)(?:\s+[\d,]+)?$/i);
-  if(m)return{scu:parseInt(m[1]),material:m[2].trim(),pickups:[m[3].trim()],deliveries:[m[4].trim()]};
-  // Patrón simple con →
-  const m2=t.match(/^([\w\s]+?)\s*[→\-]+\s*([\w\s]+?)(?:\s+(\d+)\s+([\w\s]+?))?$/);
-  if(m2)return{scu:parseInt(m2[3])||64,material:m2[4]?.trim()||null,pickups:[m2[1].trim()],deliveries:[m2[2].trim()]};
+// ── Parseo local rápido (regex) para textos simples ──
+function parseTextLocal(text) {
+  const t = text.toLowerCase();
+  const m = t.match(/^(\d+)\s+([a-záéíóúñ\s]+?)\s+(?:de|from|en)\s+([\w\s]+?)\s+(?:a|to|→|->)\s+([\w\s]+?)(?:\s+[\d,]+)?$/i);
+  if (m) return { scu: parseInt(m[1]), material: m[2].trim(), pickups: [m[3].trim()], deliveries: [m[4].trim()] };
+  const m2 = t.match(/^([\w\s]+?)\s*[→\-]+\s*([\w\s]+?)(?:\s+(\d+)\s+([\w\s]+?))?$/);
+  if (m2) return { scu: parseInt(m2[3]) || 64, material: m2[4]?.trim() || null, pickups: [m2[1].trim()], deliveries: [m2[2].trim()] };
   return null;
 }
 
-function parseTextLocalFallback(text){
-  // Extraer números (SCU) y palabras clave
-  const nums=text.match(/\d+/g);
-  const scu=nums?parseInt(nums[0]):64;
-  // Intentar encontrar dos ubicaciones
-  const words=text.split(/\s+/);
-  return{scu,material:null,pickups:[words.slice(0,2).join(' ')],deliveries:[words.slice(-2).join(' ')]};
-}
-
-function setSmartStatus(mode,type,msg){
-  const el=$(mode==='text'?'smart-text-status':'smart-ocr-status');
-  if(!el)return;
-  el.className='smart-status'+(type==='ok'?' ok':type==='err'?' err':'');
-  el.innerHTML=type==='sync'?`<span class="spin" style="font-size:12px">⟳</span> ${msg}`:msg;
-}
-
-// ── Pre-procesamiento de imagen para mejorar OCR ─────────────
-// Los contratos de SC tienen texto azul sobre fondo oscuro.
-// Convertimos a escala de grises de alto contraste para Tesseract.
-// ── Preprocesamiento de imagen para OCR mejorado ──────────────
-// Los contratos de SC tienen:
-//   - Texto blanco/gris claro sobre fondo muy oscuro (~#0d1012)
-//   - Texto azul brillante (links/nombres de lugares) sobre fondo oscuro
-//   - Texto dorado/amarillo (títulos) sobre fondo oscuro
-//   - Fuente sans-serif tamaño mediano
-// Estrategia: escalar x3, detectar todos los textos claros → negro sobre blanco
-function preprocessImageForOCR(sourceCanvas){
-  const w=sourceCanvas.width, h=sourceCanvas.height;
-  const scale=3; // x3 para mejor reconocimiento de fuentes pequeñas
-  const out=document.createElement('canvas');
-  out.width=w*scale; out.height=h*scale;
-  const ctx=out.getContext('2d');
-  ctx.imageSmoothingEnabled=true;
-  ctx.imageSmoothingQuality='high';
-  ctx.drawImage(sourceCanvas,0,0,w*scale,h*scale);
-
-  const imgData=ctx.getImageData(0,0,w*scale,h*scale);
-  const d=imgData.data;
-
-  // Calcular luminancia media para umbral adaptativo
-  let sumLum=0;
-  for(let i=0;i<d.length;i+=4)
-    sumLum+=(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
-  const avgLum=sumLum/(d.length/4);
-  // Umbral: si imagen muy oscura (SC), bajar umbral para capturar más texto
-  const threshold=avgLum<80?100:130;
-
-  for(let i=0;i<d.length;i+=4){
-    const r=d[i],g=d[i+1],b=d[i+2];
-    const lum=0.299*r+0.587*g+0.114*b;
-
-    // Texto azul brillante (links, nombres de lugares en SC)
-    // Azul: b alto, r y g bajos
-    const isBlue=b>100&&b>r*1.3&&b>g*1.2&&lum>60;
-
-    // Texto dorado/amarillo (títulos, cantidades SCU)
-    const isGold=(r>150&&g>100&&b<80&&lum>100);
-
-    // Texto blanco/gris claro (cuerpo del contrato)
-    const isLight=lum>threshold;
-
-    // Texto naranja/rojo (cantidades resaltadas)
-    const isOrange=(r>150&&g>80&&b<80&&r>g*1.4);
-
-    if(isBlue||isGold||isLight||isOrange){
-      d[i]=d[i+1]=d[i+2]=0; // negro
-    }else{
-      d[i]=d[i+1]=d[i+2]=255; // blanco
-    }
-    d[i+3]=255;
-  }
-
-  // Segundo pase: dilatar texto (conectar píxeles rotos)
-  // Hace el texto más grueso → más legible para Tesseract
-  const dilated=ctx.createImageData(w*scale,h*scale);
-  const dd=dilated.data;
-  for(let i=0;i<dd.length;i++)dd[i]=d[i]; // copiar
-  for(let y=1;y<h*scale-1;y++){
-    for(let x=1;x<w*scale-1;x++){
-      const idx=(y*(w*scale)+x)*4;
-      if(d[idx]===0){ // píxel negro
-        // Expandir 1px en todas direcciones
-        [[0,1],[0,-1],[1,0],[-1,0]].forEach(([dy,dx])=>{
-          const ni=((y+dy)*(w*scale)+(x+dx))*4;
-          dd[ni]=dd[ni+1]=dd[ni+2]=0;
-        });
-      }
+// ── Gestión de API Key de Gemini ──
+function getGeminiKey() {
+  let key = localStorage.getItem('sc_gemini_key');
+  if (!key) {
+    key = prompt(
+      "🤖 LECTOR AUTOMÁTICO DE CONTRATOS (GEMINI)\n\n" +
+      "1. Entra a: aistudio.google.com\n" +
+      "2. Inicia sesión con Google y haz clic en 'Get API Key'.\n" +
+      "3. Pega esa clave aquí abajo:\n\n" +
+      "(Tu clave se guarda SOLO en tu navegador, es 100% seguro)."
+    );
+    if (key) {
+      key = key.trim();
+      localStorage.setItem('sc_gemini_key', key);
     }
   }
-  ctx.putImageData(dilated,0,0);
-
-  // Añadir margen blanco alrededor (Tesseract funciona mejor con margen)
-  const margin=20;
-  const final=document.createElement('canvas');
-  final.width=w*scale+margin*2;
-  final.height=h*scale+margin*2;
-  const fctx=final.getContext('2d');
-  fctx.fillStyle='white';
-  fctx.fillRect(0,0,final.width,final.height);
-  fctx.drawImage(out,margin,margin);
-  return final;
+  return key;
 }
 
-// ── OCR: Tesseract con configuración optimizada para SC ────────
-let _tesseract=null;
-
-function loadTesseract(cb){
-  if(_tesseract){cb();return;}
-  const s=document.createElement('script');
-  s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
-  s.onload=()=>{_tesseract=window.Tesseract;cb();};
-  s.onerror=()=>cb(new Error('No se pudo cargar Tesseract'));
-  document.head.appendChild(s);
+function resetGeminiKey() {
+  localStorage.removeItem('sc_gemini_key');
+  alert("Clave borrada. Se te pedirá una nueva la próxima vez que proceses un contrato.");
 }
 
-async function runOCR(imageSource, sourceCanvas){
-  console.log('[OCR] runOCR started, imageSource length:', imageSource?.length);
-  setSmartStatus('ocr','sync','Reading image…');
+// ── PARSEO DE TEXTO MANUAL (Input) ──
+async function parseTextInput(text) {
+  if (!text.trim()) return;
+  setSmartStatus('text', 'sync', 'Procesando contrato...');
+  $('smart-parse-btn').disabled = true;
 
-  // PASO 1: Tesseract (local, sin red)
-  let rawText='';
-  try{
-    setSmartStatus('ocr','sync','Loading OCR engine…');
-    await new Promise((resolve,reject)=>{
-      loadTesseract(async(err)=>{
-        if(err){console.error('[OCR] Tesseract load error:',err);reject(err);return;}
-        console.log('[OCR] Tesseract loaded OK');
-        try{
-          let src=imageSource;
-          if(sourceCanvas){
-            try{
-              const proc=preprocessImageForOCR(sourceCanvas);
-              src=proc.toDataURL('image/png');
-              console.log('[OCR] Preprocessed:',proc.width+'x'+proc.height);
-            }catch(pe){console.warn('[OCR] Preprocess failed:',pe.message);}
-          }
-          setSmartStatus('ocr','sync','Recognizing text…');
-          const result=await _tesseract.recognize(src,'eng',{
-            logger:m=>{
-              if(m.status==='recognizing text')
-                setSmartStatus('ocr','sync','OCR '+Math.round((m.progress||0)*100)+'%…');
-            }
-          });
-          rawText=result?.data?.text||'';
-          console.log('[OCR] Text length:',rawText.length);
-          console.log('[OCR] Text preview:',rawText.slice(0,300));
-          resolve();
-        }catch(e2){console.error('[OCR] Recognition error:',e2);reject(e2);}
-      });
-    });
-  }catch(e){
-    console.error('[OCR] Step 1 failed:',e);
-    setSmartStatus('ocr','err','OCR error: '+e.message);
-    return;
-  }
-
-  if(!rawText||rawText.trim().length<10){
-    console.warn('[OCR] No text extracted');
-    setSmartStatus('ocr','err','No text detected. Make sure the screenshot shows the contract text.');
-    return;
-  }
-
-  // PASO 2: Parser local
-  const local=parseContractText(rawText);
-  console.log('[OCR] Local parse:',JSON.stringify(local));
-  const hasData=(local.pickups?.length||0)+(local.deliveries?.length||0);
-
-  if(hasData>=1&&(local.scu||local.material)){
-    if(createMissionFromParsed(local)){
-      const p=local.pickups?.length||0;
-      const d=local.deliveries?.length||0;
-      setSmartStatus('ocr','ok',
-        '✓ '+(local.scu||'?')+' SCU '+(local.material||'')+
-        ' · '+p+' pickup · '+d+' deliver'+(d!==1?'ies':'y'));
+  try {
+    // 1. Intentar resolverlo localmente si el formato es muy simple
+    const local = parseTextLocal(text);
+    if (local && local.pickups?.length) {
+      createMissionFromParsed(local);
+      $('smart-text-input').value = '';
+      setSmartStatus('text', 'ok', `✓ Contrato creado (Parseo Local)`);
+      $('smart-parse-btn').disabled = false;
       return;
     }
-  }
 
-  // PASO 3: Claude parsea el texto (texto plano = sin CORS)
-  setSmartStatus('ocr','sync','Interpreting with Claude…');
-  try{
-    await parseTextInput(rawText);
-    setSmartStatus('ocr','ok','✓ Contract created');
-  }catch(e){
-    // PASO 4: Fallback manual
-    const inp=$('smart-text-input');
-    if(inp&&rawText)inp.value=rawText.slice(0,500).replace(/\s+/g,' ').trim();
-    setSmartStatus('ocr','err','Text moved to field above — review and press Enter');
-  }
-}
+    // 2. Si es complejo, usar Gemini
+    const apiKey = getGeminiKey();
+    if (!apiKey) throw new Error("Se requiere API Key de Gemini.");
 
-// Parser especializado para contratos Star Citizen
-// Los contratos tienen dos formatos principales:
-//   A) DROP OFF LOCATIONS → PICK UP LOCATIONS (con "Freight elevator at X")
-//   B) PRIMARY OBJECTIVES → "Deliver X SCU of Y to Z" / "Collect Y from Z"
-function parseContractText(text){
-  const t=text.replace(/\r/g,'').replace(/[ \t]+/g,' ');
+    const promptText = 'Extract data from this Star Citizen hauling contract text.\n' +
+      'Return ONLY valid JSON, no markdown.\n' +
+      '{"scu":NUMBER,"material":"STRING","pickups":["loc1","loc2"],"deliveries":["loc1"],"pay":NUMBER}\n\n' +
+      'Text: ' + text.slice(0, 800).replace(/`/g, "'");
 
-  // ── SCU ────────────────────────────────────────────────────────
-  let scu=null;
-  for(const re of [
-    /(\d+)\s*SCU\s*or\s*smaller/i,
-    /pile\s+of\s+cargo[,\s]+(\d+)\s*SCU/i,
-    /cargo\s*[,(]\s*(\d+)\s*SCU/i,
-    /Deliver\s+\d+\/(\d+)\s+SCU/i,
-    /(\d+)\s*SCU/i,
-  ]){const m=t.match(re);if(m){scu=parseInt(m[1]);break;}}
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }] }],
+        generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
+      })
+    });
 
-  // ── MATERIAL ───────────────────────────────────────────────────
-  let material=null;
-  const matM=t.match(/SCU\s+of\s+([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)/)
-    ||t.match(/Collect\s+([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)\s+from/i);
-  if(matM)material=matM[1].trim();
-  if(!material||material.length<3){
-    const known=['Processed Food','Agricultural Supplies','Medical Supplies',
-      'Construction Materials','Recycled Material Composite','Distilled Spirits',
-      'Hydrogen','Waste','Scrap','Agricium','Titanium','Aluminum','Steel',
-      'Iron','Copper','Gold','Laranite','Quantanium','Silicon','Tungsten',
-      'SLAM','Widow','Maze','Pressurized Ice','Ammonia','Methane','Potassium'];
-    for(const m of known){if(t.toLowerCase().includes(m.toLowerCase())){material=m;break;}}
-  }
-
-  // Helper: limpiar nombre de ubicación
-  const cleanLoc=raw=>{
-    if(!raw)return'';
-    return raw
-      .replace(/\s+on\s+(?:Pyro|Stanton|Nyx)\s*(?:[IVX]+|[0-9]+)?[a-z]?\.?\s*$/i,'')
-      .replace(/\s+at\s+the\s+L\d+.*/i,'')
-      .replace(/\s+\((?:Pyro|Stanton|Nyx)\s*[IVX0-9]*\)\s*$/i,'')
-      .replace(/\(PYV-L\d+\)/i,'').replace(/\(PYVI-L\d+\)/i,'')
-      .replace(/[.,;]+$/,'').replace(/\s+/g,' ').trim();
-  };
-
-  // Helper: deduplicar por nombre limpio (ignora sufijos OCR)
-  const normLoc=s=>s.toLowerCase().replace(/[^a-z0-9]/g,'');
-  const addUnique=(arr,loc)=>{
-    if(!loc||loc.length<3)return;
-    const n=normLoc(loc);
-    if(!arr.some(x=>normLoc(x)===n))arr.push(loc);
-  };
-
-  // ── PICKUPS ────────────────────────────────────────────────────
-  const pickups=[];
-
-  // Prioridad 1: sección "PICK UP LOCATIONS"
-  const pickSec=t.match(/PICK\s*UP\s*LOCATIONS[\s\S]*?(?=DROP\s*OFF|PRIMARY\s*OBJ|I['\u2019]m|I['\u2019]d|And\s+don|Reputation|$)/i)?.[0]||'';
-  if(pickSec){
-    const re=/[-•]\s*Freight\s+elevator\s+at\s+([^\n.]+)/gi;
-    for(const m of pickSec.matchAll(re))addUnique(pickups,cleanLoc(m[1]));
-  }
-
-  // Prioridad 2: "Collect X from Y" — SOLO tomar el primer lugar único
-  // (aparece repetido N veces en contratos Stellar, una por entrega)
-  const collectSet=new Set();
-  const collectRe=/Collect\s+[A-Za-z\s]+\s+from\s+([A-Z][A-Za-z'\s.]+?)(?:\.|,|\n|$)/g;
-  for(const m of t.matchAll(collectRe)){
-    const loc=cleanLoc(m[1]);
-    const n=normLoc(loc);
-    if(loc&&!collectSet.has(n)){
-      collectSet.add(n);
-      addUnique(pickups,loc);
+    if (!res.ok) {
+      if (res.status === 400 || res.status === 403) localStorage.removeItem('sc_gemini_key');
+      throw new Error('API Error: ' + res.status);
     }
-  }
 
-  // ── DELIVERIES ─────────────────────────────────────────────────
-  const deliveries=[];
+    const data = await res.json();
+    const parsed = JSON.parse((data.candidates?.[0]?.content?.parts?.[0]?.text || '{}').trim());
 
-  // Prioridad 1: sección "DROP OFF LOCATIONS"
-  const dropSec=t.match(/DROP\s*OFF\s*LOCATIONS[\s\S]*?(?=PICK\s*UP|PRIMARY\s*OBJ|I['\u2019]m|I['\u2019]d|And\s+don|Reputation|$)/i)?.[0]||'';
-  if(dropSec){
-    const re=/[-•]\s*Freight\s+elevator\s+at\s+([^\n.]+)/gi;
-    for(const m of dropSec.matchAll(re))addUnique(deliveries,cleanLoc(m[1]));
-  }
-
-  // Prioridad 2: "Deliver X/Y SCU of Z to [Lugar]" — PRIMARY OBJECTIVES
-  const delivRe=/Deliver\s+\d+\/\d+\s+SCU\s+of\s+[A-Za-z\s]+\s+to\s+([A-Z][A-Za-z'\s.]+?)(?:\s+at\s+the|\s+on\s+(?:Pyro|Stanton|Nyx)|\.|,|\n|$)/g;
-  for(const m of t.matchAll(delivRe))addUnique(deliveries,cleanLoc(m[1]));
-
-  // Prioridad 3: "freight elevator at X" en el intro (solo si no hay deliveries aún
-  // y el lugar NO es el pickup)
-  if(!deliveries.length){
-    const introM=t.match(/freight\s+elevator\s+at\s+([A-Z][A-Za-z'\s.]+?)(?:\s+at\s+the|\s+on\s+(?:Pyro|Stanton|Nyx)|\.|,|\n|$)/i);
-    if(introM){
-      const loc=cleanLoc(introM[1]);
-      if(loc&&!pickups.some(p=>normLoc(p)===normLoc(loc)))
-        addUnique(deliveries,loc);
+    if (createMissionFromParsed(parsed)) {
+      $('smart-text-input').value = '';
+      setSmartStatus('text', 'ok', `✓ Contrato creado — ${parsed.scu || '?'} SCU ${parsed.material || ''}`);
+    } else {
+      setSmartStatus('text', 'err', 'No se detectó un formato válido.');
     }
+  } catch (e) {
+    setSmartStatus('text', 'err', 'Error: ' + e.message);
+  } finally {
+    $('smart-parse-btn').disabled = false;
+  }
+}
+
+// ── PARSEO DE IMAGENES (OCR) ──
+async function runOCR(imageSource) {
+  const apiKey = getGeminiKey();
+  if (!apiKey) {
+    setSmartStatus('ocr', 'err', 'Se requiere una API Key para leer la imagen.');
+    return;
   }
 
-  // ── PAGO ───────────────────────────────────────────────────────
-  let pay=null;
-  const payM=t.match(/(?:[¤\u00a4]|Reward\s*[:\n]?\s*)([0-9][0-9,]+)/i)
-    ||t.match(/([0-9]{3,}(?:,[0-9]{3})+)/);
-  if(payM)pay=parseInt(payM[1].replace(/,/g,''));
+  setSmartStatus('ocr', 'sync', 'Analizando contrato con Gemini Vision...');
+  $('smart-parse-btn').disabled = true;
 
-  console.info('[parseContractText]',{scu,material,pickups,deliveries,pay});
-  return{scu,material,pickups,deliveries,pay};
+  try {
+    const base64Data = imageSource.split(',')[1];
+    const mediaType = imageSource.split(';')[0].split(':')[1] || 'image/png';
+
+    const promptText = 'You are an AI assistant helping a Star Citizen player. ' +
+      'Look at this hauling contract screenshot and extract the data into pure JSON format. ' +
+      'Return ONLY valid JSON, no markdown formatting like ```json, just the raw object.\n\n' +
+      '{"scu":NUMBER,"material":"STRING","pickups":["loc1"],"deliveries":["loc1","loc2"],"pay":NUMBER}\n\n' +
+      'Rules:\n' +
+      '- scu: Look for "X SCU or smaller" and extract X.\n' +
+      '- material: The commodity name.\n' +
+      '- pickups: Array of pickup locations (exact names, ignore system/planet suffixes).\n' +
+      '- deliveries: Array of delivery locations (exact names).\n' +
+      '- pay: Reward in aUEC (digits only). Use 0 if not found.';
+
+    const url = `[https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$](https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$){apiKey}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }, { inline_data: { mime_type: mediaType, data: base64Data } }] }],
+        generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
+      })
+    });
+
+    if (!res.ok) {
+      if (res.status === 400 || res.status === 403) {
+        localStorage.removeItem('sc_gemini_key');
+        throw new Error('API Key inválida. Sube la imagen de nuevo para ingresar la clave correcta.');
+      }
+      throw new Error('Error en la API de Google: ' + res.status);
+    }
+    
+    const data = await res.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    const parsed = JSON.parse(rawText.trim());
+    
+    if (createMissionFromParsed(parsed)) {
+      setSmartStatus('ocr', 'ok', `✓ Contrato creado — ${parsed.scu || '?'} SCU ${parsed.material || ''}`);
+    } else {
+      setSmartStatus('ocr', 'err', 'No se pudo leer el contrato. Intenta hacer otra captura.');
+    }
+
+  } catch (e) {
+    console.error('[OCR-AI] Error:', e);
+    setSmartStatus('ocr', 'err', 'Error: ' + e.message);
+  } finally {
+    $('smart-parse-btn').disabled = false;
+  }
 }
 
-// Limpiar nombre de ubicación extraído por OCR
-function cleanLocName(raw){
-  if(!raw)return'';
-  return raw
-    .replace(/\s+on\s+(?:Pyro|Stanton|Nyx).*/i,'')  // quitar "on Pyro X"
-    .replace(/\s+at\s+the\s+.*/i,'')                  // quitar "at the L2..."
-    .replace(/\.$/,'').replace(/,$/,'')               // quitar puntuación final
-    .replace(/\s+/g,' ').trim();
-}
+function showOCRPreview(file) {
+  if (!file) return;
+  setSmartStatus('ocr', 'sync', 'Cargando imagen...');
 
-function showOCRPreview(file){
-  console.log('[OCR] showOCRPreview called, file:', file?.name, file?.type, file?.size);
-  if(!file){console.error('[OCR] No file provided');return;}
-
-  setSmartStatus('ocr','sync','Loading image…');
-
-  const reader=new FileReader();
-  reader.onerror=e=>{
-    console.error('[OCR] FileReader error:',e);
-    setSmartStatus('ocr','err','Could not read file: '+e.target?.error?.message);
-  };
-  reader.onload=e=>{
-    console.log('[OCR] FileReader loaded, data length:', e.target.result?.length);
-    const img=new Image();
-    img.onerror=err=>{
-      console.error('[OCR] Image load error:',err);
-      setSmartStatus('ocr','err','Could not load image');
+  const reader = new FileReader();
+  reader.onerror = e => setSmartStatus('ocr', 'err', 'No se pudo leer la imagen');
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = $('ocr-canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      
+      const preview = $('ocr-preview');
+      if (preview) preview.style.display = 'block';
+      
+      runOCR(e.target.result);
     };
-    img.onload=()=>{
-      console.log('[OCR] Image loaded:', img.width+'x'+img.height);
-      const canvas=$('ocr-canvas');
-      if(!canvas){console.error('[OCR] canvas element not found!');return;}
-      canvas.width=img.width;
-      canvas.height=img.height;
-      const ctx=canvas.getContext('2d');
-      ctx.drawImage(img,0,0);
-      const preview=$('ocr-preview');
-      if(preview)preview.style.display='block';
-      console.log('[OCR] Starting runOCR…');
-      runOCR(e.target.result, canvas);
-    };
-    img.src=e.target.result;
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-// ── Init del panel ──────────────────────────────────────────
-function initSmartPanel(){
-  // Texto
-  $('smart-parse-btn').addEventListener('click',()=>
-    parseTextInput($('smart-text-input').value));
-  $('smart-text-input').addEventListener('keydown',e=>{
-    if(e.key==='Enter'&&!e.shiftKey){
-      e.preventDefault();
-      parseTextInput($('smart-text-input').value);
-    }
+// ── INICIALIZACIÓN DEL PANEL ──
+function initSmartPanel() {
+  $('smart-parse-btn').addEventListener('click', () => parseTextInput($('smart-text-input').value));
+  $('smart-text-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); parseTextInput($('smart-text-input').value); }
   });
 
-  // File input
-  const fileInput=document.getElementById('ocr-file-input');
-  if(fileInput){
-    fileInput.addEventListener('change',e=>{
-      const f=e.target.files[0];
-      console.log('[OCR] File input changed, file:', f?.name, f?.type);
-      if(f){
-        if(!f.type.startsWith('image/')){
-          setSmartStatus('ocr','err','Please select an image file (PNG, JPG)');
-          return;
-        }
-        setSmartStatus('ocr','sync','Image selected: '+f.name);
-        showOCRPreview(f);
-      }
-      e.target.value='';
+  const fileInput = document.getElementById('ocr-file-input');
+  if (fileInput) {
+    fileInput.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (f && f.type.startsWith('image/')) showOCRPreview(f);
+      e.target.value = ''; // Resetear input
     });
-  }else{
-    console.error('[OCR] ocr-file-input element not found!');
   }
 
-  // Drag & drop en la zona dedicada
-  const dropZone=document.getElementById('ocr-drop-zone');
-  if(dropZone){
-    dropZone.addEventListener('dragover',e=>{
-      e.preventDefault();
-      dropZone.style.borderColor='var(--c-faction)';
-      dropZone.style.color='var(--c-faction)';
+  const dropZone = document.getElementById('ocr-drop-zone');
+  if (dropZone) {
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--c-faction)'; });
+    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault(); dropZone.style.borderColor = '';
+      const f = e.dataTransfer?.files?.[0];
+      if (f && f.type.startsWith('image/')) showOCRPreview(f);
     });
-    dropZone.addEventListener('dragleave',()=>{
-      dropZone.style.borderColor='';
-      dropZone.style.color='';
-    });
-    dropZone.addEventListener('drop',e=>{
-      e.preventDefault();
-      dropZone.style.borderColor='';
-      dropZone.style.color='';
-      const f=e.dataTransfer?.files?.[0];
-      if(f&&f.type.startsWith('image/')){
-        setSmartStatus('ocr','sync','Loading image…');
-        showOCRPreview(f);
-      }
-    });
-    // Click en drag zone también abre el file picker
-    dropZone.addEventListener('click',()=>fileInput?.click());
+    dropZone.addEventListener('click', () => fileInput?.click());
   }
 
-  // Ctrl+V — intentar capturar imagen si viene del clipboard
-  // (funciona en algunos navegadores/configuraciones)
-  document.addEventListener('paste',e=>{
-    const items=[...(e.clipboardData?.items||[])];
-    const imgItem=items.find(i=>i.type.startsWith('image/'));
-    if(!imgItem)return;
+  // Pegar directamente con Ctrl+V
+  document.addEventListener('paste', e => {
+    const items = [...(e.clipboardData?.items || [])];
+    const imgItem = items.find(i => i.type.startsWith('image/'));
+    if (!imgItem) return;
+    
+    // Evitar leer imagen si estás escribiendo texto en un input
+    if (e.target.tagName === 'INPUT' && e.target.type === 'text') return;
+    
     e.preventDefault();
-    setSmartStatus('ocr','sync','Image received from clipboard…');
     showOCRPreview(imgItem.getAsFile());
   });
 }
