@@ -1,0 +1,171 @@
+{
+  "_meta": {
+    "version": "4.8.2",
+    "source": "erkul.games (extracted from game files)",
+    "total": 18
+  },
+  "drives": [
+    {
+      "name": "RSI Atlas (S1)",
+      "speed": 0.153,
+      "fuel": 8.0,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "desc": "Default S1 \u2014 balanced, most common"
+    },
+    {
+      "name": "WETK Crossfield (S1)",
+      "speed": 0.175,
+      "fuel": 14.0,
+      "spool": 3,
+      "size": 1,
+      "type": "military",
+      "desc": "Fast S1 military drive"
+    },
+    {
+      "name": "ACE FoxFire (S1)",
+      "speed": 0.145,
+      "fuel": 7.0,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "desc": "Economy S1 \u2014 best range"
+    },
+    {
+      "name": "WETK VK-00 (S1)",
+      "speed": 0.22,
+      "fuel": 22.0,
+      "spool": 3,
+      "size": 1,
+      "type": "military",
+      "desc": "Fastest S1 \u2605 Covalex Master reward"
+    },
+    {
+      "name": "RSI Spectre (S1)",
+      "speed": 0.19,
+      "fuel": 16.0,
+      "spool": 3,
+      "size": 1,
+      "type": "stealth",
+      "desc": "Stealth S1 \u2014 fast, high fuel use"
+    },
+    {
+      "name": "RSI Atlas (S2)",
+      "speed": 0.165,
+      "fuel": 9.0,
+      "spool": 5,
+      "size": 2,
+      "type": "civilian",
+      "desc": "Stock S2 \u2014 reliable default"
+    },
+    {
+      "name": "JSWR Agni (S2)",
+      "speed": 0.145,
+      "fuel": 6.0,
+      "spool": 6,
+      "size": 2,
+      "type": "industrial",
+      "desc": "Best range S2 \u2014 long-haul cargo"
+    },
+    {
+      "name": "ARCC Flash (S2)",
+      "speed": 0.205,
+      "fuel": 12.6,
+      "spool": 5,
+      "size": 2,
+      "type": "civilian",
+      "desc": "Good S2 balance, affordable"
+    },
+    {
+      "name": "WETK Crossfield (S2)",
+      "speed": 0.22,
+      "fuel": 20.7,
+      "spool": 4,
+      "size": 2,
+      "type": "military",
+      "desc": "Best S2 speed/efficiency \u2605 hauler upgrade"
+    },
+    {
+      "name": "RSI Hemera (S2)",
+      "speed": 0.265,
+      "fuel": 20.0,
+      "spool": 5,
+      "size": 2,
+      "type": "civilian",
+      "desc": "Fastest civilian S2 \u2014 RSI top model"
+    },
+    {
+      "name": "WETK XL-1 (S2)",
+      "speed": 0.265,
+      "fuel": 28.0,
+      "spool": 4,
+      "size": 2,
+      "type": "competition",
+      "desc": "Fastest S2 \u2014 very fuel hungry"
+    },
+    {
+      "name": "JSWR Balandin (S2)",
+      "speed": 0.215,
+      "fuel": 15.0,
+      "spool": 4,
+      "size": 2,
+      "type": "civilian",
+      "desc": "High speed, decent efficiency S2"
+    },
+    {
+      "name": "RSI Atlas (S3)",
+      "speed": 0.175,
+      "fuel": 10.0,
+      "spool": 6,
+      "size": 3,
+      "type": "civilian",
+      "desc": "Stock S3 \u2014 reliable for large ships"
+    },
+    {
+      "name": "JSWR Agni (S3)",
+      "speed": 0.155,
+      "fuel": 7.0,
+      "spool": 7,
+      "size": 3,
+      "type": "industrial",
+      "desc": "Best range S3 \u2014 interstellar routes"
+    },
+    {
+      "name": "WETK Pontes (S3)",
+      "speed": 0.22,
+      "fuel": 18.0,
+      "spool": 5,
+      "size": 3,
+      "type": "civilian",
+      "desc": "Best S3 balance \u2605 popular for large haulers"
+    },
+    {
+      "name": "JSWR Balandin (S3)",
+      "speed": 0.24,
+      "fuel": 20.0,
+      "spool": 5,
+      "size": 3,
+      "type": "civilian",
+      "desc": "Fast S3 with decent efficiency"
+    },
+    {
+      "name": "RSI Siren (S3)",
+      "speed": 0.225,
+      "fuel": 19.0,
+      "spool": 4,
+      "size": 3,
+      "type": "stealth",
+      "desc": "Fast stealth S3"
+    },
+    {
+      "name": "WETK TS-2 (S3)",
+      "speed": 0.265,
+      "fuel": 25.0,
+      "spool": 4,
+      "size": 3,
+      "type": "military",
+      "desc": "Fastest S3 \u2605 Covalex Master reward"
+    }
+  ]
+}

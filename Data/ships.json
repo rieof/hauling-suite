@@ -1,0 +1,213 @@
+{
+  "_meta": {
+    "version": "4.8.2",
+    "source": "starcitizen.tools + erkul.games",
+    "total": 29
+  },
+  "ships": [
+    {
+      "name": "Golem OX",
+      "scu": 4,
+      "qFuel": 500,
+      "size": 1,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Nomad",
+      "scu": 8,
+      "qFuel": 570,
+      "size": 1,
+      "manufacturer": "Consolidated Outland"
+    },
+    {
+      "name": "Avenger Titan",
+      "scu": 8,
+      "qFuel": 583,
+      "size": 1,
+      "manufacturer": "Aegis Dynamics"
+    },
+    {
+      "name": "Mustang Alpha",
+      "scu": 2,
+      "qFuel": 310,
+      "size": 1,
+      "manufacturer": "Consolidated Outland"
+    },
+    {
+      "name": "Reliant Kore",
+      "scu": 16,
+      "qFuel": 620,
+      "size": 1,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "MPUV Tractor",
+      "scu": 2,
+      "qFuel": 260,
+      "size": 1,
+      "manufacturer": "Argo Astronautics"
+    },
+    {
+      "name": "Cutlass Black",
+      "scu": 46,
+      "qFuel": 2550,
+      "size": 2,
+      "manufacturer": "Drake Interplanetary"
+    },
+    {
+      "name": "Spirit C1",
+      "scu": 64,
+      "qFuel": 2180,
+      "size": 2,
+      "manufacturer": "Crusader Industries"
+    },
+    {
+      "name": "Hull A",
+      "scu": 64,
+      "qFuel": 1800,
+      "size": 2,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "Freelancer",
+      "scu": 66,
+      "qFuel": 2600,
+      "size": 2,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "Mercury Star Runner",
+      "scu": 96,
+      "qFuel": 3100,
+      "size": 2,
+      "manufacturer": "Crusader Industries"
+    },
+    {
+      "name": "Freelancer MAX",
+      "scu": 120,
+      "qFuel": 2800,
+      "size": 2,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "Zeus Mk II CL",
+      "scu": 128,
+      "qFuel": 2400,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Taurus",
+      "scu": 174,
+      "qFuel": 3200,
+      "size": 3,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Argo RAFT",
+      "scu": 192,
+      "qFuel": 3000,
+      "size": 3,
+      "manufacturer": "Argo Astronautics"
+    },
+    {
+      "name": "Railen",
+      "scu": 288,
+      "qFuel": 5800,
+      "size": 3,
+      "manufacturer": "Anvil Aerospace"
+    },
+    {
+      "name": "Galaxy",
+      "scu": 320,
+      "qFuel": 5200,
+      "size": 3,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Starlancer MAX",
+      "scu": 336,
+      "qFuel": 8200,
+      "size": 3,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "Hull B",
+      "scu": 384,
+      "qFuel": 4600,
+      "size": 3,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "M2 Hercules",
+      "scu": 522,
+      "qFuel": 88000,
+      "size": 3,
+      "manufacturer": "Crusader Industries"
+    },
+    {
+      "name": "Caterpillar",
+      "scu": 576,
+      "qFuel": 11000,
+      "size": 3,
+      "manufacturer": "Drake Interplanetary"
+    },
+    {
+      "name": "C2 Hercules",
+      "scu": 696,
+      "qFuel": 88000,
+      "size": 3,
+      "manufacturer": "Crusader Industries"
+    },
+    {
+      "name": "Hermes",
+      "scu": 1232,
+      "qFuel": 95000,
+      "size": 4,
+      "manufacturer": "Crusader Industries"
+    },
+    {
+      "name": "Ironclad Assault",
+      "scu": 1044,
+      "qFuel": 88000,
+      "size": 4,
+      "manufacturer": "Aegis Dynamics"
+    },
+    {
+      "name": "Ironclad",
+      "scu": 2204,
+      "qFuel": 88000,
+      "size": 4,
+      "manufacturer": "Aegis Dynamics"
+    },
+    {
+      "name": "Hull C",
+      "scu": 4608,
+      "qFuel": 88000,
+      "size": 4,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "Hull D",
+      "scu": 8128,
+      "qFuel": 120000,
+      "size": 4,
+      "manufacturer": "MISC"
+    },
+    {
+      "name": "Starfarer",
+      "scu": 0,
+      "qFuel": 50000,
+      "size": 4,
+      "manufacturer": "MISC",
+      "note": "fuel tanker"
+    },
+    {
+      "name": "Personalizado",
+      "scu": 0,
+      "qFuel": 5000,
+      "size": 2,
+      "manufacturer": ""
+    }
+  ]
+}
