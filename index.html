@@ -3141,14 +3141,16 @@ function renderMissions(){
         const content=document.createElement('div');content.className='cm-tl-content';
         const labelRow=document.createElement('div');
         labelRow.style.cssText='display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap;';
-        // Calcular SCU y cajas para esta entrega según el modo actual
+        // SCU real de esta entrega si viene del OCR/parser o fue editado a mano;
+        // si no, calcular según el modo actual (comportamiento de respaldo)
         const _total=missionssionTotal(m);
         const _nd=m.deliveries.length||1;
-        let _scuForThis=0;
+        let _scuForThis=0,_isExplicit=false;
         if(oneBoxMode){
           _scuForThis=oneBoxSize;
         } else if(deliveryMode==='full'){
-          _scuForThis=Math.floor(_total/_nd)+(di===_nd-1?_total-Math.floor(_total/_nd)*_nd:0);
+          if(d.scu!=null){_scuForThis=d.scu;_isExplicit=true;}
+          else{_scuForThis=Math.floor(_total/_nd)+(di===_nd-1?_total-Math.floor(_total/_nd)*_nd:0);}
         } else {
           // modo parcial (25%): solo va a la entrega nearest
           const _plan=bestCommodityPlan(m);
@@ -3166,12 +3168,29 @@ function renderMissions(){
             ${isNearest?'★ Nearest':'Delivery'}
           </span>
           ${distGm!==null?`<span style="font-size:10px;color:${isNearest?'var(--c-green)':'var(--c-text-3)'};font-family:var(--font-mono)">${fmtGm(distGm)} Gm</span>`:''}
-          ${_scuLabel}
+          <input type="number" value="${d.scu!=null?d.scu:''}" min="1" placeholder="auto"
+            style="width:52px;font-size:11px;padding:2px 5px;height:22px;
+            font-family:var(--font-mono);border-radius:4px;border:0.5px solid var(--c-border-2);
+            background:var(--c-bg-1);color:var(--c-text-1);" class="js-dscu"
+            title="SCU real de esta entrega (déjalo vacío para repartir automático)">
+          <span style="font-size:9px;color:var(--c-text-3);font-family:var(--font-mono)">SCU${_isExplicit?'':' (auto)'}</span>
           ${m.deliveries.length>1?`<button class="cm-mini-btn js-rm-del" style="margin-left:auto"><i class="ti ti-x"></i></button>`:''}`;
+        labelRow.querySelector('.js-dscu').addEventListener('change',e=>{
+          const v=e.target.value.trim();
+          d.scu=v?Math.max(1,parseInt(v)||1):null;
+          renderMissions();
+        });
         if(m.deliveries.length>1)labelRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
         content.appendChild(labelRow);
 
+        // Material propio de esta entrega — búsqueda libre (opcional,
+        // si se deja vacío usa el material del pickup)
+        const dMatSearch=createMatSearch(d.material||'',(mat)=>{d.material=mat||null;renderMissions();});
+        dMatSearch.style.marginTop='3px';
+        content.appendChild(dMatSearch);
+
         const locSearch=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
+        locSearch.style.marginTop='3px';
         content.appendChild(locSearch);
         tlItem.appendChild(content);
         card.appendChild(tlItem);
@@ -3313,7 +3332,7 @@ function buildNodes(){
         const dropLoc=nearest?.loc||nearestStation(pl,p.locId);
         const bestDist=dropLoc?dist3(pl,dropLoc):0;
         nodes.push({...pl,role:'pickup',mid,mnum:mi+1,
-          scu:oneBoxSize,material:mat});
+          scu:oneBoxSize,material:mat,boxDetail:'1×'+oneBoxSize+' SCU'});
         if(dropLoc)nodes.push({...dropLoc,role:'dropoff',mid,mnum:mi+1,
           scu:oneBoxSize,material:mat,
           boxDetail:'1×'+oneBoxSize+' SCU',
@@ -3324,21 +3343,37 @@ function buildNodes(){
       // ── MODO 100% — todas las entregas, orden nearest → lejano ─
       m.pickups.forEach(p=>{
         const pl=locById(p.locId);if(!pl)return;
+        const pBoxes=boxesOptimal(p.scu);
+        const pBoxDetail=pBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
         nodes.push({...pl,role:'pickup',mid,mnum:mi+1,
-          scu:p.scu,material:p.material,pad:pl.pad});
+          scu:p.scu,material:p.material,pad:pl.pad,boxDetail:pBoxDetail});
       });
-      // Distribuir SCU total entre entregas, en orden de distancia
+      // Usar SCU/material REAL de cada entrega si el OCR/parser lo trajo;
+      // si no, repartir el total parejo (comportamiento anterior, fallback)
       const nd=sortedDeliveries.length||1;
+      const hasExplicit=sortedDeliveries.some(({d})=>d.scu!=null);
       let assigned=0;
       sortedDeliveries.forEach(({d,loc},di)=>{
-        let amt=Math.floor(total/nd);
-        if(di===nd-1)amt=total-assigned; // el último recibe el resto
+        let amt;
+        if(hasExplicit&&d.scu!=null){
+          amt=d.scu;
+        }else if(hasExplicit){
+          // mezcla: algunas entregas tienen scu explícito, esta no —
+          // repartir lo que sobra del total entre las que faltan
+          const explicitSum=sortedDeliveries.filter(x=>x.d.scu!=null).reduce((s,x)=>s+x.d.scu,0);
+          const missingCount=sortedDeliveries.filter(x=>x.d.scu==null).length||1;
+          amt=Math.round((total-explicitSum)/missingCount);
+        }else{
+          amt=Math.floor(total/nd);
+          if(di===nd-1)amt=total-assigned; // el último recibe el resto
+        }
         assigned+=amt;
         const boxes=boxesOptimal(amt);
         const boxDetail=boxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
         const isFirst=di===0; // la más cercana
+        const dMat=d.material||mat; // material propio de la entrega, o el del pickup si no vino
         nodes.push({...loc,role:'dropoff',mid,mnum:mi+1,
-          scu:amt,material:mat,boxDetail,pad:loc.pad,
+          scu:amt,material:dMat,boxDetail,pad:loc.pad,
           _isNearest:isFirst,
           _distFromPickup:pickLoc?dist3(pickLoc,loc):null});
       });
@@ -3361,10 +3396,12 @@ function buildNodes(){
 
       const boxes=boxesOptimal(b.amt);
       const boxDetail=boxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
+      const pBoxes=boxesOptimal(b.amt);
+      const pBoxDetail=pBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
       nodes.push({...pkLoc,role:'pickup',mid,mnum:mi+1,
-        scu:b.amt,material:b.mat});
+        scu:b.amt,material:b.mat,boxDetail:pBoxDetail});
       nodes.push({...dropLoc,role:'dropoff',mid,mnum:mi+1,
-        scu:b.amt,material:b.mat,boxDetail,
+        scu:b.amt,material:nearestDeliv?.d?.material||b.mat,boxDetail,
         _autoNearest:true,
         _nearestDist:pickLoc?dist3(pkLoc,dropLoc):0});
     }
@@ -4083,30 +4120,84 @@ function createMissionFromParsed(parsed){
     setSmartStatus('text','err',`Max ${MAX_MISSIONS} contracts active`);return false;
   }
 
-  // Resolver pickups — puede haber varios (ej: "Canard View y Sacren's Plot")
-  // Deduplicar pickups — el parser puede extraer el mismo lugar dos veces
-  const pickIds=[...new Set((parsed.pickups||[]).map(p=>findLocFuzzy(p)).filter(Boolean))];
-  // Fallback si no se encontró ningún pickup: usar posición actual
+  // Normalizar entrada: soporta tanto el formato nuevo
+  // [{location,scu,material}] como el viejo ["Location"] (compat hacia atrás)
+  function normEntries(arr){
+    if(!Array.isArray(arr))return[];
+    return arr.map(e=>{
+      if(typeof e==='string')return{location:e,scu:null,material:null};
+      return{location:e.location||e.loc||'',scu:e.scu?parseInt(e.scu)||null:null,material:e.material||null};
+    }).filter(e=>e.location);
+  }
+
+  const rawPickups=normEntries(parsed.pickups);
+  const rawDeliveries=normEntries(parsed.deliveries);
+
+  // Deduplicar por ubicación resuelta (locId), sumando SCU si se repite
+  function dedupeByLoc(entries){
+    const seen=new Map(); // locId -> entry combinada
+    const order=[];
+    entries.forEach(e=>{
+      const id=findLocFuzzy(e.location);
+      if(!id)return;
+      if(seen.has(id)){
+        const ex=seen.get(id);
+        if(e.scu)ex.scu=(ex.scu||0)+e.scu;
+        if(!ex.material&&e.material)ex.material=e.material;
+      }else{
+        seen.set(id,{locId:id,scu:e.scu,material:e.material});
+        order.push(id);
+      }
+    });
+    return order.map(id=>seen.get(id));
+  }
+
+  const pickResolved=dedupeByLoc(rawPickups);
+  const delivResolved=dedupeByLoc(rawDeliveries);
+
+  const fallbackMat=findMatFuzzy(parsed.material)||'— Select commodity —';
+  const fallbackTotal=Math.max(1,parseInt(parsed.scu)||CONTRACT_RANKS[currentRank]?.typical||64);
+
+  // Fallbacks si no se encontró ninguna ubicación
   const fallbackPickId=$('o-loc').value||findLoc('HUR-L2')||STATIONS[0]?.id;
-  const firstPickId=pickIds[0]||fallbackPickId;
-
-  // Resolver deliveries
-  const delivIds=(parsed.deliveries||[]).map(d=>findLocFuzzy(d)).filter(Boolean);
   const fallbackDelivId=(useDest&&$('d-loc').value)||findLoc('Everus')||findLoc('Gaslight')||STATIONS[1]?.id;
-  const firstDelivId=delivIds[0]||fallbackDelivId;
 
-  const mat=findMatFuzzy(parsed.material)||'— Select commodity —';
-  const scu=Math.max(1,parseInt(parsed.scu)||CONTRACT_RANKS[currentRank]?.typical||64);
+  // ── Construir pickups ──────────────────────────────────────
+  let pickupsArr;
+  if(pickResolved.length>0){
+    const missingScuCount=pickResolved.filter(p=>!p.scu).length;
+    const knownTotal=pickResolved.reduce((s,p)=>s+(p.scu||0),0);
+    const remainingPerMissing=missingScuCount>0
+      ?Math.max(1,Math.round((fallbackTotal-knownTotal)/missingScuCount)||fallbackTotal/pickResolved.length)
+      :0;
+    pickupsArr=pickResolved.map(p=>({
+      id:++pickSeq,
+      locId:p.locId,
+      scu:p.scu||remainingPerMissing||Math.round(fallbackTotal/pickResolved.length),
+      material:findMatFuzzy(p.material)||fallbackMat
+    }));
+  }else{
+    pickupsArr=[{id:++pickSeq,material:fallbackMat,scu:fallbackTotal,locId:fallbackPickId}];
+  }
+  const pickupsTotal=pickupsArr.reduce((s,p)=>s+p.scu,0);
 
-  // Construir pickups — uno por ubicación encontrada
-  const pickupsArr=pickIds.length>0
-    ? pickIds.map(id=>({id:++pickSeq,material:mat,scu:Math.round(scu/Math.max(pickIds.length,1)),locId:id}))
-    : [{id:++pickSeq,material:mat,scu:scu,locId:firstPickId}];
-
-  // Construir deliveries
-  const deliveriesArr=delivIds.length>0
-    ? delivIds.map(id=>({id:++delivSeq,locId:id}))
-    : [{id:++delivSeq,locId:firstDelivId}];
+  // ── Construir deliveries — CON scu/material propios ─────────
+  let deliveriesArr;
+  if(delivResolved.length>0){
+    const missingScuCount=delivResolved.filter(d=>!d.scu).length;
+    const knownTotal=delivResolved.reduce((s,d)=>s+(d.scu||0),0);
+    const remainingPerMissing=missingScuCount>0
+      ?Math.max(1,Math.round((pickupsTotal-knownTotal)/missingScuCount)||pickupsTotal/delivResolved.length)
+      :0;
+    deliveriesArr=delivResolved.map(d=>({
+      id:++delivSeq,
+      locId:d.locId,
+      scu:d.scu||remainingPerMissing||Math.round(pickupsTotal/delivResolved.length),
+      material:d.material?findMatFuzzy(d.material):null // null = usa el material del pickup por defecto
+    }));
+  }else{
+    deliveriesArr=[{id:++delivSeq,locId:fallbackDelivId,scu:null,material:null}];
+  }
 
   const newM={
     id:++missionSeq,
@@ -4190,8 +4281,12 @@ async function parseTextInput(text){
     if(!apiKey)throw new Error('Gemini API key required');
     const prompt='Extract data from this Star Citizen hauling contract text.\n'+
       'Return ONLY valid JSON, no markdown.\n'+
-      '{"scu":NUMBER,"material":"COMMODITY","pickups":["Location"],"deliveries":["Loc1","Loc2"],"pay":NUMBER}\n'+
-      'Strip planet suffixes like "on Pyro III" or "at the L2 Lagrange of".\n'+
+      '{"pickups":[{"location":"Loc1","scu":NUMBER,"material":"COMMODITY"}],'+
+      '"deliveries":[{"location":"Loc1","scu":NUMBER,"material":"COMMODITY"}],"pay":NUMBER}\n'+
+      'Rules:\n'+
+      '- Each pickup/delivery location gets its OWN scu amount and material, exactly as stated.\n'+
+      '- If the contract only gives one total (not per-location), split evenly across locations of that leg.\n'+
+      '- Strip planet suffixes like "on Pyro III" or "at the L2 Lagrange of" from location names.\n'+
       'Text: '+text.slice(0,800).replace(/`/g,"'");
     const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
@@ -4415,12 +4510,15 @@ async function runOCR(imageSource){
       'You are helping a Star Citizen hauling player. '+
       'Read this contract screenshot and extract the data into JSON only. '+
       'Return ONLY valid JSON, no markdown.\n'+
-      '{"scu":NUMBER,"material":"COMMODITY","pickups":["Location"],"deliveries":["Loc1","Loc2"],"pay":NUMBER}\n\n'+
+      '{"pickups":[{"location":"Loc1","scu":NUMBER,"material":"COMMODITY"}],'+
+      '"deliveries":[{"location":"Loc1","scu":NUMBER,"material":"COMMODITY"}],"pay":NUMBER}\n\n'+
       'Rules:\n'+
-      '- scu: the number X from "X SCU or smaller"\n'+
-      '- material: commodity name (Hydrogen, Processed Food, Waste, etc.)\n'+
-      '- pickups: ALL pickup locations — strip "on Pyro X" / "at the L2 Lagrange of..."\n'+
-      '- deliveries: ALL delivery locations — exact names, no planet suffix\n'+
+      '- Each pickup and delivery location has its OWN box/SCU amount shown next to it in the '+
+      'contract UI (e.g. "4 SCU or smaller") — read that number per-location, do not assume an even split.\n'+
+      '- material: commodity name per location (Hydrogen, Processed Food, Waste, etc.) — if a location shows '+
+      'no explicit material, reuse the mission material.\n'+
+      '- pickups: ALL pickup locations with their own scu+material — strip "on Pyro X" / "at the L2 Lagrange of..."\n'+
+      '- deliveries: ALL delivery locations with their own scu+material — exact names, no planet suffix\n'+
       '- pay: reward aUEC digits only, 0 if not found';
     const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const res=await fetch(url,{
