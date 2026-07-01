@@ -2,7 +2,7 @@
   "_meta": {
     "version": "4.8.2",
     "source": "starcitizen.tools (Atlas S1/Crossfield S2/Torrent S2 confirmed live; others estimated by class ranking)",
-    "note": "Speed in Gm/s. Confirmed anchors: Atlas(S1)=0.231, Crossfield(S2)=0.231, Torrent(S2)=0.201",
+    "note": "Speed verificada 100% contra la API real para Atlas(S1) y Agni(S3). El campo fuel de TODOS los motores sigue en la escala vieja (compatible con el factor *40 en calculate()) hasta que se corrija esa fórmula junto con qFuel real de las naves — correr el GitHub Action arreglará todo de una vez.",
     "total": 17
   },
   "drives": [
@@ -104,7 +104,7 @@
     },
     {
       "name": "Agni (S3)",
-      "speed": 0.19,
+      "speed": 0.383,
       "fuel": 0.65,
       "size": 3,
       "type": "industrial",
