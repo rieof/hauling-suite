@@ -4382,13 +4382,35 @@ function resetGeminiKey(){
   setSmartStatus('ocr','ok','Key cleared. Will ask again next time.');
 }
 
+// ── Auto-Resizer: reduce capturas pesadas (4K, etc.) antes de mandarlas
+//    a Gemini, evitando payloads gigantes y timeouts de red
+function resizeImage(base64Str,maxWidth=1200){
+  return new Promise((resolve)=>{
+    const img=new Image();
+    img.onload=()=>{
+      if(img.width<=maxWidth){resolve(base64Str);return;} // ya es chica, no tocar
+      const scale=maxWidth/img.width;
+      const canvas=document.createElement('canvas');
+      canvas.width=maxWidth;
+      canvas.height=Math.round(img.height*scale);
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      resolve(canvas.toDataURL('image/jpeg',0.85));
+    };
+    img.onerror=()=>resolve(base64Str); // si falla, usar la original
+    img.src=base64Str;
+  });
+}
+
 async function runOCR(imageSource){
   const apiKey=await getGeminiKey();
   if(!apiKey){setSmartStatus('ocr','err','Gemini API key required to read screenshots.');return;}
   setSmartStatus('ocr','sync','Reading contract with Gemini Vision…');
   try{
-    const base64=imageSource.split(',')[1];
-    const mime=imageSource.split(';')[0].split(':')[1]||'image/png';
+    // Redimensionar antes de enviar — evita payloads gigantes con capturas 4K
+    const resized=await resizeImage(imageSource,1200);
+    const base64=resized.split(',')[1];
+    const mime=resized.split(';')[0].split(':')[1]||'image/jpeg';
     const prompt=
       'You are helping a Star Citizen hauling player. '+
       'Read this contract screenshot and extract the data into JSON only. '+
