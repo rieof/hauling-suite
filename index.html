@@ -2663,25 +2663,33 @@ function missionssionBoxPlan(m){
   const nd=m.deliveries.length||1;
 
   // ── SCU máximo por box del contrato ─────────────────────────
-  // El contrato dice "4 SCU or smaller" — cada box individual
-  // no puede superar ese límite. Lo leemos del SCU del pickup.
-  // Heurística: el total dividido entre las deliveries suele ser
-  // el máximo por entrega, pero el límite real es el que aparece
-  // en "X SCU or smaller" del contrato.
-  // Usamos el SCU del primer pickup como referencia del límite
-  // (el juego lo fija igual al total máximo del contrato).
+  // Prioridad: 1) m.maxBoxSize — el valor REAL leído del contrato
+  // ("X SCU or smaller"), guardado por el parser/OCR. 2) heurística
+  // vieja (SCU del pickup) como respaldo si no vino ese dato.
+  // 3) límite del rango del jugador, que nunca se puede superar.
   const contractMaxScuPerBox=Math.min(
-    m.pickups[0]?.scu||rankMaxBox,  // SCU del contrato
-    rankMaxBox                        // límite del rango
+    m.maxBoxSize||m.pickups[0]?.scu||rankMaxBox,
+    rankMaxBox
   );
 
-  // ── SCU por entrega (como reparte el juego) ──────────────────
-  const scuPerDelivery=m.deliveries.map((_,i)=>{
-    const base=Math.floor(total/nd);
-    const rem=total-(base*nd);
-    return i<rem?base+1:base;
-  });
-  const minDelivScu=Math.min(...scuPerDelivery);
+  // ── SCU por entrega — usar el valor REAL de cada entrega si el
+  // OCR/parser lo trajo (d.scu); solo repartir parejo el sobrante
+  // entre las que no tienen valor explícito (comportamiento viejo,
+  // ahora solo como respaldo).
+  const hasExplicit=m.deliveries.some(d=>d.scu!=null);
+  let scuPerDelivery;
+  if(hasExplicit){
+    const explicitSum=m.deliveries.filter(d=>d.scu!=null).reduce((s,d)=>s+d.scu,0);
+    const missingCount=m.deliveries.filter(d=>d.scu==null).length;
+    const remainingPerMissing=missingCount>0?Math.round((total-explicitSum)/missingCount):0;
+    scuPerDelivery=m.deliveries.map(d=>d.scu!=null?d.scu:remainingPerMissing);
+  }else{
+    scuPerDelivery=m.deliveries.map((_,i)=>{
+      const base=Math.floor(total/nd);
+      const rem=total-(base*nd);
+      return i<rem?base+1:base;
+    });
+  }
 
   // ── One-box rep: ir solo a la entrega más pequeña ────────────
   // Necesitas llevar exactamente el SCU que pide esa parada
@@ -2727,10 +2735,6 @@ function missionssionBoxPlan(m){
     return used;
   }
 
-  const fullBoxes=boxesWithLimit(total,contractMaxScuPerBox);
-  const fullCount=fullBoxes.reduce((a,u)=>a+u.n,0);
-  const fullDetail=fullBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
-
   // ── Por entrega ───────────────────────────────────────────────
   const perDelivery=m.deliveries.map((d,i)=>{
     const amt=scuPerDelivery[i];
@@ -2744,11 +2748,17 @@ function missionssionBoxPlan(m){
       scu:amt,
       boxes:count,
       detail,
-      mat:m.pickups[0]?.material||'?',
+      mat:d.material||m.pickups[0]?.material||'?',
       dist,
       isNearest:i===nearestDelivIdx
     };
   });
+
+  // ── Full load: NO es una sola caja del total — cada entrega va a
+  // un lugar distinto, así que necesitas cajas SEPARADAS por parada.
+  // El conteo/detalle real es la suma de lo que pide cada entrega.
+  const fullCount=perDelivery.reduce((a,d)=>a+d.boxes,0);
+  const fullDetail=perDelivery.map(d=>d.detail+' → '+d.loc).join(' · ');
 
   return{
     contractMaxScuPerBox,
