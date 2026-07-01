@@ -1353,9 +1353,8 @@ const DATA={
     {label:"MIC-L3 Endless Odyssey Station",x:-22.4522,y:-37.1799,z:-0.0106,type:"lagrange",pad:'int'},
     {label:"MIC-L4 Red Crossroads Station",x:-20.9687,y:38.0561,z:-0.0118,type:"lagrange",pad:'int'},
     {label:"MIC-L5 Modern Icarus Station",x:43.4486,y:-0.8577,z:-0.0078,type:"lagrange",pad:'int'},
-    {label:"Nyx Gateway",x:-62.2843,y:23.4676,z:20.1984,type:"station",pad:'int'},
-    {label:"Pyro Gateway",x:3.3105,y:-27.9794,z:-2.6763,type:"station",pad:'int'},
-    {label:"Terra Gateway",x:51.1182,y:-5.27,z:-4.3396,type:"station",pad:'int'},
+        {label:"Pyro Gateway",x:3.3105,y:-27.9794,z:-2.6763,type:"station",pad:'efe'},
+    {label:"Terra Gateway",x:51.1182,y:-5.27,z:-4.3396,type:"station",pad:'efe'},
     {label:"Wikelo Emporium Dasi Station",x:14.3334,y:2.0012,z:0.0,type:"station",pad:'int'},
     {label:"Wikelo Emporium Kinga Station",x:23.7614,y:39.2254,z:0.0,type:"station",pad:'int'},
     {label:"Wikelo Emporium Selo Station",x:-20.1566,y:-1.2631,z:0.0,type:"station",pad:'int'},
@@ -1499,11 +1498,13 @@ const DATA={
     {label:"Endgame",x:48.2968,y:48.292,z:0.0027,type:"station",pad:'efe'},
     {label:"Gaslight",x:46.4944,y:-8.1909,z:0.0177,type:"station",pad:'efe'},
     {label:"Megumi Refueling",x:-59.1456,y:34.1455,z:0.0127,type:"station",pad:'efe'},
-    {label:"Nyx Gateway",x:32.994,y:-38.1517,z:0.0,type:"station",pad:'int'},
+    {label:"Nyx Gateway",x:32.994,y:-38.1517,z:0.0,type:"station",pad:'efe'},
+    {label:"Stanton Gateway",x:-13.4999,y:-23.3827,z:-0.0,type:"station",pad:'efe'},
     {label:"Patch City",x:11.4453,y:13.6223,z:0.0028,type:"station",pad:'efe'},
     {label:"Rat's Nest",x:3.7326,y:-42.7669,z:0.0185,type:"station",pad:'efe'},
     {label:"Rod's Fuel 'N Supplies",x:14.6643,y:40.3386,z:-0.0095,type:"station",pad:'efe'},
-    {label:"Stanton Gateway",x:-37.6092,y:37.4357,z:0.0,type:"station",pad:'int'},
+    {label:"Stanton Gateway",x:-37.6092,y:37.4357,z:0.0,type:"station",pad:'efe'},
+    {label:"Nyx Gateway",x:-62.2843,y:23.4676,z:20.1984,type:"station",pad:'efe'},
     {label:"Starlight Service Station",x:-7.7566,y:-14.0089,z:0.0014,type:"station",pad:'efe'},
     ]},
     "Pyro I":{locs:[
@@ -1557,9 +1558,8 @@ const DATA={
     {label:"People's Service Station Delta",x:-6.4325,y:-47.567,z:0.0,type:"station",pad:'int'},
     {label:"People's Service Station Lambda",x:43.3278,y:20.6568,z:0.0,type:"station",pad:'int'},
     {label:"People's Service Station Theta",x:40.4727,y:-25.8063,z:0.0,type:"station",pad:'int'},
-    {label:"Pyro Gateway",x:-12.0,y:20.7846,z:-0.0,type:"station",pad:'int'},
-    {label:"Stanton Gateway",x:-13.4999,y:-23.3827,z:-0.0,type:"station",pad:'int'},
-    ]},
+    {label:"Pyro Gateway",x:-12.0,y:20.7846,z:-0.0,type:"station",pad:'efe'},
+        ]},
   },
 };
 // --- AUTOGEN LOCS END ---
@@ -1657,7 +1657,7 @@ let SHIPS=[
 
 // ── Quantum Drives — velocidad en Gm/s (basado en wiki + erkul.games) ──
 const QUANTUM_DRIVES={
-  "Atlas (S1)": {speed:0.231,fuel:0.75,size:1,type:"civilian",desc:"Balanced S1 \u2014 default, confirmed 231 Mm/s"},
+  "Atlas (S1)": {speed:0.231,fuel:0.75,size:1,type:"civilian",desc:"Balanced S1 \u2014 default, confirmed 231 Mm/s (speed API-verified)"},
   "FoxFire (S1)": {speed:0.2,fuel:0.55,size:1,type:"economy",desc:"Economy S1 \u2014 longest range"},
   "Spectre (S1)": {speed:0.21,fuel:1.1,size:1,type:"stealth",desc:"Stealth S1 \u2014 low signature"},
   "VK-00 (S1)": {speed:0.26,fuel:1.8,size:1,type:"military",desc:"Fastest S1 \u2014 Covalex Master reward \u2605"},
@@ -1669,7 +1669,7 @@ const QUANTUM_DRIVES={
   "Balandin (S2)": {speed:0.2,fuel:0.95,size:2,type:"industrial",desc:"Industrial S2, long range"},
   "XL-1 (S2)": {speed:0.28,fuel:2.1,size:2,type:"competition",desc:"Fastest S2 \u2014 very fuel hungry"},
   "Atlas (S3)": {speed:0.215,fuel:0.9,size:3,type:"civilian",desc:"Stock S3 \u2014 reliable"},
-  "Agni (S3)": {speed:0.19,fuel:0.65,size:3,type:"industrial",desc:"Best range S3 \u2014 interstellar routes"},
+  "Agni (S3)": {speed:0.383,fuel:0.65,size:3,type:"industrial",desc:"Best range S3 \u2014 interstellar routes (speed API-verified)"},
   "Pontes (S3)": {speed:0.245,fuel:1.4,size:3,type:"civilian",desc:"Best S3 balance \u2605 popular for large haulers"},
   "Siren (S3)": {speed:0.23,fuel:1.35,size:3,type:"stealth",desc:"Fast stealth S3"},
   "Balandin (S3)": {speed:0.25,fuel:1.55,size:3,type:"industrial",desc:"High speed S3, decent efficiency"},
@@ -2560,11 +2560,25 @@ function newMission(){
   return{
     id:++missionSeq,
     pickups:[{id:++pickSeq,material:'— Select commodity —',scu:t,locId:currentLocId}],
-    deliveries:[{id:++delivSeq,locId:destLocId}],
+    deliveries:[{id:++delivSeq,locId:destLocId,scu:null,material:null}],
     pay:0,startedAt:Date.now()
   };
 }
-function addMission(){if(missions.length>=MAX_MISSIONS)return;missions.push(newMission());renderMissions();}
+function addMission(){
+  if(missions.length>=MAX_MISSIONS)return;
+  const m=newMission();
+  missions.push(m);
+  renderMissions();
+  // Auto-scroll a la tarjeta recién creada — evita tener que bajar a mano
+  requestAnimationFrame(()=>{
+    const card=document.getElementById('mission-card-'+m.id);
+    if(card){
+      if(typeof card.scrollIntoView==='function')card.scrollIntoView({behavior:'smooth',block:'start'});
+      const firstInput=card.querySelector('input,.loc-input');
+      if(firstInput)setTimeout(()=>firstInput.focus(),350);
+    }
+  });
+}
 function removeMission(id){missions=missions.filter(m=>m.id!==id);renderMissions();}
 function cloneMission(id){
   if(missions.length>=MAX_MISSIONS){alert('Límite de missions alcanzado ('+MAX_MISSIONS+')');return;}
@@ -2575,7 +2589,23 @@ function cloneMission(id){
 }
 function addPickup(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups.push({id:++pickSeq,material:'— Select commodity —',scu:Math.round(CONTRACT_RANKS[currentRank].typical/2),locId:$('o-loc').value||findLoc('HUR-L1')});renderMissions();}
 function removePickup(mid,pid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups=m.pickups.filter(p=>p.id!==pid);if(!m.pickups.length)removeMission(mid);else renderMissions();}
-function addDelivery(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.deliveries.push({id:++delivSeq,locId:(useDest&&$('d-loc').value)?$('d-loc').value:findLoc('Lorville')});renderMissions();}
+// Si todos los pickups de la misión comparten el mismo material (y no es
+// el placeholder), lo devuelve — así las entregas nuevas lo heredan solas
+// en vez de obligar a elegirlo cada vez.
+function inferSingleMaterial(m){
+  const mats=[...new Set(m.pickups.map(p=>p.material).filter(x=>x&&x!=='— Select commodity —'))];
+  return mats.length===1?mats[0]:null;
+}
+function addDelivery(mid){
+  const m=missions.find(x=>x.id===mid);if(!m)return;
+  m.deliveries.push({
+    id:++delivSeq,
+    locId:(useDest&&$('d-loc').value)?$('d-loc').value:findLoc('Lorville'),
+    scu:null,
+    material:inferSingleMaterial(m) // auto-heredado si aplica, si no queda null (auto/select)
+  });
+  renderMissions();
+}
 function removeDelivery(mid,did){const m=missions.find(x=>x.id===mid);if(!m)return;m.deliveries=m.deliveries.filter(d=>d.id!==did);renderMissions();}
 // ── Sesión de juego ─────────────────────────────────
 let session={active:false,start:0,missions:0,xpEarned:0,aUECEarned:0,timerInterval:null};
@@ -2963,7 +2993,7 @@ function renderMissions(){
   if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderFarmCombos();return;}
   el.innerHTML='';
   missions.forEach((m,mi)=>{
-    const card=document.createElement('div');card.className='cm-card';
+    const card=document.createElement('div');card.className='cm-card';card.id='mission-card-'+m.id;
 
     // ── Header timeline ───────────────────────────────────────
     const scuTotal=m.pickups.reduce((s,p)=>s+p.scu,0);
@@ -3161,14 +3191,24 @@ function renderMissions(){
             style="width:54px;font-size:11px;padding:2px 5px;height:22px;
             font-family:var(--font-mono);border-radius:4px;border:0.5px solid var(--c-border-2);
             background:var(--c-bg-1);color:var(--c-text-1);" class="js-scu">
-          <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono)">SCU</span>
+          <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono)"
+            title="${m.pickups.length===1?'Se actualiza solo con la suma de tus entregas — puedes editarlo a mano también':''}">
+            SCU${m.pickups.length===1?' (auto-sync)':''}
+          </span>
           ${m.pickups.length>1?`<button class="cm-mini-btn js-rm-pick" style="margin-left:auto"><i class="ti ti-x"></i></button>`:''}`;
         labelRow.querySelector('.js-scu').addEventListener('change',e=>{p.scu=parseInt(e.target.value)||1;renderMissions();});
         if(m.pickups.length>1)labelRow.querySelector('.js-rm-pick').addEventListener('click',()=>removePickup(m.id,p.id));
         content.appendChild(labelRow);
 
         // Material — búsqueda libre
-        const matSearch=createMatSearch(p.material,(mat)=>{p.material=mat;renderMissions();});
+        const matSearch=createMatSearch(p.material,(mat)=>{
+          p.material=mat;
+          // Si esta misión ahora tiene un solo material entre sus pickups,
+          // heredarlo en las entregas que aún estén en "auto" (sin material propio)
+          const inferred=inferSingleMaterial(m);
+          if(inferred)m.deliveries.forEach(d=>{if(d.material==null)d.material=inferred;});
+          renderMissions();
+        });
         content.appendChild(matSearch);
 
         // Ubicación — búsqueda libre
@@ -3241,6 +3281,13 @@ function renderMissions(){
         labelRow.querySelector('.js-dscu').addEventListener('change',e=>{
           const v=e.target.value.trim();
           d.scu=v?Math.max(1,parseInt(v)||1):null;
+          // Si hay UN solo pickup, sincronizar su total automáticamente con
+          // la suma de las entregas — así no hace falta saber el total de
+          // antemano, solo lo que hay que dejar en cada lugar.
+          if(m.pickups.length===1){
+            const sum=m.deliveries.reduce((s,dd)=>s+(dd.scu||0),0);
+            if(sum>0)m.pickups[0].scu=sum;
+          }
           renderMissions();
         });
         if(m.deliveries.length>1)labelRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
