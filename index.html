@@ -4131,6 +4131,41 @@ async function forceUpdate(){
   }
 }
 
+// Rellena el selector de motores SOLO con los compatibles con el tamaño
+// de motor cuántico de la nave actual (size 1/2/3). Se llama cada vez
+// que cambia la nave seleccionada.
+function refreshDriveOptions(){
+  const driveSel=document.getElementById('drive-sel');
+  if(!driveSel)return;
+  const shipName=$('ship-sel')?.value;
+  const ship=SHIPS.find(x=>x.name===shipName);
+  const shipSize=ship?.size||2;
+
+  const prevSelected=driveSel.value;
+  driveSel.innerHTML='';
+
+  const compatible=Object.entries(QUANTUM_DRIVES)
+    .filter(([k,v])=>v.size===shipSize)
+    .sort((a,b)=>a[1].speed-b[1].speed);
+
+  compatible.forEach(([k,v])=>{
+    const o=document.createElement('option');
+    o.value=k;
+    const star=v.desc.includes('★')?' ★':'';
+    o.textContent=k+star+' — '+Math.round(v.speed*1000)/1000+' Gm/s';
+    driveSel.appendChild(o);
+  });
+
+  // Mantener el motor elegido si sigue siendo compatible; si no, elegir
+  // el más cercano a QD_DEFAULT de ese tamaño, o el primero disponible
+  if(compatible.some(([k])=>k===prevSelected)){
+    driveSel.value=prevSelected;
+  }else{
+    const defaultForSize=compatible.find(([k])=>k===QD_DEFAULT);
+    driveSel.value=(defaultForSize||compatible[Math.floor(compatible.length/2)]||compatible[0])?.[0]||'';
+  }
+}
+
 function poblarNaves(){
   const shipSel=$('ship-sel');
   const prev=shipSel.value||'Argo RAFT';
@@ -4148,18 +4183,8 @@ function poblarNaves(){
   // Update también el campo de búsqueda
   const shipInp=document.getElementById('ship-search-inp');
   if(shipInp)shipInp.value=shipSel.value||'';
-  // Poblar drive selector
-  const driveSel=document.getElementById('drive-sel');
-  if(driveSel&&driveSel.children.length===0){
-    Object.entries(QUANTUM_DRIVES).forEach(([k,v])=>{
-      const o=document.createElement('option');
-      o.value=k;
-      const star=v.desc.includes('★')?' ★':'';
-      o.textContent=k+star+' — '+Math.round(v.speed*1000)/1000+' Gm/s';
-      if(k===QD_DEFAULT)o.selected=true;
-      driveSel.appendChild(o);
-    });
-  }
+  // Poblar drive selector — solo los compatibles con esta nave
+  refreshDriveOptions();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -5070,6 +5095,7 @@ function initShipSearch(){
     sel.value=s.name;
     drop.style.display='none';
     if(s.scu>0){$('cap-input').value=s.scu;$('cap-show').textContent=s.scu;renderCapacityAlert();}
+    refreshDriveOptions(); // filtrar motores compatibles con el nuevo tamaño
     // Trigger change event
     sel.dispatchEvent(new Event('change'));
   }
@@ -5346,6 +5372,7 @@ async function init(){
     }
   });
   initShipSearch();
+  $('ship-sel')?.addEventListener('change',refreshDriveOptions);
   $('cap-input').addEventListener('input',e=>{$('cap-show').textContent=e.target.value;renderCapacityAlert();});
   $('btn-refresh').addEventListener('click',forceUpdate);
   $('btn-theme').addEventListener('click',cycleTheme);
