@@ -2782,8 +2782,9 @@ function renderCapacityAlert(){
 // ── Mapa visual de ruta ─────────────────────────────────────
 function renderRouteMap(seq){
   const svg=document.getElementById('route-map');
-  if(!svg||!seq||seq.length<2){document.getElementById('map-wrap').style.display='none';return;}
-  document.getElementById('map-wrap').style.display='block';
+  const mapWrap=document.getElementById('map-wrap');
+  if(!svg||!mapWrap||!seq||seq.length<2){if(mapWrap)mapWrap.style.display='none';return;}
+  mapWrap.style.display='block';
 
   const W=600,H=160,PAD=50,STEP=Math.min(120,(W-PAD*2)/Math.max(seq.length-1,1));
   const cx=i=>PAD+i*STEP,cy=()=>H/2;
