@@ -2241,10 +2241,40 @@ function highlightMatch(label,q){
 }
 
 // Etiqueta de tipo corta
+// ── Info de acceso: loading dock (EFE) / request hangar (int) / outpost ──
+// Función central usada tanto por el buscador de ubicaciones como por
+// las tarjetas de misión, para mantener el mismo criterio en toda la app.
+function locAccessInfo(l){
+  if(l.type==='outpost'){
+    return{key:'outpost',label:'Outpost',icon:'ti-tent',
+      color:'var(--c-text-3)',bg:'transparent'};
+  }
+  if(l.pad==='efe'){
+    return{key:'efe',label:'Loading dock',icon:'ti-building-warehouse',
+      color:'#1D9E75',bg:'color-mix(in srgb,#1D9E75 12%,transparent)'};
+  }
+  return{key:'int',label:'Request hangar',icon:'ti-door',
+    color:'#FAC775',bg:'color-mix(in srgb,#FAC775 12%,transparent)'};
+}
+
 function locTypeTag(l){
   const tags={station:'station',lagrange:'lagrange',habitat:'city',outpost:'outpost',moon:'moon',planet:'planet'};
-  const padTag=l.pad==='efe'?' 🅿EFE':l.pad==='int'?' 🅿hgr':'';
-  return (tags[l.type]||l.type)+padTag+' · '+l.sys;
+  const acc=locAccessInfo(l);
+  return (tags[l.type]||l.type)+' · '+acc.label+' · '+l.sys;
+}
+
+// Badge visual compacto (ícono + texto) para mostrar junto a una ubicación
+// resuelta en las tarjetas de misión — mismo criterio que locAccessInfo
+function accessBadgeEl(locId){
+  const l=locById(locId);
+  if(!l)return null;
+  const acc=locAccessInfo(l);
+  const el=document.createElement('span');
+  el.style.cssText=`display:inline-flex;align-items:center;gap:3px;font-size:10px;
+    padding:2px 7px;border-radius:99px;color:${acc.color};background:${acc.bg};
+    white-space:nowrap;margin-top:3px;`;
+  el.innerHTML=`<i class="ti ${acc.icon}" style="font-size:11px" aria-hidden="true"></i>${acc.label}`;
+  return el;
 }
 
 // Crear un input de búsqueda con dropdown de sugerencias
@@ -2337,12 +2367,20 @@ function createLocSearch(initialLocId, onSelect){
     _results=searchLocs(q);
     _activeIdx=-1;
     if(!_results.length){drop.classList.remove('open');return;}
-    drop.innerHTML=_results.map((l,i)=>
-      `<div class="loc-opt" data-i="${i}">
+    drop.innerHTML=_results.map((l,i)=>{
+      const acc=locAccessInfo(l);
+      return `<div class="loc-opt" data-i="${i}">
         <span class="loc-opt-name">${highlightMatch(l.label,q)}</span>
-        <span class="loc-opt-tag">${locTypeTag(l)}</span>
-      </div>`
-    ).join('');
+        <span class="loc-opt-tag" style="display:flex;align-items:center;gap:8px">
+          <span style="color:var(--c-text-3);font-size:10px">${l.sys}</span>
+          <span style="display:flex;align-items:center;gap:3px;font-size:10px;
+            padding:2px 6px;border-radius:99px;color:${acc.color};background:${acc.bg};
+            white-space:nowrap">
+            <i class="ti ${acc.icon}" style="font-size:11px" aria-hidden="true"></i>${acc.label}
+          </span>
+        </span>
+      </div>`;
+    }).join('');
     drop.querySelectorAll('.loc-opt').forEach(el=>{
       el.addEventListener('mousedown',e=>{
         e.preventDefault();
@@ -2979,6 +3017,8 @@ function renderMissions(){
           ${m.pickups.length>1?'<button class="cm-mini-btn js-rm-pick"><i class="ti ti-x"></i></button>':''}`;
         const ls=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;renderMissions();});
         pickRow.querySelector('.js-loc').replaceWith(ls);
+        const pAccBadge=accessBadgeEl(p.locId);
+        if(pAccBadge)ls.appendChild(pAccBadge);
         if(m.pickups.length>1)pickRow.querySelector('.js-rm-pick').addEventListener('click',()=>removePickup(m.id,p.id));
         card.appendChild(pickRow);
       });
@@ -3036,6 +3076,8 @@ function renderMissions(){
 
         const ls=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
         dRow.querySelector('.js-loc').replaceWith(ls);
+        const dAccBadge=accessBadgeEl(d.locId);
+        if(dAccBadge)ls.appendChild(dAccBadge);
         if(m.deliveries.length>1)dRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
         card.appendChild(dRow);
       });
@@ -3133,6 +3175,8 @@ function renderMissions(){
         const locSearch=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;renderMissions();});
         locSearch.style.marginTop='3px';
         content.appendChild(locSearch);
+        const pAccBadge2=accessBadgeEl(p.locId);
+        if(pAccBadge2)content.appendChild(pAccBadge2);
 
         tlItem.appendChild(content);
         card.appendChild(tlItem);
@@ -3211,6 +3255,8 @@ function renderMissions(){
         const locSearch=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
         locSearch.style.marginTop='3px';
         content.appendChild(locSearch);
+        const dAccBadge2=accessBadgeEl(d.locId);
+        if(dAccBadge2)content.appendChild(dAccBadge2);
         tlItem.appendChild(content);
         card.appendChild(tlItem);
       });
