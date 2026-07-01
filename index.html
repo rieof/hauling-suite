@@ -4335,10 +4335,10 @@ async function parseTextInput(text){
       '- Strip planet suffixes like "on Pyro III" or "at the L2 Lagrange of" from location names.\n'+
       'Text: '+text.slice(0,800).replace(/`/g,"'");
     const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],
-        generationConfig:{temperature:0.1,response_mime_type:"application/json"}})});
-    if(!res.ok){if(res.status===400||res.status===403)localStorage.removeItem('sc_gemini_key');throw new Error('Gemini error: '+res.status);}
+    const res=await fetchGeminiWithRetry(url,{
+      contents:[{parts:[{text:prompt}]}],
+      generationConfig:{temperature:0.1,response_mime_type:"application/json"}
+    },{statusFn:msg=>setSmartStatus('text','sync',msg)});
     const data=await res.json();
     const parsed=JSON.parse((data.candidates?.[0]?.content?.parts?.[0]?.text||'{}').trim());
     if(createMissionFromParsed(parsed)){
@@ -4518,6 +4518,41 @@ async function getGeminiKey(){
   return key;
 }
 
+// ── Llamada a Gemini con reintentos automáticos ──────────────
+// 503 = servidor sobrecargado, 429 = rate limit — ambos son
+// transitorios, así que reintenta con backoff antes de rendirse.
+// 400/403 = key inválida — nunca reintenta, borra la key guardada.
+async function fetchGeminiWithRetry(url,body,{maxRetries=2,statusFn}={}){
+  let lastErr=null;
+  for(let attempt=0;attempt<=maxRetries;attempt++){
+    let res;
+    try{
+      res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    }catch(networkErr){
+      lastErr=new Error('Network error — check your connection');
+      if(attempt<maxRetries){await new Promise(r=>setTimeout(r,800*(attempt+1)));continue;}
+      throw lastErr;
+    }
+    if(res.ok)return res;
+    if(res.status===400||res.status===403){
+      localStorage.removeItem('sc_gemini_key');
+      throw new Error(res.status===403?'Invalid API key — cleared, try again to re-enter it':'Bad request (400) — check your Gemini API key');
+    }
+    if((res.status===503||res.status===429)&&attempt<maxRetries){
+      lastErr=new Error(res.status===503?'Gemini servers are overloaded':'Rate limited by Gemini');
+      if(statusFn)statusFn(`${lastErr.message}, retrying… (${attempt+1}/${maxRetries})`);
+      await new Promise(r=>setTimeout(r,1200*(attempt+1))); // backoff creciente
+      continue;
+    }
+    // Error final no reintentable o se agotaron los intentos
+    if(res.status===503)throw new Error('Gemini servers are overloaded (503) — try again in a moment');
+    if(res.status===429)throw new Error('Gemini rate limit reached (429) — wait a bit and try again');
+    if(res.status>=500)throw new Error('Gemini server error ('+res.status+') — try again in a moment');
+    throw new Error('Gemini API error: '+res.status);
+  }
+  throw lastErr||new Error('Gemini request failed');
+}
+
 function resetGeminiKey(){
   localStorage.removeItem('sc_gemini_key');
   setSmartStatus('ocr','ok','Key cleared. Will ask again next time.');
@@ -4574,18 +4609,10 @@ async function runOCR(imageSource){
       'exact names, no planet suffix.\n'+
       '- pay: reward aUEC digits only, 0 if not found';
     const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-    const res=await fetch(url,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],
-        generationConfig:{temperature:0.1,response_mime_type:"application/json"}
-      })
-    });
-    if(!res.ok){
-      if(res.status===400||res.status===403)localStorage.removeItem('sc_gemini_key');
-      throw new Error('Gemini API error: '+res.status);
-    }
+    const res=await fetchGeminiWithRetry(url,{
+      contents:[{parts:[{text:prompt},{inline_data:{mime_type:mime,data:base64}}]}],
+      generationConfig:{temperature:0.1,response_mime_type:"application/json"}
+    },{statusFn:msg=>setSmartStatus('ocr','sync',msg)});
     const data=await res.json();
     const raw=(data.candidates?.[0]?.content?.parts?.[0]?.text||'{}').trim();
     const parsed=JSON.parse(raw);
