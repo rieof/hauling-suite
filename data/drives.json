@@ -1,0 +1,146 @@
+{
+  "_meta": {
+    "version": "4.8.2",
+    "source": "starcitizen.tools (Atlas S1/Crossfield S2/Torrent S2 confirmed live; others estimated by class ranking)",
+    "note": "Speed in Gm/s. Confirmed anchors: Atlas(S1)=0.231, Crossfield(S2)=0.231, Torrent(S2)=0.201",
+    "total": 17
+  },
+  "drives": [
+    {
+      "name": "Atlas (S1)",
+      "speed": 0.231,
+      "fuel": 0.75,
+      "size": 1,
+      "type": "civilian",
+      "desc": "Balanced S1 — default, confirmed 231 Mm/s"
+    },
+    {
+      "name": "FoxFire (S1)",
+      "speed": 0.2,
+      "fuel": 0.55,
+      "size": 1,
+      "type": "economy",
+      "desc": "Economy S1 — longest range"
+    },
+    {
+      "name": "Spectre (S1)",
+      "speed": 0.21,
+      "fuel": 1.1,
+      "size": 1,
+      "type": "stealth",
+      "desc": "Stealth S1 — low signature"
+    },
+    {
+      "name": "VK-00 (S1)",
+      "speed": 0.26,
+      "fuel": 1.8,
+      "size": 1,
+      "type": "military",
+      "desc": "Fastest S1 — Covalex Master reward ★"
+    },
+    {
+      "name": "Torrent (S2)",
+      "speed": 0.201,
+      "fuel": 0.85,
+      "size": 2,
+      "type": "civilian",
+      "desc": "Stock S2 — confirmed 201 Mm/s"
+    },
+    {
+      "name": "Agni (S2)",
+      "speed": 0.18,
+      "fuel": 0.6,
+      "size": 2,
+      "type": "industrial",
+      "desc": "Best range S2 — long haul cargo"
+    },
+    {
+      "name": "Flash (S2)",
+      "speed": 0.205,
+      "fuel": 0.9,
+      "size": 2,
+      "type": "civilian",
+      "desc": "Good S2 balance"
+    },
+    {
+      "name": "Crossfield (S2)",
+      "speed": 0.231,
+      "fuel": 1.5,
+      "size": 2,
+      "type": "military",
+      "desc": "Best S2 speed ★ confirmed 231 Mm/s — popular hauler upgrade"
+    },
+    {
+      "name": "Hemera (S2)",
+      "speed": 0.23,
+      "fuel": 1.1,
+      "size": 2,
+      "type": "civilian",
+      "desc": "Top civilian S2 — RSI flagship"
+    },
+    {
+      "name": "Balandin (S2)",
+      "speed": 0.2,
+      "fuel": 0.95,
+      "size": 2,
+      "type": "industrial",
+      "desc": "Industrial S2, long range"
+    },
+    {
+      "name": "XL-1 (S2)",
+      "speed": 0.28,
+      "fuel": 2.1,
+      "size": 2,
+      "type": "competition",
+      "desc": "Fastest S2 — very fuel hungry"
+    },
+    {
+      "name": "Atlas (S3)",
+      "speed": 0.215,
+      "fuel": 0.9,
+      "size": 3,
+      "type": "civilian",
+      "desc": "Stock S3 — reliable"
+    },
+    {
+      "name": "Agni (S3)",
+      "speed": 0.19,
+      "fuel": 0.65,
+      "size": 3,
+      "type": "industrial",
+      "desc": "Best range S3 — interstellar routes"
+    },
+    {
+      "name": "Pontes (S3)",
+      "speed": 0.245,
+      "fuel": 1.4,
+      "size": 3,
+      "type": "civilian",
+      "desc": "Best S3 balance ★ popular for large haulers"
+    },
+    {
+      "name": "Siren (S3)",
+      "speed": 0.23,
+      "fuel": 1.35,
+      "size": 3,
+      "type": "stealth",
+      "desc": "Fast stealth S3"
+    },
+    {
+      "name": "Balandin (S3)",
+      "speed": 0.25,
+      "fuel": 1.55,
+      "size": 3,
+      "type": "industrial",
+      "desc": "High speed S3, decent efficiency"
+    },
+    {
+      "name": "TS-2 (S3)",
+      "speed": 0.27,
+      "fuel": 1.9,
+      "size": 3,
+      "type": "military",
+      "desc": "Fastest S3 ★ Covalex Master reward"
+    }
+  ]
+}
