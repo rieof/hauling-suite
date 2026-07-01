@@ -910,6 +910,9 @@ html.force-light{
   </div>
   <div id="smart-combos-container"></div>
   <div class="missions-list" id="missions-list"></div>
+  <div class="add-missionssion-row" id="add-missionssion-bottom-row" style="display:none;margin-top:6px">
+    <button class="accent" id="add-missionssion-bottom"><i class="ti ti-plus" aria-hidden="true"></i> New Contract</button>
+  </div>
 
   <div class="tabs">
     <button class="tab" id="tab-loop"><i class="ti ti-trophy" aria-hidden="true"></i> Progress / XP</button>
@@ -3028,6 +3031,10 @@ function renderMissions(){
   const el=$('missions-list');
   $('mcount').textContent=`(${missions.length}/${MAX_MISSIONS})`;
   $('add-missionssion').disabled=missions.length>=MAX_MISSIONS;
+  const bottomRow=$('add-missionssion-bottom-row');
+  const bottomBtn=$('add-missionssion-bottom');
+  if(bottomRow)bottomRow.style.display=missions.length>0?'flex':'none';
+  if(bottomBtn)bottomBtn.disabled=missions.length>=MAX_MISSIONS;
   renderCapacityAlert();
   renderSmartCombos();
   if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderFarmCombos();return;}
@@ -5487,6 +5494,7 @@ async function init(){
   });
   // tol slider removed — convenient stops removed
   $('add-missionssion').addEventListener('click',addMission);
+  $('add-missionssion-bottom')?.addEventListener('click',addMission);
   $('calc-btn').addEventListener('click',calculate);
   $('clear-all').addEventListener('click',()=>{missions=[];renderMissions();});
   $('bmode-optimal').addEventListener('click',()=>{boxMode='optimal';$('bmode-optimal').classList.add('on');$('bmode-single').classList.remove('on');renderMissions();});
