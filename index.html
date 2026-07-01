@@ -4146,7 +4146,7 @@ async function parseTextInput(text){
       }
     }
     // 2. Gemini para texto ambiguo
-    const apiKey=getGeminiKey();
+    const apiKey=await getGeminiKey();
     if(!apiKey)throw new Error('Gemini API key required');
     const prompt='Extract data from this Star Citizen hauling contract text.\n'+
       'Return ONLY valid JSON, no markdown.\n'+
@@ -4170,20 +4170,75 @@ async function parseTextInput(text){
 }
 
 // ══════════════════════════════════════════════════════════
-// GEMINI KEY — guardada en localStorage
+// GEMINI KEY — modal propio (no usa prompt() nativo, que se
+// puede cerrar solo al cambiar de pantalla / alt-tab al juego)
 // ══════════════════════════════════════════════════════════
-function getGeminiKey(){
+function ensureApiKeyModal(){
+  if($('gemini-key-modal'))return;
+  const wrap=document.createElement('div');
+  wrap.id='gemini-key-modal';
+  wrap.style.cssText='display:none;position:fixed;inset:0;z-index:9999;'
+    +'background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px;';
+  wrap.innerHTML=`
+    <div style="background:var(--c-bg-2);border:1px solid var(--c-border-1);border-radius:var(--r-lg);
+      padding:20px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+      <div style="font-size:15px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        🤖 Contract Auto-Reader (Gemini)
+      </div>
+      <div style="font-size:12px;color:var(--c-text-2);line-height:1.6;margin-bottom:12px">
+        1. Go to <a href="https://aistudio.google.com" target="_blank" rel="noopener" style="color:var(--c-blue)">aistudio.google.com</a><br>
+        2. Sign in with Google → click "Get API Key"<br>
+        3. Paste your key below.<br>
+        <span style="color:var(--c-text-3)">Saved only in YOUR browser, never shared.</span>
+      </div>
+      <input id="gemini-key-input" type="text" placeholder="Paste your Gemini API key…"
+        style="width:100%;font-family:var(--font-mono);font-size:12px;padding:8px 10px;
+        border-radius:var(--r-sm);border:1px solid var(--c-border-2);
+        background:var(--c-bg-1);color:var(--c-text-1);margin-bottom:12px">
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button id="gemini-key-cancel" style="padding:7px 14px;border-radius:var(--r-sm);
+          border:0.5px solid var(--c-border-1);background:transparent;color:var(--c-text-3);
+          cursor:pointer;font-size:12px">Cancel</button>
+        <button id="gemini-key-save" style="padding:7px 16px;border-radius:var(--r-sm);
+          border:none;background:var(--c-blue);color:#fff;cursor:pointer;font-size:12px;font-weight:600">
+          Save key</button>
+      </div>
+    </div>`;
+  document.body.appendChild(wrap);
+}
+
+function showApiKeyModal(){
+  return new Promise(resolve=>{
+    ensureApiKeyModal();
+    const modal=$('gemini-key-modal');
+    const input=$('gemini-key-input');
+    const saveBtn=$('gemini-key-save');
+    const cancelBtn=$('gemini-key-cancel');
+    input.value='';
+    modal.style.display='flex';
+    setTimeout(()=>input.focus(),50);
+
+    function cleanup(){
+      modal.style.display='none';
+      saveBtn.onclick=null;cancelBtn.onclick=null;
+      input.onkeydown=null;
+    }
+    function save(){
+      const key=input.value.trim();
+      if(!key){input.focus();return;}
+      localStorage.setItem('sc_gemini_key',key);
+      cleanup();resolve(key);
+    }
+    saveBtn.onclick=save;
+    cancelBtn.onclick=()=>{cleanup();resolve(null);};
+    input.onkeydown=e=>{if(e.key==='Enter')save();else if(e.key==='Escape'){cleanup();resolve(null);}};
+    modal.onclick=e=>{if(e.target===modal){cleanup();resolve(null);}};
+  });
+}
+
+async function getGeminiKey(){
   let key=localStorage.getItem('sc_gemini_key');
-  if(!key){
-    key=prompt(
-      "🤖 Contract Auto-Reader (Gemini Vision)\n\n"+
-      "1. Go to: aistudio.google.com\n"+
-      "2. Sign in with Google → click 'Get API Key'\n"+
-      "3. Paste your key below:\n\n"+
-      "(Key saved only in YOUR browser, never shared)"
-    );
-    if(key){key=key.trim();localStorage.setItem('sc_gemini_key',key);}
-  }
+  if(!key)key=await showApiKeyModal();
   return key;
 }
 
@@ -4193,7 +4248,7 @@ function resetGeminiKey(){
 }
 
 async function runOCR(imageSource){
-  const apiKey=getGeminiKey();
+  const apiKey=await getGeminiKey();
   if(!apiKey){setSmartStatus('ocr','err','Gemini API key required to read screenshots.');return;}
   setSmartStatus('ocr','sync','Reading contract with Gemini Vision…');
   try{
