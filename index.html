@@ -4145,7 +4145,7 @@ async function parseTextInput(text){
       '{"scu":NUMBER,"material":"COMMODITY","pickups":["Location"],"deliveries":["Loc1","Loc2"],"pay":NUMBER}\n'+
       'Strip planet suffixes like "on Pyro III" or "at the L2 Lagrange of".\n'+
       'Text: '+text.slice(0,800).replace(/`/g,"'");
-    const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{parts:[{text:prompt}]}],
         generationConfig:{temperature:0.1,response_mime_type:"application/json"}})});
@@ -4179,7 +4179,7 @@ async function runOCR(imageSource){
       '- pickups: ALL pickup locations — strip "on Pyro X" / "at the L2 Lagrange of..."\n'+
       '- deliveries: ALL delivery locations — exact names, no planet suffix\n'+
       '- pay: reward aUEC digits only, 0 if not found';
-    const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     const res=await fetch(url,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
