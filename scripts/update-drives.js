@@ -27,28 +27,29 @@ async function fetchAllPages(endpoint, pageSize = 50) {
   return all;
 }
 
-// Intenta extraer velocidad/consumo de varios nombres de campo posibles
-// (la API cambia de estructura entre versiones)
+// Campos REALES confirmados contra la API en vivo (verificado 2026-07-01,
+// patch 4.8.2 — ej. Atlas: quantum_drive.standard_jump.drive_speed=231000000,
+// Agni: 383000000, Aither: 242000000). Antes este script adivinaba nombres
+// de campo (item.speed, item.quantum_speed…) que NO existen en la API real
+// — por eso siempre caía al valor curado a mano. Con el campo correcto,
+// la API sí trae el dato real casi siempre.
 function extractSpeed(item) {
-  const candidates = [
-    item.quantum_speed, item.speed, item.cruise_speed,
-    item.qt_speed, item.max_speed
-  ];
-  for (const c of candidates) {
-    if (typeof c === 'number' && c > 0) {
-      // Si viene en Mm/s (megametros/s), convertir a Gm/s
-      return c > 10 ? c / 1000 : c;
-    }
-  }
+  const raw = item.quantum_drive?.standard_jump?.drive_speed; // en m/s
+  if (typeof raw === 'number' && raw > 0) return raw / 1e9; // m/s → Gm/s
   return null;
 }
 
 function extractFuel(item) {
-  const candidates = [item.fuel_requirement, item.fuel_consumption, item.fuel];
-  for (const c of candidates) {
-    if (typeof c === 'number' && c > 0) return c;
-  }
+  // fuel_consumption_scu_per_gm: SCU de combustible cuántico gastado por
+  // Gm recorrido — unidad directamente usable contra el qFuel de la nave
+  const raw = item.quantum_drive?.fuel_consumption_scu_per_gm;
+  if (typeof raw === 'number' && raw > 0) return raw;
   return null;
+}
+
+function extractSpoolTime(item) {
+  const raw = item.quantum_drive?.standard_jump?.spool_up_time;
+  return typeof raw === 'number' ? raw : null;
 }
 
 async function main() {
@@ -79,6 +80,7 @@ async function main() {
     const prev = existingByBaseName[key];
     const apiSpeed = extractSpeed(item);
     const apiFuel = extractFuel(item);
+    const apiSpool = extractSpoolTime(item);
 
     const speed = apiSpeed || prev?.speed;
     const fuel = apiFuel || prev?.fuel;
@@ -91,10 +93,12 @@ async function main() {
     drives.push({
       name: displayName,
       speed: Math.round(speed * 1000) / 1000,
-      fuel: fuel || 1.0,
+      fuel: fuel ? Math.round(fuel * 10000) / 10000 : 1.0,
+      spool: apiSpool ?? prev?.spool ?? null,
       size,
       type: (item.class || prev?.type || 'civilian').toLowerCase(),
-      desc: prev?.desc || `${item.manufacturer?.name || ''} S${size} drive`.trim()
+      manufacturer: item.manufacturer?.name || prev?.manufacturer || '',
+      desc: prev?.desc || `${item.manufacturer?.name || ''} S${size} ${(item.class||'').toLowerCase()} drive`.trim()
     });
   }
 
@@ -103,7 +107,7 @@ async function main() {
   const output = {
     _meta: {
       version: '4.8.2',
-      source: 'api.star-citizen.wiki/api/items (QuantumDrive) — auto-updated weekly, speed/fuel preserved from manual curation when API lacks the field',
+      source: 'api.star-citizen.wiki/api/items (QuantumDrive) — campos reales quantum_drive.standard_jump.drive_speed / fuel_consumption_scu_per_gm, confirmados en vivo',
       generated: new Date().toISOString(),
       total: drives.length,
       needs_manual_review: needsReview
