@@ -4029,6 +4029,14 @@ function findMatFuzzy(q){
   return MATERIALS.find(m=>m.toLowerCase().includes(nq))||MATERIALS[1]||MATERIALS[0];
 }
 
+// ── Estado visual del panel Smart (texto / OCR) ──────────────
+function setSmartStatus(mode,type,msg){
+  const el=$(mode==='text'?'smart-text-status':'smart-ocr-status');
+  if(!el)return;
+  el.className='smart-status'+(type==='ok'?' ok':type==='err'?' err':'');
+  el.innerHTML=type==='sync'?`<span class="spin" style="font-size:12px">⟳</span> ${msg}`:msg;
+}
+
 // ── Crear mission desde datos parseados ─────────────────────
 function createMissionFromParsed(parsed){
   if(missions.length>=MAX_MISSIONS){
