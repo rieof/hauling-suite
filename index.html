@@ -4161,6 +4161,29 @@ async function parseTextInput(text){
   }finally{$('smart-parse-btn').disabled=false;}
 }
 
+// ══════════════════════════════════════════════════════════
+// GEMINI KEY — guardada en localStorage
+// ══════════════════════════════════════════════════════════
+function getGeminiKey(){
+  let key=localStorage.getItem('sc_gemini_key');
+  if(!key){
+    key=prompt(
+      "🤖 Contract Auto-Reader (Gemini Vision)\n\n"+
+      "1. Go to: aistudio.google.com\n"+
+      "2. Sign in with Google → click 'Get API Key'\n"+
+      "3. Paste your key below:\n\n"+
+      "(Key saved only in YOUR browser, never shared)"
+    );
+    if(key){key=key.trim();localStorage.setItem('sc_gemini_key',key);}
+  }
+  return key;
+}
+
+function resetGeminiKey(){
+  localStorage.removeItem('sc_gemini_key');
+  setSmartStatus('ocr','ok','Key cleared. Will ask again next time.');
+}
+
 async function runOCR(imageSource){
   const apiKey=getGeminiKey();
   if(!apiKey){setSmartStatus('ocr','err','Gemini API key required to read screenshots.');return;}
