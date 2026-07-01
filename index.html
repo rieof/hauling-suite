@@ -932,8 +932,17 @@ html.force-light{
       </div>
       <div style="font-size:10px;color:var(--c-text-3);padding:2px 0 4px" id="xp-hint"></div>
       <div class="sync-panel">
+        <div class="xp-edit" style="margin-bottom:8px;background:color-mix(in srgb,var(--c-blue) 8%,transparent);
+          border:0.5px solid color-mix(in srgb,var(--c-blue) 25%,transparent);border-radius:var(--r-sm);padding:8px 10px">
+          <i class="ti ti-info-circle" aria-hidden="true" style="color:var(--c-blue)"></i>
+          The game doesn't show your exact XP number — only a visual progress bar in your mobiGlas
+          Delphi (reputation) app. To sync: pick your current rank below, drag the slider to match
+          how full that bar looks in-game, then press <b>Set State</b>. From then on, this tracker
+          adds XP automatically as you complete missions here — you won't need to sync again unless
+          it drifts out of sync.
+        </div>
         <div class="sync-row">
-          <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);">Sync with Delphi:</span>
+          <span style="font-size:10px;color:var(--c-text-3);font-family:var(--font-mono);">Current rank in-game:</span>
           <select id="sync-rank" style="width:auto;font-size:11px;padding:4px 8px;"></select>
         </div>
         <div class="sync-row">
@@ -943,7 +952,6 @@ html.force-light{
           </div>
           <button class="reset-btn" id="sync-btn" style="background:#1D9E75;border-color:#1D9E75;color:#fff;padding:8px 14px;font-weight:500;">Set State</button>
         </div>
-        <div class="xp-edit"><i class="ti ti-info-circle" aria-hidden="true"></i> Your current state is shown in the slider. Para actualizarlo, selecciona tu rango, mueve la barra hasta que coincida con lo que ves en tu mobiGlas y presiona Set State.</div>
       </div>
     </div>
 
@@ -2412,7 +2420,7 @@ function renderXP(){
   const xp=prog.xp[prog.f]||0;const idx=rankFromXP(xp);const rname=RANK_ORDER[idx];
   $('xp-rank-name').textContent=rname;
   if(idx>=RANK_ORDER.length-1){$('xp-bar').style.width='100%';$('xp-next').textContent='Max rank reached';$('xp-bar-text').textContent=`${xp.toLocaleString()} XP total · Master!`;}
-  else{const start=RANK_CUM[idx];const next=RANK_CUM[idx+1];const span=next-start;const inLvl=xp-start;const pct=Math.max(0,Math.min(100,(inLvl/span)*100));$('xp-bar').style.width=pct+'%';$('xp-next').textContent=`Need ${(next-xp).toLocaleString()} XP for ${RANK_ORDER[idx+1]}`;$('xp-bar-text').textContent=`${inLvl.toLocaleString()} / ${span.toLocaleString()} XP en ${rname} (${Math.round(pct)}%)`;}
+  else{const start=RANK_CUM[idx];const next=RANK_CUM[idx+1];const span=next-start;const inLvl=xp-start;const pct=Math.max(0,Math.min(100,(inLvl/span)*100));$('xp-bar').style.width=pct+'%';$('xp-next').textContent=`Need ${(next-xp).toLocaleString()} XP for ${RANK_ORDER[idx+1]}`;$('xp-bar-text').textContent=`${inLvl.toLocaleString()} / ${span.toLocaleString()} XP in ${rname} (${Math.round(pct)}%)`;}
   updateSyncUI();
 }
 function updateSyncUI(){
