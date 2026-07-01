@@ -1,0 +1,125 @@
+// ══════════════════════════════════════════════════════════
+// Regenera data/drives.json desde api.star-citizen.wiki
+// Los campos de velocidad/consumo no siempre vienen limpios en la API
+// pública, así que este script SIEMPRE preserva los valores curados a
+// mano cuando existen, y solo actualiza tamaño/nombre/fabricante desde
+// la API. Si aparece un motor nuevo sin datos de velocidad conocidos,
+// lo deja marcado para revisión manual en vez de inventar un número.
+// ══════════════════════════════════════════════════════════
+const fs = require('fs');
+const path = require('path');
+
+const API_BASE = 'https://api.star-citizen.wiki/api';
+const OUT_PATH = path.join(__dirname, '..', 'data', 'drives.json');
+
+async function fetchAllPages(endpoint, pageSize = 50) {
+  const all = [];
+  let page = 1, last = 1;
+  do {
+    const url = `${API_BASE}/${endpoint}?filter[type]=QuantumDrive&page[number]=${page}&page[size]=${pageSize}`;
+    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status} en ${endpoint} página ${page}`);
+    const json = await res.json();
+    last = json.meta?.last_page || 1;
+    all.push(...(json.data || []));
+    page++;
+  } while (page <= last);
+  return all;
+}
+
+// Intenta extraer velocidad/consumo de varios nombres de campo posibles
+// (la API cambia de estructura entre versiones)
+function extractSpeed(item) {
+  const candidates = [
+    item.quantum_speed, item.speed, item.cruise_speed,
+    item.qt_speed, item.max_speed
+  ];
+  for (const c of candidates) {
+    if (typeof c === 'number' && c > 0) {
+      // Si viene en Mm/s (megametros/s), convertir a Gm/s
+      return c > 10 ? c / 1000 : c;
+    }
+  }
+  return null;
+}
+
+function extractFuel(item) {
+  const candidates = [item.fuel_requirement, item.fuel_consumption, item.fuel];
+  for (const c of candidates) {
+    if (typeof c === 'number' && c > 0) return c;
+  }
+  return null;
+}
+
+async function main() {
+  console.log('[update-drives] Descargando catálogo de motores cuánticos…');
+  const items = await fetchAllPages('items', 50);
+  console.log(`[update-drives] ${items.length} motores en la API`);
+
+  let existing = [];
+  try {
+    const prev = JSON.parse(fs.readFileSync(OUT_PATH, 'utf-8'));
+    existing = prev.drives || prev;
+  } catch (e) { /* sin archivo previo, ok */ }
+  const existingByBaseName = {};
+  existing.forEach(d => {
+    const base = d.name.replace(/\s*\(S\d\)\s*$/, '').toLowerCase();
+    existingByBaseName[base + '_' + d.size] = d;
+  });
+
+  const drives = [];
+  const needsReview = [];
+
+  for (const item of items) {
+    const size = item.size || 1;
+    const name = item.name;
+    const key = name.toLowerCase() + '_' + size;
+    const displayName = `${name} (S${size})`;
+
+    const prev = existingByBaseName[key];
+    const apiSpeed = extractSpeed(item);
+    const apiFuel = extractFuel(item);
+
+    const speed = apiSpeed || prev?.speed;
+    const fuel = apiFuel || prev?.fuel;
+
+    if (!speed) {
+      needsReview.push(displayName);
+      continue;
+    }
+
+    drives.push({
+      name: displayName,
+      speed: Math.round(speed * 1000) / 1000,
+      fuel: fuel || 1.0,
+      size,
+      type: (item.class || prev?.type || 'civilian').toLowerCase(),
+      desc: prev?.desc || `${item.manufacturer?.name || ''} S${size} drive`.trim()
+    });
+  }
+
+  drives.sort((a, b) => a.size - b.size || a.speed - b.speed);
+
+  const output = {
+    _meta: {
+      version: '4.8.2',
+      source: 'api.star-citizen.wiki/api/items (QuantumDrive) — auto-updated weekly, speed/fuel preserved from manual curation when API lacks the field',
+      generated: new Date().toISOString(),
+      total: drives.length,
+      needs_manual_review: needsReview
+    },
+    drives
+  };
+
+  fs.writeFileSync(OUT_PATH, JSON.stringify(output, null, 2), 'utf-8');
+  console.log(`[update-drives] ✓ ${drives.length} motores escritos en ${OUT_PATH}`);
+  if (needsReview.length) {
+    console.log(`[update-drives] ⚠ ${needsReview.length} motores sin datos de velocidad confiables, omitidos:`);
+    needsReview.forEach(n => console.log(`    - ${n}`));
+  }
+}
+
+main().catch(err => {
+  console.error('[update-drives] ERROR:', err.message);
+  process.exit(1);
+});
