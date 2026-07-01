@@ -651,6 +651,13 @@ html.force-light{
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <h1>🚀 Hauling Suite</h1>
+      <button id="btn-help" title="How this tool works"
+        style="padding:3px 9px;border-radius:99px;border:0.5px solid var(--c-blue);
+        background:color-mix(in srgb,var(--c-blue) 12%,transparent);color:var(--c-blue);
+        cursor:pointer;font-size:11px;font-weight:600;font-family:var(--font-mono);
+        display:flex;align-items:center;gap:4px">
+        <i class="ti ti-help-circle" aria-hidden="true"></i> How it works
+      </button>
       <span id="api-badge" style="display:none;font-size:10px;padding:2px 8px;border-radius:99px;
         font-family:var(--font-mono);color:#fff;transition:all .3s"></span>
     </div>
@@ -4206,6 +4213,101 @@ async function parseTextInput(text){
 // GEMINI KEY — modal propio (no usa prompt() nativo, que se
 // puede cerrar solo al cambiar de pantalla / alt-tab al juego)
 // ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// GUÍA "HOW IT WORKS" — se muestra la primera vez y siempre
+// accesible desde el botón del header
+// ══════════════════════════════════════════════════════════
+function showHelpModal(){
+  const existing=document.getElementById('help-modal');
+  if(existing){existing.remove();}
+  const wrap=document.createElement('div');
+  wrap.id='help-modal';
+  wrap.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);'
+    +'display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto;';
+  wrap.innerHTML=`
+    <div style="background:var(--c-bg-2);border:1px solid var(--c-border-1);border-radius:var(--r-lg);
+      padding:22px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);
+      max-height:88vh;overflow-y:auto">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:17px;font-weight:700">🚀 How Hauling Suite works</div>
+        <button id="help-close-x" style="background:none;border:none;color:var(--c-text-3);
+          font-size:20px;cursor:pointer;line-height:1;padding:2px 6px">×</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;font-size:13px;color:var(--c-text-2);line-height:1.6">
+
+        <div style="display:flex;gap:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--c-blue) 20%,transparent);
+            color:var(--c-blue);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:12px">1</div>
+          <div><b style="color:var(--c-text-1)">Set your position.</b> Type where you are now (top of the Loop tab).
+          The tool remembers it for next time.</div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--c-blue) 20%,transparent);
+            color:var(--c-blue);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:12px">2</div>
+          <div><b style="color:var(--c-text-1)">Add contracts.</b> Three ways: click "+ New Contract" and fill it in by hand,
+          paste the contract text in the Smart panel, or upload/paste a screenshot — Gemini reads it for you
+          (needs a free API key from aistudio.google.com, asked once).</div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--c-blue) 20%,transparent);
+            color:var(--c-blue);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:12px">3</div>
+          <div><b style="color:var(--c-text-1)">Pick a delivery mode.</b>
+          <span style="color:var(--c-green)">⚡ 25% XP</span> — one delivery only, fastest rep grind.
+          <span style="color:var(--c-blue)">💰 100% load</span> — every stop, max aUEC.
+          <span style="color:#E84040">🎯 1-box rep</span> — smallest possible box, cheapest way to bank XP.</div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--c-blue) 20%,transparent);
+            color:var(--c-blue);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:12px">4</div>
+          <div><b style="color:var(--c-text-1)">Choose ship, drive & priority.</b> Pick your ship (sets hold size),
+          your quantum drive, and whether to optimize <i>by time</i> or <i>by raw distance</i> —
+          then hit <b>Calculate Best Route</b>.</div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--c-blue) 20%,transparent);
+            color:var(--c-blue);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:12px">5</div>
+          <div><b style="color:var(--c-text-1)">Follow the step-by-step.</b> Each stop shows exactly which boxes
+          to grab or drop and how full your hold is. Click a stop to check it off as you fly the route.</div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <div style="width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--c-blue) 20%,transparent);
+            color:var(--c-blue);display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:12px">6</div>
+          <div><b style="color:var(--c-text-1)">Track your reputation.</b> The game only shows a progress bar,
+          no exact XP number — so sync once (pick your rank, match the slider to what you see in-game,
+          press Set State). After that, marking contracts "Done" adds XP automatically.</div>
+        </div>
+
+        <div style="background:color-mix(in srgb,var(--c-green) 8%,transparent);
+          border:0.5px solid color-mix(in srgb,var(--c-green) 25%,transparent);
+          border-radius:var(--r-sm);padding:8px 10px;font-size:12px;color:var(--c-text-2)">
+          <i class="ti ti-bulb" aria-hidden="true" style="color:var(--c-green)"></i>
+          Tip: save routes you fly often (Save Route button), and start a session
+          before farming to track your XP/hour and aUEC/hour.
+        </div>
+      </div>
+
+      <button id="help-close-btn" style="margin-top:16px;width:100%;padding:10px;border-radius:var(--r-md);
+        border:none;background:var(--c-blue);color:#fff;cursor:pointer;font-size:13px;font-weight:600">
+        Got it
+      </button>
+    </div>`;
+  document.body.appendChild(wrap);
+
+  function close(){wrap.remove();}
+  document.getElementById('help-close-btn').onclick=close;
+  document.getElementById('help-close-x').onclick=close;
+  wrap.onclick=e=>{if(e.target===wrap)close();};
+  document.addEventListener('keydown',function esc(e){
+    if(e.key==='Escape'){close();document.removeEventListener('keydown',esc);}
+  });
+}
+
 function ensureApiKeyModal(){
   if($('gemini-key-modal'))return;
   const wrap=document.createElement('div');
@@ -4900,6 +5002,7 @@ async function init(){
   $('cap-input').addEventListener('input',e=>{$('cap-show').textContent=e.target.value;renderCapacityAlert();});
   $('btn-refresh').addEventListener('click',forceUpdate);
   $('btn-theme').addEventListener('click',cycleTheme);
+  $('btn-help')?.addEventListener('click',showHelpModal);
   $('btn-compact').addEventListener('click',toggleCompact);
   $('btn-export').addEventListener('click',exportConfig);
   document.getElementById('import-file').addEventListener('change',e=>{
@@ -5087,6 +5190,11 @@ async function init(){
   renderSessionHistory();
   initTheme();
   initSmartPanel();
+  // Mostrar guía "How it works" automáticamente la primera vez
+  if(!localStorage.getItem('sc_hauling_seen_intro')){
+    localStorage.setItem('sc_hauling_seen_intro','1');
+    setTimeout(showHelpModal, 600);
+  }
   // Check de parche en background (no bloquea)
   setTimeout(checkPatchVersion, 2000);
 }
