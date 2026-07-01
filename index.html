@@ -3451,7 +3451,22 @@ async function calculate(){
   const estMins=res.timeSeconds?Math.floor(res.timeSeconds/60):null;
   const estSecs=res.timeSeconds?Math.round(res.timeSeconds%60):null;
   const timeStr=estMins!==null?`${estMins}m ${estSecs}s`:'—';
-  $('stats').innerHTML=`<div class="stat"><div class="sv">${fmtDist(res.dist)}</div><div class="sl">Route distance</div></div><div class="stat"><div class="sv">${timeStr}</div><div class="sl">Est. travel time</div></div><div class="stat ${maxLoad>cap?'danger':''}"><div class="sv">${maxLoad}<span style="font-size:11px;color:var(--c-text-3)">/${cap}</span></div><div class="sl">SCU peak / hold</div></div><div class="stat"><div class="sv">${res.seq.filter(n=>n.role==='dropoff').length}</div><div class="sl">deliveries</div></div>`;
+  const optLabel=optMode==='dist'?'📏 By distance':'⏱ By time';
+  const distHighlight=optMode==='dist'?' style="color:var(--c-blue);font-weight:700"':'';
+  const timeHighlight=optMode==='time'?' style="color:var(--c-blue);font-weight:700"':'';
+  $('stats').innerHTML=`<div class="stat"><div class="sv"${distHighlight}>${fmtDist(res.dist)}</div><div class="sl">Route distance${optMode==='dist'?' ★':''}</div></div><div class="stat"><div class="sv"${timeHighlight}>${timeStr}</div><div class="sl">Est. travel time${optMode==='time'?' ★':''}</div></div><div class="stat ${maxLoad>cap?'danger':''}"><div class="sv">${maxLoad}<span style="font-size:11px;color:var(--c-text-3)">/${cap}</span></div><div class="sl">SCU peak / hold</div></div><div class="stat"><div class="sv">${res.seq.filter(n=>n.role==='dropoff').length}</div><div class="sl">deliveries</div></div>`;
+  // Mostrar el criterio usado como subtítulo justo encima de las stats
+  const statsWrap=$('stats');
+  if(statsWrap&&statsWrap.parentElement){
+    let optTag=document.getElementById('opt-used-tag');
+    if(!optTag){
+      optTag=document.createElement('div');
+      optTag.id='opt-used-tag';
+      optTag.style.cssText='font-size:11px;color:var(--c-text-3);margin-bottom:6px;font-family:var(--font-mono);display:flex;align-items:center;gap:6px';
+      statsWrap.parentElement.insertBefore(optTag,statsWrap);
+    }
+    optTag.innerHTML=`<i class="ti ti-adjustments"></i> Route optimized for: <b style="color:var(--c-blue)">${optLabel}</b> · Drive: <b>${driveKey}</b> (${(qSpeed*1000).toFixed(0)} Mm/s)`;
+  }
   // rv visual — now using rv2 (renderRouteVisual2 called below)
   $('route-vis').innerHTML='';
   $('steps-lbl').innerHTML=`<span>STEP BY STEP — ${res.seq.length} stops · ${totalScu} SCU delivered${jumps>0?` · ${jumps} jump${jumps!==1?'s':''}`:''}</span>`;
