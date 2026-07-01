@@ -1,146 +1,581 @@
 {
   "_meta": {
     "version": "4.8.2",
-    "source": "starcitizen.tools (Atlas S1/Crossfield S2/Torrent S2 confirmed live; others estimated by class ranking)",
-    "note": "Speed verificada 100% contra la API real para Atlas(S1) y Agni(S3). El campo fuel de TODOS los motores sigue en la escala vieja (compatible con el factor *40 en calculate()) hasta que se corrija esa fórmula junto con qFuel real de las naves — correr el GitHub Action arreglará todo de una vez.",
-    "total": 17
+    "source": "api.star-citizen.wiki/api/items (QuantumDrive) — campos reales quantum_drive.standard_jump.drive_speed / fuel_consumption_scu_per_gm, confirmados en vivo",
+    "generated": "2026-07-01T23:32:03.507Z",
+    "total": 57,
+    "needs_manual_review": []
   },
   "drives": [
     {
-      "name": "Atlas (S1)",
-      "speed": 0.231,
-      "fuel": 0.75,
+      "name": "Flood (S1)",
+      "speed": 0.138,
+      "fuel": 0.008,
+      "spool": 4,
       "size": 1,
       "type": "civilian",
-      "desc": "Balanced S1 — default, confirmed 231 Mm/s"
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S1 civilian drive"
+    },
+    {
+      "name": "Wayfare (S1)",
+      "speed": 0.138,
+      "fuel": 0.008,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S1 civilian drive"
+    },
+    {
+      "name": "Drift (S1)",
+      "speed": 0.14,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "stealth",
+      "manufacturer": "RAMP Corporation",
+      "desc": "RAMP Corporation S1 stealth drive"
+    },
+    {
+      "name": "LightFire (S1)",
+      "speed": 0.14,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "competition",
+      "manufacturer": "Ace Astrogation",
+      "desc": "Ace Astrogation S1 competition drive"
+    },
+    {
+      "name": "Eos (S1)",
+      "speed": 0.165,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S1 civilian drive"
+    },
+    {
+      "name": "Expedition (S1)",
+      "speed": 0.165,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S1 civilian drive"
+    },
+    {
+      "name": "Rush (S1)",
+      "speed": 0.165,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S1 civilian drive"
     },
     {
       "name": "FoxFire (S1)",
-      "speed": 0.2,
-      "fuel": 0.55,
+      "speed": 0.168,
+      "fuel": 0.012,
+      "spool": 4,
       "size": 1,
-      "type": "economy",
+      "type": "competition",
+      "manufacturer": "Ace Astrogation",
       "desc": "Economy S1 — longest range"
     },
     {
-      "name": "Spectre (S1)",
-      "speed": 0.21,
-      "fuel": 1.1,
+      "name": "Zephyr (S1)",
+      "speed": 0.168,
+      "fuel": 0.012,
+      "spool": 4,
       "size": 1,
       "type": "stealth",
+      "manufacturer": "RAMP Corporation",
+      "desc": "RAMP Corporation S1 stealth drive"
+    },
+    {
+      "name": "Vulcan (S1)",
+      "speed": 0.179,
+      "fuel": 0.008,
+      "spool": 4,
+      "size": 1,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S1 industrial drive"
+    },
+    {
+      "name": "Beacon (S1)",
+      "speed": 0.19,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "military",
+      "manufacturer": "Wei-Tek",
+      "desc": "Wei-Tek S1 military drive"
+    },
+    {
+      "name": "Spectre (S1)",
+      "speed": 0.196,
+      "fuel": 0.014,
+      "spool": 4,
+      "size": 1,
+      "type": "stealth",
+      "manufacturer": "RAMP Corporation",
       "desc": "Stealth S1 — low signature"
     },
     {
-      "name": "VK-00 (S1)",
-      "speed": 0.26,
-      "fuel": 1.8,
+      "name": "Burst (S1)",
+      "speed": 0.198,
+      "fuel": 0.012,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S1 civilian drive"
+    },
+    {
+      "name": "Hyperion (S1)",
+      "speed": 0.198,
+      "fuel": 0.012,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S1 civilian drive"
+    },
+    {
+      "name": "Voyage (S1)",
+      "speed": 0.198,
+      "fuel": 0.012,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S1 civilian drive"
+    },
+    {
+      "name": "Goliath (S1)",
+      "speed": 0.215,
+      "fuel": 0.01,
+      "spool": 4,
+      "size": 1,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S1 industrial drive"
+    },
+    {
+      "name": "Siren (S1)",
+      "speed": 0.228,
+      "fuel": 0.012,
+      "spool": 4,
       "size": 1,
       "type": "military",
+      "manufacturer": "Wei-Tek",
+      "desc": "Wei-Tek S1 military drive"
+    },
+    {
+      "name": "Atlas (S1)",
+      "speed": 0.231,
+      "fuel": 0.014,
+      "spool": 4,
+      "size": 1,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Balanced S1 — default, confirmed 231 Mm/s"
+    },
+    {
+      "name": "Colossus (S1)",
+      "speed": 0.257,
+      "fuel": 0.012,
+      "spool": 4,
+      "size": 1,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S1 industrial drive"
+    },
+    {
+      "name": "VK-00 (S1)",
+      "speed": 0.266,
+      "fuel": 0.014,
+      "spool": 4,
+      "size": 1,
+      "type": "military",
+      "manufacturer": "Wei-Tek",
       "desc": "Fastest S1 — Covalex Master reward ★"
+    },
+    {
+      "name": "Cascade (S2)",
+      "speed": 0.168,
+      "fuel": 0.019,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S2 civilian drive"
+    },
+    {
+      "name": "Quest (S2)",
+      "speed": 0.168,
+      "fuel": 0.019,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S2 civilian drive"
+    },
+    {
+      "name": "Nova (S2)",
+      "speed": 0.171,
+      "fuel": 0.016,
+      "spool": 6,
+      "size": 2,
+      "type": "stealth",
+      "manufacturer": "RAMP Corporation",
+      "desc": "RAMP Corporation S2 stealth drive"
+    },
+    {
+      "name": "SparkFire (S2)",
+      "speed": 0.171,
+      "fuel": 0.016,
+      "spool": 6,
+      "size": 2,
+      "type": "competition",
+      "manufacturer": "Ace Astrogation",
+      "desc": "Ace Astrogation S2 competition drive"
+    },
+    {
+      "name": "Khaos (S2)",
+      "speed": 0.201,
+      "fuel": 0.016,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S2 civilian drive"
+    },
+    {
+      "name": "Odyssey (S2)",
+      "speed": 0.201,
+      "fuel": 0.016,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S2 civilian drive"
     },
     {
       "name": "Torrent (S2)",
       "speed": 0.201,
-      "fuel": 0.85,
+      "fuel": 0.016,
+      "spool": 6,
       "size": 2,
       "type": "civilian",
+      "manufacturer": "ArcCorp",
       "desc": "Stock S2 — confirmed 201 Mm/s"
     },
     {
-      "name": "Agni (S2)",
-      "speed": 0.18,
-      "fuel": 0.6,
+      "name": "Bolt (S2)",
+      "speed": 0.205,
+      "fuel": 0.013,
+      "spool": 6,
       "size": 2,
-      "type": "industrial",
-      "desc": "Best range S2 — long haul cargo"
+      "type": "stealth",
+      "manufacturer": "RAMP Corporation",
+      "desc": "RAMP Corporation S2 stealth drive"
     },
     {
-      "name": "Flash (S2)",
+      "name": "SunFire (S2)",
       "speed": 0.205,
-      "fuel": 0.9,
+      "fuel": 0.013,
+      "spool": 6,
       "size": 2,
-      "type": "civilian",
-      "desc": "Good S2 balance"
+      "type": "competition",
+      "manufacturer": "Ace Astrogation",
+      "desc": "Ace Astrogation S2 competition drive"
+    },
+    {
+      "name": "Yaluk (S2)",
+      "speed": 0.218,
+      "fuel": 0.019,
+      "spool": 6,
+      "size": 2,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S2 industrial drive"
     },
     {
       "name": "Crossfield (S2)",
       "speed": 0.231,
-      "fuel": 1.5,
+      "fuel": 0.016,
+      "spool": 6,
       "size": 2,
       "type": "military",
+      "manufacturer": "Wei-Tek",
       "desc": "Best S2 speed ★ confirmed 231 Mm/s — popular hauler upgrade"
     },
     {
-      "name": "Hemera (S2)",
-      "speed": 0.23,
-      "fuel": 1.1,
+      "name": "Spicule (S2)",
+      "speed": 0.24,
+      "fuel": 0.011,
+      "spool": 6,
+      "size": 2,
+      "type": "stealth",
+      "manufacturer": "RAMP Corporation",
+      "desc": "RAMP Corporation S2 stealth drive"
+    },
+    {
+      "name": "Aither (S2)",
+      "speed": 0.242,
+      "fuel": 0.013,
+      "spool": 6,
       "size": 2,
       "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S2 civilian drive"
+    },
+    {
+      "name": "Flash (S2)",
+      "speed": 0.242,
+      "fuel": 0.013,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "Good S2 balance"
+    },
+    {
+      "name": "Sojourn (S2)",
+      "speed": 0.242,
+      "fuel": 0.013,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S2 civilian drive"
+    },
+    {
+      "name": "Bolon (S2)",
+      "speed": 0.262,
+      "fuel": 0.016,
+      "spool": 6,
+      "size": 2,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S2 industrial drive"
+    },
+    {
+      "name": "Yeager (S2)",
+      "speed": 0.278,
+      "fuel": 0.013,
+      "spool": 6,
+      "size": 2,
+      "type": "military",
+      "manufacturer": "Wei-Tek",
+      "desc": "Wei-Tek S2 military drive"
+    },
+    {
+      "name": "Hemera (S2)",
+      "speed": 0.282,
+      "fuel": 0.011,
+      "spool": 6,
+      "size": 2,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
       "desc": "Top civilian S2 — RSI flagship"
     },
     {
-      "name": "Balandin (S2)",
-      "speed": 0.2,
-      "fuel": 0.95,
+      "name": "Huracan (S2)",
+      "speed": 0.314,
+      "fuel": 0.013,
+      "spool": 6,
       "size": 2,
       "type": "industrial",
-      "desc": "Industrial S2, long range"
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S2 industrial drive"
     },
     {
       "name": "XL-1 (S2)",
-      "speed": 0.28,
-      "fuel": 2.1,
+      "speed": 0.324,
+      "fuel": 0.011,
+      "spool": 6,
       "size": 2,
-      "type": "competition",
+      "type": "military",
+      "manufacturer": "Wei-Tek",
       "desc": "Fastest S2 — very fuel hungry"
     },
     {
-      "name": "Atlas (S3)",
-      "speed": 0.215,
-      "fuel": 0.9,
+      "name": "Drifter (S3)",
+      "speed": 0.205,
+      "fuel": 0.031,
+      "spool": 7,
       "size": 3,
       "type": "civilian",
-      "desc": "Stock S3 — reliable"
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S3 civilian drive"
+    },
+    {
+      "name": "Echo (S3)",
+      "speed": 0.205,
+      "fuel": 0.031,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S3 civilian drive"
+    },
+    {
+      "name": "Fissure (S3)",
+      "speed": 0.246,
+      "fuel": 0.026,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S3 civilian drive"
+    },
+    {
+      "name": "Metis (S3)",
+      "speed": 0.246,
+      "fuel": 0.026,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S3 civilian drive"
+    },
+    {
+      "name": "Wanderer (S3)",
+      "speed": 0.246,
+      "fuel": 0.026,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S3 civilian drive"
+    },
+    {
+      "name": "Vesta (S3)",
+      "speed": 0.266,
+      "fuel": 0.031,
+      "spool": 7,
+      "size": 3,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S3 industrial drive"
+    },
+    {
+      "name": "Pontes (S3)",
+      "speed": 0.282,
+      "fuel": 0.026,
+      "spool": 7,
+      "size": 3,
+      "type": "military",
+      "manufacturer": "Wei-Tek",
+      "desc": "Best S3 balance ★ popular for large haulers"
+    },
+    {
+      "name": "Impulse (S3)",
+      "speed": 0.295,
+      "fuel": 0.021,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "ArcCorp",
+      "desc": "ArcCorp S3 civilian drive"
+    },
+    {
+      "name": "Ranger (S3)",
+      "speed": 0.295,
+      "fuel": 0.021,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "Tarsus",
+      "desc": "Tarsus S3 civilian drive"
+    },
+    {
+      "name": "Tyche (S3)",
+      "speed": 0.295,
+      "fuel": 0.021,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S3 civilian drive"
+    },
+    {
+      "name": "Kama (S3)",
+      "speed": 0.319,
+      "fuel": 0.026,
+      "spool": 7,
+      "size": 3,
+      "type": "industrial",
+      "manufacturer": "Juno Starwerk",
+      "desc": "Juno Starwerk S3 industrial drive"
+    },
+    {
+      "name": "Balandin (S3)",
+      "speed": 0.339,
+      "fuel": 0.021,
+      "spool": 7,
+      "size": 3,
+      "type": "military",
+      "manufacturer": "Wei-Tek",
+      "desc": "High speed S3, decent efficiency"
+    },
+    {
+      "name": "Erebos (S3)",
+      "speed": 0.344,
+      "fuel": 0.018,
+      "spool": 7,
+      "size": 3,
+      "type": "civilian",
+      "manufacturer": "Roberts Space Industries",
+      "desc": "Roberts Space Industries S3 civilian drive"
     },
     {
       "name": "Agni (S3)",
       "speed": 0.383,
-      "fuel": 0.65,
+      "fuel": 0.021,
+      "spool": 7,
       "size": 3,
       "type": "industrial",
+      "manufacturer": "Juno Starwerk",
       "desc": "Best range S3 — interstellar routes"
     },
     {
-      "name": "Pontes (S3)",
-      "speed": 0.245,
-      "fuel": 1.4,
-      "size": 3,
-      "type": "civilian",
-      "desc": "Best S3 balance ★ popular for large haulers"
-    },
-    {
-      "name": "Siren (S3)",
-      "speed": 0.23,
-      "fuel": 1.35,
-      "size": 3,
-      "type": "stealth",
-      "desc": "Fast stealth S3"
-    },
-    {
-      "name": "Balandin (S3)",
-      "speed": 0.25,
-      "fuel": 1.55,
-      "size": 3,
-      "type": "industrial",
-      "desc": "High speed S3, decent efficiency"
-    },
-    {
       "name": "TS-2 (S3)",
-      "speed": 0.27,
-      "fuel": 1.9,
+      "speed": 0.395,
+      "fuel": 0.018,
+      "spool": 7,
       "size": 3,
       "type": "military",
+      "manufacturer": "Wei-Tek",
       "desc": "Fastest S3 ★ Covalex Master reward"
+    },
+    {
+      "name": "Mauler Quantum Drive (S4)",
+      "speed": 0.5,
+      "fuel": 0.12,
+      "spool": 9,
+      "size": 4,
+      "type": "civilian",
+      "manufacturer": "Unknown",
+      "desc": "Unknown S4  drive"
+    },
+    {
+      "name": "Allegro (S4)",
+      "speed": 0.512,
+      "fuel": 0.047,
+      "spool": 9,
+      "size": 4,
+      "type": "civilian",
+      "manufacturer": "Unknown",
+      "desc": "Unknown S4 civilian drive"
     }
   ]
 }
