@@ -53,10 +53,15 @@ async function main() {
     .filter(v => (v.cargo_capacity || 0) >= MIN_SCU_INTEREST)
     .map(v => {
       const prev = existingByName[v.name];
+      // Campo real confirmado contra la API en vivo: v.quantum.quantum_fuel_capacity
+      // (en SCU — misma unidad que fuel_consumption_scu_per_gm de los motores,
+      // así que ambos combinan directo sin factores de conversión inventados)
+      const apiQFuel = v.quantum?.quantum_fuel_capacity;
+      const qFuel = (typeof apiQFuel === 'number' && apiQFuel > 0) ? apiQFuel : (prev?.qFuel || 3);
       return {
         name: v.name,
         scu: Math.round(v.cargo_capacity),
-        qFuel: prev?.qFuel || 3000, // preservar si ya lo teníamos curado, si no, placeholder razonable
+        qFuel: Math.round(qFuel * 100) / 100,
         size: prev?.size || sizeFromLength(v.length),
         manufacturer: v.manufacturer?.name || prev?.manufacturer || '',
         ...(prev?.note ? { note: prev.note } : {})
@@ -64,13 +69,13 @@ async function main() {
     })
     .sort((a, b) => a.scu - b.scu);
 
-  ships.push({ name: 'Personalizado', scu: 0, qFuel: 5000, size: 2, manufacturer: '' });
+  ships.push({ name: 'Personalizado', scu: 0, qFuel: 5, size: 2, manufacturer: '' });
 
   const output = {
     _meta: {
       version: '4.8.2',
-      source: 'api.star-citizen.wiki/api/vehicles (auto-updated weekly via GitHub Action)',
-      note: 'SCU from live API. qFuel/size preserved from manual curation when the ship already existed; new ships get placeholder qFuel=3000 flagged for review.',
+      source: 'api.star-citizen.wiki/api/vehicles — campo real quantum.quantum_fuel_capacity (SCU), confirmado en vivo',
+      note: 'SCU y qFuel desde la API en vivo. qFuel en las mismas unidades (SCU) que fuel_consumption_scu_per_gm de drives.json — combinan directo sin factor de escala.',
       generated: new Date().toISOString(),
       total: ships.length
     },
@@ -80,11 +85,10 @@ async function main() {
   fs.writeFileSync(OUT_PATH, JSON.stringify(output, null, 2), 'utf-8');
   console.log(`[update-ships] ✓ ${ships.length} naves escritas en ${OUT_PATH}`);
 
-  // Avisar de naves nuevas sin qFuel curado (para revisión manual)
   const newOnes = ships.filter(s => !existingByName[s.name] && s.name !== 'Personalizado');
   if (newOnes.length) {
-    console.log(`[update-ships] ⚠ ${newOnes.length} naves nuevas con qFuel placeholder, revisar manualmente:`);
-    newOnes.forEach(s => console.log(`    - ${s.name} (${s.scu} SCU)`));
+    console.log(`[update-ships] ℹ ${newOnes.length} naves nuevas agregadas (SCU y qFuel reales de la API):`);
+    newOnes.forEach(s => console.log(`    - ${s.name} (${s.scu} SCU, ${s.qFuel} qFuel)`));
   }
 }
 
