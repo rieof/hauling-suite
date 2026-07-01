@@ -1,0 +1,47 @@
+name: Update game data
+
+# Corre automático cada lunes 06:00 UTC, y también se puede lanzar a mano
+# desde la pestaña "Actions" del repo con el botón "Run workflow".
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update locations.json (real coordinates from scunpacked-data)
+        run: node scripts/update-locations.js
+
+      - name: Update ships.json (SCU + real qFuel from star-citizen.wiki API)
+        run: node scripts/update-ships.js
+
+      - name: Update drives.json (real speed/fuel from star-citizen.wiki API)
+        run: node scripts/update-drives.js
+
+      - name: Update materials.json (real commodity list from star-citizen.wiki API)
+        run: node scripts/update-materials.js
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/locations.json data/ships.json data/drives.json data/materials.json
+          if git diff --cached --quiet; then
+            echo "No changes — data already up to date."
+          else
+            git commit -m "chore: auto-update game data ($(date -u +%Y-%m-%d))"
+            git push
+          fi
