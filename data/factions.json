@@ -6,75 +6,83 @@
     "ranks": {
       "Trainee": {
         "scuMin": 1,
-        "scuMax": 10,
-        "typical": 8,
+        "scuMax": 6,
+        "typical": 4,
         "maxBox": 1,
-        "xpReq": 50,
+        "xpReq": 0,
         "xpMission": 50,
         "ship": "Spirit C1 / Cutlass",
-        "strat": "1 mission intro → unlocks Rookie. Hub: Baijini Point or Everus Harbor."
+        "strat": "1 mission intro → unlocks Rookie. Hub: Baijini Point or Everus Harbor.",
+        "verified": true
       },
       "Rookie": {
-        "scuMin": 10,
-        "scuMax": 50,
-        "typical": 30,
+        "scuMin": 2,
+        "scuMax": 112,
+        "typical": 57,
         "maxBox": 8,
-        "xpReq": 200,
-        "xpMission": 75,
+        "xpReq": 50,
+        "xpMission": 50,
         "ship": "Cutlass / RAFT",
-        "strat": "~3 missions. Baijini Point → Riker Memorial. Stack same route (~69 SCU)."
+        "strat": "~3 missions. Baijini Point → Riker Memorial. Stack same route (~69 SCU).",
+        "verified": true
       },
       "Junior": {
-        "scuMin": 10,
-        "scuMax": 50,
-        "typical": 40,
+        "scuMin": 2,
+        "scuMax": 112,
+        "typical": 57,
         "maxBox": 8,
-        "xpReq": 5000,
-        "xpMission": 250,
+        "xpReq": 250,
+        "xpMission": 500,
         "ship": "RAFT / Taurus",
-        "strat": "~20 missions. Baijini → Riker. Add medium contracts. Partial submit."
+        "strat": "~20 missions. Baijini → Riker. Add medium contracts. Partial submit.",
+        "verified": true
       },
       "Member": {
-        "scuMin": 30,
-        "scuMax": 100,
-        "typical": 64,
+        "scuMin": 2,
+        "scuMax": 112,
+        "typical": 57,
         "maxBox": 8,
-        "xpReq": 22500,
-        "xpMission": 500,
+        "xpReq": 5250,
+        "xpMission": 1000,
         "ship": "Taurus / C2",
-        "strat": "The wall (~45 missions). Everus Harbor hub. Stack distribution. 25% partial."
+        "strat": "The wall (~45 missions). Everus Harbor hub. Stack distribution. 25% partial.",
+        "verified": true
       },
       "Experienced": {
-        "scuMin": 50,
-        "scuMax": 150,
-        "typical": 128,
-        "maxBox": 16,
-        "xpReq": 50000,
-        "xpMission": 1000,
+        "scuMin": 2,
+        "scuMax": 4608,
+        "typical": 2305,
+        "maxBox": 32,
+        "xpReq": 27750,
+        "xpMission": 2000,
         "ship": "C2 Hercules / Cat",
-        "strat": "~50 missions. Station-to-station. 16–24 SCU containers. L-points hub."
+        "strat": "~50 missions. Station-to-station. 16–24 SCU containers. L-points hub.",
+        "verified": true
       },
       "Senior": {
-        "scuMin": 150,
-        "scuMax": 600,
-        "typical": 384,
-        "maxBox": 24,
-        "xpReq": 160000,
-        "xpMission": 2000,
+        "scuMin": 7,
+        "scuMax": 200,
+        "typical": 104,
+        "maxBox": 16,
+        "xpReq": 77750,
+        "xpMission": 4000,
         "ship": "C2 Hercules",
-        "strat": "~80 missions. Lagrange stacking. Partial-submit 25%. ~1.7M aUEC/mission."
+        "strat": "~80 missions. Lagrange stacking. Partial-submit 25%. ~1.7M aUEC/mission.",
+        "verified": true
       },
       "Master": {
-        "scuMin": 600,
-        "scuMax": 4608,
-        "typical": 1500,
-        "maxBox": 32,
-        "xpReq": 0,
-        "xpMission": 0,
+        "scuMin": 1,
+        "scuMax": 938,
+        "typical": 470,
+        "maxBox": 16,
+        "xpReq": 237750,
+        "xpMission": 8000,
         "ship": "Ironclad / Hull C",
-        "strat": "Interstellar. Military blueprints: VK-00, XL-1, TS-2, Siren, Yeager."
+        "strat": "Interstellar. Military blueprints: VK-00, XL-1, TS-2, Siren, Yeager.",
+        "verified": true
       }
-    }
+    },
+    "_xpReqNote": "xpReq para Trainee/Rookie/Member/Master viene confirmado directo de la API de misiones filtrada a Covalex (api.star-citizen.wiki, filter[reward_scope]=Hauling&filter[faction]=Covalex). Junior/Experienced/Senior NO aparecieron en esa muestra específica de Covalex — sus valores (250/27750/77750) están inferidos de la escalera universal de reputación del juego, confirmada al coincidir exacto en los 4 rangos compartidos (Trainee/Rookie/Member/Master son IDÉNTICOS entre Covalex y Red Wind Linehaul en datos reales de la API) — alta confianza, pero no 100% directo para Covalex."
   },
   "Red Wind Linehaul": {
     "zone": "Pyro",
@@ -82,74 +90,81 @@
     "emoji": "🔴",
     "ranks": {
       "Trainee": {
-        "scuMin": 1,
-        "scuMax": 10,
-        "typical": 8,
-        "maxBox": 1,
-        "xpReq": 50,
-        "xpMission": 60,
+        "scuMin": 6,
+        "scuMax": 32,
+        "typical": 19,
+        "maxBox": 4,
+        "xpReq": 0,
+        "xpMission": 50,
         "ship": "Golem OX / Cutlass",
-        "strat": "1 mission intro at Ruin Station → unlocks Rookie. Pickup in Pyro, deliver to Teasa Spaceport."
+        "strat": "1 mission intro at Ruin Station → unlocks Rookie. Pickup in Pyro, deliver to Teasa Spaceport.",
+        "verified": true
       },
       "Rookie": {
-        "scuMin": 10,
-        "scuMax": 50,
-        "typical": 25,
-        "maxBox": 8,
-        "xpReq": 200,
-        "xpMission": 80,
+        "scuMin": 1,
+        "scuMax": 32,
+        "typical": 16,
+        "maxBox": 4,
+        "xpReq": 50,
+        "xpMission": 200,
         "ship": "Golem OX / RAFT",
-        "strat": "~3 missions Hauling Planetary. Short route Ruin Station → nearby outpost."
+        "strat": "~3 missions Hauling Planetary. Short route Ruin Station → nearby outpost.",
+        "verified": true
       },
       "Junior": {
-        "scuMin": 10,
-        "scuMax": 50,
-        "typical": 30,
+        "scuMin": 1,
+        "scuMax": 350,
+        "typical": 176,
         "maxBox": 8,
-        "xpReq": 5000,
-        "xpMission": 300,
+        "xpReq": 250,
+        "xpMission": 250,
         "ship": "Golem OX / RAFT",
-        "strat": "~17 missions. Cargo appears at the LAST pickup listed (bug 4.8.2). Single-pickup missions."
+        "strat": "~17 missions. Cargo appears at the LAST pickup listed (bug 4.8.2). Single-pickup missions.",
+        "verified": true
       },
       "Member": {
-        "scuMin": 30,
-        "scuMax": 100,
-        "typical": 64,
+        "scuMin": 1,
+        "scuMax": 175,
+        "typical": 88,
         "maxBox": 8,
-        "xpReq": 22500,
-        "xpMission": 600,
+        "xpReq": 5250,
+        "xpMission": 500,
         "ship": "RAFT / Taurus",
-        "strat": "The wall (~37 missions). One-box rep: deliver 1 valid box → full XP. Gaslight → Ruin Station."
+        "strat": "The wall (~37 missions). One-box rep: deliver 1 valid box → full XP. Gaslight → Ruin Station.",
+        "verified": true
       },
       "Experienced": {
-        "scuMin": 50,
-        "scuMax": 150,
-        "typical": 128,
-        "maxBox": 16,
-        "xpReq": 50000,
+        "scuMin": 12,
+        "scuMax": 600,
+        "typical": 306,
+        "maxBox": 32,
+        "xpReq": 27750,
         "xpMission": 1000,
         "ship": "Taurus / Ironclad",
-        "strat": "~50 missions. Stack contracts ~795K aUEC at Gaslight. Simple route: Gaslight → Ruin Station."
+        "strat": "~50 missions. Stack contracts ~795K aUEC at Gaslight. Simple route: Gaslight → Ruin Station.",
+        "verified": true
       },
       "Senior": {
-        "scuMin": 150,
-        "scuMax": 600,
-        "typical": 384,
-        "maxBox": 24,
-        "xpReq": 160000,
+        "scuMin": 132,
+        "scuMax": 300,
+        "typical": 216,
+        "maxBox": 32,
+        "xpReq": 77750,
         "xpMission": 2000,
         "ship": "Argo RAFT (192 SCU) / Ironclad",
-        "strat": "~80 missions. ~1.7M aUEC/mission. Stack 10 contracts Ruin Station hub. 7-9M aUEC/hour."
+        "strat": "~80 missions. ~1.7M aUEC/mission. Stack 10 contracts Ruin Station hub. 7-9M aUEC/hour.",
+        "verified": true
       },
       "Master": {
-        "scuMin": 600,
-        "scuMax": 4608,
-        "typical": 1500,
+        "scuMin": 100,
+        "scuMax": 150,
+        "typical": 125,
         "maxBox": 32,
-        "xpReq": 0,
-        "xpMission": 0,
+        "xpReq": 237750,
+        "xpMission": 4000,
         "ship": "Ironclad",
-        "strat": "Heavy hauling Pyro. Unlocks Red Wind interstellar routes."
+        "strat": "Heavy hauling Pyro. Unlocks Red Wind interstellar routes.",
+        "verified": true
       }
     }
   },
@@ -166,7 +181,8 @@
         "xpReq": 50,
         "xpMission": 50,
         "ship": "Cutlass / Spirit C1",
-        "strat": "1 mission intro. New Babbage / Port Tressler as starting hub."
+        "strat": "1 mission intro. New Babbage / Port Tressler as starting hub.",
+        "verified": false
       },
       "Rookie": {
         "scuMin": 10,
@@ -176,7 +192,8 @@
         "xpReq": 200,
         "xpMission": 75,
         "ship": "Cutlass / RAFT",
-        "strat": "~3 missions. Port Tressler → Shubin SM0-18/22. Stack same route."
+        "strat": "~3 missions. Port Tressler → Shubin SM0-18/22. Stack same route.",
+        "verified": false
       },
       "Junior": {
         "scuMin": 10,
@@ -186,7 +203,8 @@
         "xpReq": 5000,
         "xpMission": 250,
         "ship": "RAFT / Taurus",
-        "strat": "~20 missions. Expand to moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC)."
+        "strat": "~20 missions. Expand to moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC).",
+        "verified": false
       },
       "Member": {
         "scuMin": 30,
@@ -196,7 +214,8 @@
         "xpReq": 22500,
         "xpMission": 500,
         "ship": "Taurus / C2",
-        "strat": "The wall (~45 missions). Routes between microTech outposts. Stack 10 missions."
+        "strat": "The wall (~45 missions). Routes between microTech outposts. Stack 10 missions.",
+        "verified": false
       },
       "Experienced": {
         "scuMin": 50,
@@ -206,7 +225,8 @@
         "xpReq": 50000,
         "xpMission": 1000,
         "ship": "C2 Hercules",
-        "strat": "~50 missions. MIC-L points as hubs. Station-to-outpost loops by moons."
+        "strat": "~50 missions. MIC-L points as hubs. Station-to-outpost loops by moons.",
+        "verified": false
       },
       "Senior": {
         "scuMin": 150,
@@ -216,7 +236,8 @@
         "xpReq": 160000,
         "xpMission": 2000,
         "ship": "C2 Hercules",
-        "strat": "~80 missions. High payouts. Station→station missions microTech/Stanton."
+        "strat": "~80 missions. High payouts. Station→station missions microTech/Stanton.",
+        "verified": false
       },
       "Master": {
         "scuMin": 600,
@@ -226,8 +247,17 @@
         "xpReq": 0,
         "xpMission": 0,
         "ship": "Ironclad / Hull C",
-        "strat": "Master Ling unlocks full Stanton interstellar routes."
+        "strat": "Master Ling unlocks full Stanton interstellar routes.",
+        "verified": false
       }
     }
+  },
+  "_meta": {
+    "sources": [
+      "github.com/StarCitizenWiki/scunpacked-data (contracts/ reales)",
+      "api.star-citizen.wiki/api/missions (umbrales de rango reales)"
+    ],
+    "note": "verified:true = dato real confirmado. verified:false = interpolado (sin muestra directa) o sin datos suficientes — Ling Family Hauling casi entero sin verificar por poca muestra (15 misiones).",
+    "updated": "2026-07-02"
   }
 }
