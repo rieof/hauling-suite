@@ -908,6 +908,7 @@ html.force-light{
     <button id="btn-session-stop" class="add-missionssion-row-btn" style="display:none;background:var(--c-red);color:#fff;border-color:var(--c-red)"><i class="ti ti-player-stop"></i> End session</button>
     <button id="btn-save-route" class="add-missionssion-row-btn" style="color:var(--c-blue);border-color:var(--c-blue)"><i class="ti ti-bookmark"></i> Save route</button>
   </div>
+  <div id="picker-rec-wrap" style="display:none"></div>
   <div id="smart-combos-container"></div>
   <div class="missions-list" id="missions-list"></div>
   <div class="add-missionssion-row" id="add-missionssion-bottom-row" style="display:none;margin-top:6px">
@@ -1339,6 +1340,7 @@ const DATA={
     ]},
     "Stanton":{locs:[
     {label:"ARC-L1 Wide Forest Station",x:16.7292,y:-19.942,z:0.0022,type:"lagrange",pad:'int'},
+    {label:"Nyx Gateway",x:-62.2843,y:23.4676,z:20.1984,type:"station",pad:'efe'},
     {label:"ARC-L2 Lively Pathway Station",x:20.451,y:-24.3681,z:-0.0003,type:"lagrange",pad:'int'},
     {label:"ARC-L3 Modern Express Station",x:-25.0455,y:14.4633,z:-0.0019,type:"lagrange",pad:'int'},
     {label:"ARC-L4 Faint Glen Station",x:28.4761,y:5.0189,z:0.001,type:"lagrange",pad:'int'},
@@ -1502,12 +1504,10 @@ const DATA={
     {label:"Gaslight",x:46.4944,y:-8.1909,z:0.0177,type:"station",pad:'efe'},
     {label:"Megumi Refueling",x:-59.1456,y:34.1455,z:0.0127,type:"station",pad:'efe'},
     {label:"Nyx Gateway",x:32.994,y:-38.1517,z:0.0,type:"station",pad:'efe'},
-    {label:"Stanton Gateway",x:-13.4999,y:-23.3827,z:-0.0,type:"station",pad:'efe'},
+    {label:"Stanton Gateway",x:-37.6092,y:37.4357,z:0.0,type:"station",pad:'efe'},
     {label:"Patch City",x:11.4453,y:13.6223,z:0.0028,type:"station",pad:'efe'},
     {label:"Rat's Nest",x:3.7326,y:-42.7669,z:0.0185,type:"station",pad:'efe'},
-    {label:"Rod's Fuel 'N Supplies",x:14.6643,y:40.3386,z:-0.0095,type:"station",pad:'efe'},
-    {label:"Stanton Gateway",x:-37.6092,y:37.4357,z:0.0,type:"station",pad:'efe'},
-    {label:"Nyx Gateway",x:-62.2843,y:23.4676,z:20.1984,type:"station",pad:'efe'},
+    {label:"Rod's Fuel 'N Supplies",x:14.6643,y:40.3386,z:-0.0095,type:"station",pad:'int'},
     {label:"Starlight Service Station",x:-7.7566,y:-14.0089,z:0.0014,type:"station",pad:'efe'},
     ]},
     "Pyro I":{locs:[
@@ -1562,6 +1562,7 @@ const DATA={
     {label:"People's Service Station Lambda",x:43.3278,y:20.6568,z:0.0,type:"station",pad:'int'},
     {label:"People's Service Station Theta",x:40.4727,y:-25.8063,z:0.0,type:"station",pad:'int'},
     {label:"Pyro Gateway",x:-12.0,y:20.7846,z:-0.0,type:"station",pad:'efe'},
+    {label:"Stanton Gateway",x:-13.4999,y:-23.3827,z:-0.0,type:"station",pad:'efe'},
         ]},
   },
 };
@@ -1739,44 +1740,39 @@ async function loadFactionData(){
 const FACTION_DATA_FALLBACK={
   "Covalex Shipping":{
     zone:"Stanton",color:"#378ADD",emoji:"📦",
-    // XP reales confirmados por API de missions (umbrales acumulados):
-    // Rookie=50, Junior=250, Member=5250, Experienced=27750, Senior=77750, Master=237750
     ranks:{
-      "Trainee":    {scuMin:1,  scuMax:10,  typical:8,   maxBox:1,  xpReq:50,     xpMission:50,    ship:"Spirit C1 / Cutlass",    strat:"1 mission intro → desbloquea Rookie. Hub: Baijini Point o Everus Harbor."},
-      "Rookie":     {scuMin:10, scuMax:50,  typical:30,  maxBox:8,  xpReq:200,    xpMission:75,    ship:"Cutlass / RAFT",          strat:"~3 missions. Baijini Point → Riker Memorial. Apila same ruta (~69 SCU)."},
-      "Junior":     {scuMin:10, scuMax:50,  typical:40,  maxBox:8,  xpReq:5000,   xpMission:250,   ship:"RAFT / Taurus",           strat:"~20 missions. Baijini → Riker. Añade medium contracts. Partial submit."},
-      "Member":     {scuMin:30, scuMax:100, typical:64,  maxBox:8,  xpReq:22500,  xpMission:500,   ship:"Taurus / C2",             strat:"El muro (~45 missions). Everus Harbor hub. Stack distribución. 25% parcial."},
-      "Experienced":{scuMin:50, scuMax:150, typical:128, maxBox:16, xpReq:50000,  xpMission:1000,  ship:"C2 Hercules / Cat",       strat:"~50 missions. Station-to-station. Contenedores 16–24 SCU. L-points hub."},
-      "Senior":     {scuMin:150,scuMax:600, typical:384, maxBox:24, xpReq:160000, xpMission:2000,  ship:"C2 Hercules",             strat:"~80 missions. Lagrange stacking. Partial-submit 25%. ~1.7M aUEC/mission."},
-      "Master":     {scuMin:600,scuMax:4608,typical:1500,maxBox:32, xpReq:0,      xpMission:0,     ship:"Ironclad / Hull C",       strat:"Interstellar. Blueprints militares: VK-00, XL-1, TS-2, Siren, Yeager."},
-    }
+      "Trainee":{scuMin:1,scuMax:6,typical:4,maxBox:1,xpReq:0,xpMission:50,ship:"Spirit C1 / Cutlass",strat:"1 mission intro → unlocks Rookie. Hub: Baijini Point or Everus Harbor.",verified:true},
+      "Rookie":{scuMin:2,scuMax:112,typical:57,maxBox:8,xpReq:50,xpMission:50,ship:"Cutlass / RAFT",strat:"~3 missions. Baijini Point → Riker Memorial. Stack same route (~69 SCU).",verified:true},
+      "Junior":{scuMin:2,scuMax:112,typical:57,maxBox:8,xpReq:250,xpMission:500,ship:"RAFT / Taurus",strat:"~20 missions. Baijini → Riker. Add medium contracts. Partial submit.",verified:true},
+      "Member":{scuMin:2,scuMax:112,typical:57,maxBox:8,xpReq:5250,xpMission:1000,ship:"Taurus / C2",strat:"The wall (~45 missions). Everus Harbor hub. Stack distribution. 25% partial.",verified:true},
+      "Experienced":{scuMin:2,scuMax:4608,typical:2305,maxBox:32,xpReq:27750,xpMission:2000,ship:"C2 Hercules / Cat",strat:"~50 missions. Station-to-station. 16–24 SCU containers. L-points hub.",verified:true},
+      "Senior":{scuMin:7,scuMax:200,typical:104,maxBox:16,xpReq:77750,xpMission:4000,ship:"C2 Hercules",strat:"~80 missions. Lagrange stacking. Partial-submit 25%. ~1.7M aUEC/mission.",verified:true},
+      "Master":{scuMin:1,scuMax:938,typical:470,maxBox:16,xpReq:237750,xpMission:8000,ship:"Ironclad / Hull C",strat:"Interstellar. Military blueprints: VK-00, XL-1, TS-2, Siren, Yeager.",verified:true},
+    },
   },
   "Red Wind Linehaul":{
     zone:"Pyro",color:"#E84040",emoji:"🔴",
-    // XP reales de la API de missions (umbrales acumulados de la facción):
-    // Rookie=50, Junior=250, Member=5250, Experienced=27750, Senior=77750, Master=237750
     ranks:{
-      "Trainee":    {scuMin:1,  scuMax:10,  typical:8,   maxBox:1,  xpReq:50,     xpMission:60,    ship:"Golem OX / Cutlass",         strat:"1 mission intro en Ruin Station → desbloquea Rookie. Pickup en Pyro, entrega en Teasa Spaceport."},
-      "Rookie":     {scuMin:10, scuMax:50,  typical:25,  maxBox:8,  xpReq:200,    xpMission:80,    ship:"Golem OX / RAFT",             strat:"~3 missions Hauling Planetary. Ruta corta Ruin Station → outpost cercano. Apila sames rutas."},
-      "Junior":     {scuMin:10, scuMax:50,  typical:30,  maxBox:8,  xpReq:5000,   xpMission:300,   ship:"Golem OX / RAFT",             strat:"~17 missions. El cargo aparece en el ÚLTIMO pickup listado (bug 4.8.2). Misiones single-pickup."},
-      "Member":     {scuMin:30, scuMax:100, typical:64,  maxBox:8,  xpReq:22500,  xpMission:600,   ship:"RAFT / Taurus",               strat:"El muro (~37 missions). One-box rep: entrega 1 box válida → XP completo. Gaslight → Ruin Station."},
-      "Experienced":{scuMin:50, scuMax:150, typical:128, maxBox:16, xpReq:50000,  xpMission:1000,  ship:"Taurus / Ironclad",           strat:"~50 missions. Stack contratos ~795K aUEC en Gaslight. Ruta simple: Gaslight → Ruin Station."},
-      "Senior":     {scuMin:150,scuMax:600, typical:384, maxBox:24, xpReq:160000, xpMission:2000,  ship:"Argo RAFT (192 SCU) / Ironclad",strat:"~80 missions. ~1.7M aUEC/mission. Stack 10 contratos Ruin Station hub. 7-9M aUEC/hora."},
-      "Master":     {scuMin:600,scuMax:4608,typical:1500,maxBox:32, xpReq:0,      xpMission:0,     ship:"Ironclad",                    strat:"Hauling pesado Pyro. Desbloquea rutas interstellares Red Wind."},
-    }
+      "Trainee":{scuMin:6,scuMax:32,typical:19,maxBox:4,xpReq:0,xpMission:50,ship:"Golem OX / Cutlass",strat:"1 mission intro at Ruin Station → unlocks Rookie. Pickup in Pyro, deliver to Teasa Spaceport.",verified:true},
+      "Rookie":{scuMin:1,scuMax:32,typical:16,maxBox:4,xpReq:50,xpMission:200,ship:"Golem OX / RAFT",strat:"~3 missions Hauling Planetary. Short route Ruin Station → nearby outpost.",verified:true},
+      "Junior":{scuMin:1,scuMax:350,typical:176,maxBox:8,xpReq:250,xpMission:250,ship:"Golem OX / RAFT",strat:"~17 missions. Cargo appears at the LAST pickup listed (bug 4.8.2). Single-pickup missions.",verified:true},
+      "Member":{scuMin:1,scuMax:175,typical:88,maxBox:8,xpReq:5250,xpMission:500,ship:"RAFT / Taurus",strat:"The wall (~37 missions). One-box rep: deliver 1 valid box → full XP. Gaslight → Ruin Station.",verified:true},
+      "Experienced":{scuMin:12,scuMax:600,typical:306,maxBox:32,xpReq:27750,xpMission:1000,ship:"Taurus / Ironclad",strat:"~50 missions. Stack contracts ~795K aUEC at Gaslight. Simple route: Gaslight → Ruin Station.",verified:true},
+      "Senior":{scuMin:132,scuMax:300,typical:216,maxBox:32,xpReq:77750,xpMission:2000,ship:"Argo RAFT (192 SCU) / Ironclad",strat:"~80 missions. ~1.7M aUEC/mission. Stack 10 contracts Ruin Station hub. 7-9M aUEC/hour.",verified:true},
+      "Master":{scuMin:100,scuMax:150,typical:125,maxBox:32,xpReq:237750,xpMission:4000,ship:"Ironclad",strat:"Heavy hauling Pyro. Unlocks Red Wind interstellar routes.",verified:true},
+    },
   },
   "Ling Family Hauling":{
     zone:"microTech / Stanton",color:"#4DB56A",emoji:"🟢",
-    // XP reales confirmados por la API (missionsmos umbrales que Covalex y Red Wind)
     ranks:{
-      "Trainee":    {scuMin:1,  scuMax:10,  typical:8,   maxBox:1,  xpReq:50,     xpMission:50,    ship:"Cutlass / Spirit C1",    strat:"1 mission intro. New Babbage / Port Tressler como hub de start."},
-      "Rookie":     {scuMin:10, scuMax:50,  typical:30,  maxBox:8,  xpReq:200,    xpMission:75,    ship:"Cutlass / RAFT",          strat:"~3 missions. Port Tressler → Shubin SM0-18/22. Apila same ruta."},
-      "Junior":     {scuMin:10, scuMax:50,  typical:40,  maxBox:8,  xpReq:5000,   xpMission:250,   ship:"RAFT / Taurus",           strat:"~20 missions. Amplía a moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC)."},
-      "Member":     {scuMin:30, scuMax:100, typical:64,  maxBox:8,  xpReq:22500,  xpMission:500,   ship:"Taurus / C2",             strat:"El muro (~45 missions). Rutas entre outposts microTech. Apila 10 missions."},
-      "Experienced":{scuMin:50, scuMax:150, typical:128, maxBox:16, xpReq:50000,  xpMission:1000,  ship:"C2 Hercules",             strat:"~50 missions. MIC-L points como hubs. Station-to-outpost loops por moons."},
-      "Senior":     {scuMin:150,scuMax:600, typical:384, maxBox:24, xpReq:160000, xpMission:2000,  ship:"C2 Hercules",             strat:"~80 missions. Payouts altos. Misiones station→station microTech/Stanton."},
-      "Master":     {scuMin:600,scuMax:4608,typical:1500,maxBox:32, xpReq:0,      xpMission:0,     ship:"Ironclad / Hull C",       strat:"Master Ling desbloquea rutas interstellares Stanton completo."},
-    }
+      "Trainee":{scuMin:1,scuMax:10,typical:8,maxBox:1,xpReq:50,xpMission:50,ship:"Cutlass / Spirit C1",strat:"1 mission intro. New Babbage / Port Tressler as starting hub.",verified:false},
+      "Rookie":{scuMin:10,scuMax:50,typical:30,maxBox:8,xpReq:200,xpMission:75,ship:"Cutlass / RAFT",strat:"~3 missions. Port Tressler → Shubin SM0-18/22. Stack same route.",verified:false},
+      "Junior":{scuMin:10,scuMax:50,typical:40,maxBox:8,xpReq:5000,xpMission:250,ship:"RAFT / Taurus",strat:"~20 missions. Expand to moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC).",verified:false},
+      "Member":{scuMin:30,scuMax:100,typical:64,maxBox:8,xpReq:22500,xpMission:500,ship:"Taurus / C2",strat:"The wall (~45 missions). Routes between microTech outposts. Stack 10 missions.",verified:false},
+      "Experienced":{scuMin:50,scuMax:150,typical:128,maxBox:16,xpReq:50000,xpMission:1000,ship:"C2 Hercules",strat:"~50 missions. MIC-L points as hubs. Station-to-outpost loops by moons.",verified:false},
+      "Senior":{scuMin:150,scuMax:600,typical:384,maxBox:24,xpReq:160000,xpMission:2000,ship:"C2 Hercules",strat:"~80 missions. High payouts. Station→station missions microTech/Stanton.",verified:false},
+      "Master":{scuMin:600,scuMax:4608,typical:1500,maxBox:32,xpReq:0,xpMission:0,ship:"Ironclad / Hull C",strat:"Master Ling unlocks full Stanton interstellar routes.",verified:false},
+    },
   },
 };
 let FACTION_DATA=FACTION_DATA_FALLBACK;
@@ -1839,7 +1835,8 @@ function selectHotspot(id,label){
 }
 rebuildRankData("Covalex Shipping");
 
-const MAX_MISSIONS=10;
+const GAME_MISSION_LIMIT=10; // límite real del juego (mobiGlas) — no se puede superar EN el juego
+const MAX_MISSIONS=25; // límite blando de la app — permite cargar más candidatas para comparar/elegir
 const FACTIONS=["Covalex Shipping","Red Wind Linehaul","Ling Family Hauling"];
 
 let missionSeq=0,pickSeq=0,delivSeq=0,missions=[],boxSize=16,boxMode='optimal',useDest=false,deliveryMode='partial',partialPct=25,currentRank="Senior",oneBoxMode=false,oneBoxSize=1;
@@ -1885,7 +1882,11 @@ const workerCode=`
     let padTime=150;
     if(b.pad==='int')padTime=240;
     else if(b.pad==='efe')padTime=90;
-    if(b.type==='outpost')padTime+=120;
+    if(b.type==='outpost'||b.type==='habitat')padTime+=120;
+    // Penalización asimétrica: despegar y escapar la atmósfera de un
+    // outpost/habitat toma más tiempo que solo aterrizar — el costo de
+    // A→B ya no es igual al de B→A
+    if(a.type==='outpost'||a.type==='habitat')padTime+=180;
     return qtTime+padTime;
   }
   function distCost(a,b){
@@ -2163,7 +2164,8 @@ function _orOpt2(r,dest,cap){
 function _timeCostSync(a,b,qSpeed){
   const d=dist3(a,b);const qtTime=d/qSpeed;
   let padTime=150;if(b.pad==='int')padTime=240;else if(b.pad==='efe')padTime=90;
-  if(b.type==='outpost')padTime+=120;
+  if(b.type==='outpost'||b.type==='habitat')padTime+=120;
+  if(a.type==='outpost'||a.type==='habitat')padTime+=180; // asimétrico: despegue > aterrizaje
   return qtTime+padTime;
 }
 function _distCostSync(a,b){return dist3(a,b)+(b.pad==='int'?0.05:0);}
@@ -2232,15 +2234,42 @@ function getBoxText(scu){if(boxMode==='single'){const r=boxesForSingle(scu,boxSi
 function missionssionTotal(m){return m.pickups.reduce((a,p)=>a+p.scu,0);}
 function bestCommodityPlan(m){
   const total=missionssionTotal(m);if(!total)return null;
-  const target=roundToBox(total*partialPct/100);
   const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,locId:p.locId});byMat[p.material].scu+=p.scu;});
-  const drops=m.deliveries.map(d=>locById(d.locId)).filter(Boolean);
+  const drops=m.deliveries.map(d=>({d,loc:locById(d.locId)})).filter(x=>!!x.loc);
+
+  // PRIORIDAD 1: si alguna entrega tiene SCU real conocido (escrito a
+  // mano o leído por OCR), usar EXACTAMENTE ese número — el juego no
+  // acepta más ni menos de lo que pide esa entrega específica. Antes
+  // esto se ignoraba y se inventaba un % arbitrario del total.
+  const explicitDrops=drops.filter(x=>x.d.scu!=null&&x.d.scu>0);
+  if(explicitDrops.length>0){
+    let best=null;
+    Object.entries(byMat).forEach(([mat,info])=>{
+      const pickLoc=locById(info.locId);
+      explicitDrops.forEach(({d,loc})=>{
+        // Solo considerar si el material coincide (o si la entrega no
+        // especificó material propio, hereda el del pickup)
+        if(d.material&&d.material!==mat)return;
+        const amt=Math.min(d.scu,info.scu); // no exceder lo disponible en el pickup
+        if(amt<=0)return;
+        const boxes=boxCount(amt);
+        const dd=dist3(pickLoc,loc);
+        const cand={mat,amt,boxes,nd:loc,ndDist:dd,avail:info.scu,pickLoc};
+        if(!best||dd<best.ndDist)best=cand; // priorizar la entrega real más cercana
+      });
+    });
+    if(best)return{target:best.amt,best};
+  }
+
+  // PRIORIDAD 2 (respaldo): sin SCU real conocido en ninguna entrega,
+  // usar el % de farming de siempre (comportamiento original)
+  const target=roundToBox(total*partialPct/100);
   let best=null;
   Object.entries(byMat).forEach(([mat,info])=>{
     const amt=roundToBox(Math.min(info.scu,target));
     const boxes=boxCount(amt);
     const pickLoc=locById(info.locId);
-    let nd=null,ndDist=Infinity;drops.forEach(dl=>{const dd=dist3(pickLoc,dl);if(dd<ndDist){ndDist=dd;nd=dl;}});
+    let nd=null,ndDist=Infinity;drops.forEach(({loc})=>{const dd=dist3(pickLoc,loc);if(dd<ndDist){ndDist=dd;nd=loc;}});
     const cand={mat,amt,boxes,nd,ndDist,avail:info.scu,pickLoc};
     if(!best||cand.boxes<best.boxes||(cand.boxes===best.boxes&&cand.ndDist<best.ndDist))best=cand;
   });
@@ -2317,6 +2346,21 @@ function accessBadgeEl(locId){
     padding:2px 7px;border-radius:99px;color:${acc.color};background:${acc.bg};
     white-space:nowrap;margin-top:3px;`;
   el.innerHTML=`<i class="ti ${acc.icon}" style="font-size:11px" aria-hidden="true"></i>${acc.label}`;
+  return el;
+}
+
+// Aviso cuando una ubicación se resolvió con coincidencia débil (no exacta)
+// desde el OCR/parser — evita que un error de lectura de Gemini pase
+// desapercibido. entry = pickup o delivery object (tiene matchTier/rawText)
+function confidenceWarningEl(entry){
+  if(!entry||!entry.matchTier||entry.matchTier<3)return null; // solo avisar en tier 3-4 (débil)
+  const el=document.createElement('div');
+  el.style.cssText=`display:flex;align-items:flex-start;gap:5px;font-size:10px;
+    color:#B8860B;background:color-mix(in srgb,#FAC775 15%,transparent);
+    border:0.5px solid color-mix(in srgb,#FAC775 40%,transparent);
+    border-radius:6px;padding:5px 8px;margin-top:4px;line-height:1.4;`;
+  el.innerHTML=`<i class="ti ti-alert-triangle" style="font-size:12px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+    <span>Low-confidence match${entry.rawText?` for "${entry.rawText}"`:''} — double-check this is right.</span>`;
   return el;
 }
 
@@ -2532,7 +2576,10 @@ function renderRankGuide(){
   RANK_ORDER.forEach((rk,i)=>{const r=CONTRACT_RANKS[rk];const cur=i===idx;const d=document.createElement('div');d.className='rg-card'+(cur?' cur':'');
     const xpLine=r.xpReq>0?`${r.xpReq.toLocaleString()} XP for siguiente`:'Rank final';
     const xpM=r.xpMission>0?`<span style="color:${fd.color};font-weight:600">≈${r.xpMission.toLocaleString()} XP/mission</span>`:'<span style="color:var(--c-text-3)">—</span>';
-    d.innerHTML=`<div class="rg-head"><span class="rg-name" style="${cur?'color:'+fd.color:''}">${rk}${cur?' ◂ you are here':''}</span><span class="rg-scu">${r.scuMin}–${r.scuMax} SCU · max box ${r.maxBox} SCU</span></div><div class="rg-ship" style="display:flex;gap:12px;align-items:center">${xpM} <span style="color:var(--c-text-3);font-size:10px">${xpLine}</span></div><div class="rg-ship">Nave: <b>${r.ship}</b></div><div class="rg-ship" style="color:var(--c-text-3);margin-top:3px">${r.strat}</div>`;
+    const verBadge=r.verified
+      ?'<span style="font-size:9px;padding:1px 6px;border-radius:99px;background:color-mix(in srgb,var(--c-green) 15%,transparent);color:var(--c-green)" title="Confirmado contra contratos reales del juego">✓ verified</span>'
+      :'<span style="font-size:9px;padding:1px 6px;border-radius:99px;background:color-mix(in srgb,var(--c-text-3) 15%,transparent);color:var(--c-text-3)" title="Sin muestra directa para este rango — interpolado de otra facción con datos reales">≈ estimated</span>';
+    d.innerHTML=`<div class="rg-head"><span class="rg-name" style="${cur?'color:'+fd.color:''}">${rk}${cur?' ◂ you are here':''}</span><span class="rg-scu">${r.scuMin}–${r.scuMax} SCU · max box ${r.maxBox} SCU ${verBadge}</span></div><div class="rg-ship" style="display:flex;gap:12px;align-items:center">${xpM} <span style="color:var(--c-text-3);font-size:10px">${xpLine}</span></div><div class="rg-ship">Nave: <b>${r.ship}</b></div><div class="rg-ship" style="color:var(--c-text-3);margin-top:3px">${r.strat}</div>`;
   el.appendChild(d);});
 }
 
@@ -3027,9 +3074,79 @@ function renderSmartCombos(){
   container.innerHTML=html;
 }
 
+// ── Recomendador de "cuáles tomar" cuando hay más de 10 candidatas ──
+// A diferencia de farmCombos() (que solo aplica en modo 25% XP), esto
+// funciona con CUALQUIER modo — agrupa por cercanía de pickup, sin
+// asumir un plan de commodity específico. Sirve para decidir cuáles
+// de tus candidatas conviene aceptar de verdad en el juego (límite 10).
+function missionClusterRecommendations(){
+  const cap=getCap();
+  const THRESH=3; // Gm — un poco más laxo que farmCombos, para agrupar "zona" no solo el mismo punto exacto
+  const items=missions.map((m,mi)=>{
+    const pickLoc=locById(m.pickups[0]?.locId);
+    if(!pickLoc)return null;
+    return{mnum:mi+1,mission:m,pickLoc,totalScu:missionssionTotal(m),sys:sysOf(pickLoc)};
+  }).filter(Boolean);
+
+  const clusters=[];
+  items.forEach(it=>{
+    let placed=false;
+    for(const c of clusters){
+      if(c.sys===it.sys&&dist3(c.pickRef,it.pickLoc)<=THRESH){
+        c.items.push(it);placed=true;break;
+      }
+    }
+    if(!placed)clusters.push({sys:it.sys,pickRef:it.pickLoc,items:[it]});
+  });
+
+  clusters.forEach(c=>{
+    c.totalScu=c.items.reduce((a,x)=>a+x.totalScu,0);
+    c.totalPay=c.items.reduce((a,x)=>a+(x.mission.pay||0),0);
+    c.fits=c.totalScu<=cap;
+    c.pickLabel=c.pickRef.label;
+  });
+  // Ordenar: primero los clusters con más misiones combinables, luego por pago total
+  clusters.sort((a,b)=>(b.items.length-a.items.length)||(b.totalPay-a.totalPay));
+  return clusters;
+}
+
+function renderPickerRecommendation(){
+  const wrap=$('picker-rec-wrap');
+  if(!wrap)return;
+  if(missions.length<=GAME_MISSION_LIMIT){wrap.style.display='none';wrap.innerHTML='';return;}
+
+  const clusters=missionClusterRecommendations();
+  wrap.style.display='block';
+
+  let html=`<div class="alert" style="background:color-mix(in srgb,#F5A623 12%,transparent);
+    border:0.5px solid color-mix(in srgb,#F5A623 30%,transparent);color:#F5A623;margin-bottom:8px">
+    <i class="ti ti-alert-triangle"></i> Tienes <b>${missions.length}</b> contratos cargados, pero el juego
+    solo permite <b>${GAME_MISSION_LIMIT} activos</b> a la vez. Los grupos de abajo muestran cuáles
+    conviene aceptar de verdad — priorizados por cuántos se combinan bien entre sí.
+  </div>`;
+
+  clusters.forEach((c,ci)=>{
+    const best=ci===0&&c.items.length>1;
+    const badges=c.items.map(x=>`<span class="mhead-num">${x.mnum}</span>`).join('');
+    const fitWarn=c.fits?'':`<div class="cgroup-detail" style="color:#FCA5A5"><i class="ti ti-alert-triangle" aria-hidden="true"></i> No cabe completo (${c.totalScu} SCU > ${getCap()} hold) — considera dejar alguna afuera.</div>`;
+    const title=c.items.length>1?`${best?'★ Mejor grupo':'Grupo'} · ${c.items.length} contratos cerca de ${c.pickLabel}`:`Contrato ${c.items[0].mnum} (aislado, cerca de ${c.pickLabel})`;
+    html+=`<div class="com-card${best?' best-combo':''}">
+      <div class="com-head"><div><span class="com-name">${title}</span>
+        <div class="cgroup-sub" style="margin-top:5px">${badges}</div></div>
+        <span class="com-scu">${c.totalPay?c.totalPay.toLocaleString()+' aUEC':''}</span></div>
+      <div class="cgroup-detail">${c.totalScu} SCU total · ${c.items.length} contrato${c.items.length!==1?'s':''} · ${c.sys}</div>
+      ${fitWarn}
+    </div>`;
+  });
+
+  wrap.innerHTML=html;
+}
+
 function renderMissions(){
   const el=$('missions-list');
+  const overGameLimit=missions.length>GAME_MISSION_LIMIT;
   $('mcount').textContent=`(${missions.length}/${MAX_MISSIONS})`;
+  $('mcount').style.color=overGameLimit?'#F5A623':'';
   $('add-missionssion').disabled=missions.length>=MAX_MISSIONS;
   const bottomRow=$('add-missionssion-bottom-row');
   const bottomBtn=$('add-missionssion-bottom');
@@ -3037,6 +3154,7 @@ function renderMissions(){
   if(bottomBtn)bottomBtn.disabled=missions.length>=MAX_MISSIONS;
   renderCapacityAlert();
   renderSmartCombos();
+  renderPickerRecommendation();
   if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderFarmCombos();return;}
   el.innerHTML='';
   missions.forEach((m,mi)=>{
@@ -3092,10 +3210,12 @@ function renderMissions(){
             <div class="cm-inputs"><select class="js-loc" style="flex:1"></select></div>
           </div>
           ${m.pickups.length>1?'<button class="cm-mini-btn js-rm-pick"><i class="ti ti-x"></i></button>':''}`;
-        const ls=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;renderMissions();});
+        const ls=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;p.matchTier=null;p.rawText=null;renderMissions();});
         pickRow.querySelector('.js-loc').replaceWith(ls);
         const pAccBadge=accessBadgeEl(p.locId);
         if(pAccBadge)ls.appendChild(pAccBadge);
+        const pConfWarn=confidenceWarningEl(p);
+        if(pConfWarn)pickRow.appendChild(pConfWarn);
         if(m.pickups.length>1)pickRow.querySelector('.js-rm-pick').addEventListener('click',()=>removePickup(m.id,p.id));
         card.appendChild(pickRow);
       });
@@ -3151,10 +3271,12 @@ function renderMissions(){
           dRow.style.padding='3px 4px';
         }
 
-        const ls=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
+        const ls=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;d.matchTier=null;d.rawText=null;renderMissions();});
         dRow.querySelector('.js-loc').replaceWith(ls);
         const dAccBadge=accessBadgeEl(d.locId);
         if(dAccBadge)ls.appendChild(dAccBadge);
+        const dConfWarn=confidenceWarningEl(d);
+        if(dConfWarn)dRow.appendChild(dConfWarn);
         if(m.deliveries.length>1)dRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
         card.appendChild(dRow);
       });
@@ -3259,11 +3381,13 @@ function renderMissions(){
         content.appendChild(matSearch);
 
         // Ubicación — búsqueda libre
-        const locSearch=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;renderMissions();});
+        const locSearch=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;p.matchTier=null;p.rawText=null;renderMissions();});
         locSearch.style.marginTop='3px';
         content.appendChild(locSearch);
         const pAccBadge2=accessBadgeEl(p.locId);
         if(pAccBadge2)content.appendChild(pAccBadge2);
+        const pConfWarn2=confidenceWarningEl(p);
+        if(pConfWarn2)content.appendChild(pConfWarn2);
 
         tlItem.appendChild(content);
         card.appendChild(tlItem);
@@ -3346,11 +3470,13 @@ function renderMissions(){
         dMatSearch.style.marginTop='3px';
         content.appendChild(dMatSearch);
 
-        const locSearch=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;renderMissions();});
+        const locSearch=createLocSearch(d.locId,(id)=>{d.locId=id||d.locId;d.matchTier=null;d.rawText=null;renderMissions();});
         locSearch.style.marginTop='3px';
         content.appendChild(locSearch);
         const dAccBadge2=accessBadgeEl(d.locId);
         if(dAccBadge2)content.appendChild(dAccBadge2);
+        const dConfWarn2=confidenceWarningEl(d);
+        if(dConfWarn2)content.appendChild(dConfWarn2);
         tlItem.appendChild(content);
         card.appendChild(tlItem);
       });
@@ -3586,7 +3712,19 @@ function refreshCandidates(){
 
 function loadProfile(seq){let load=0,maxLoad=0;const loads=[];seq.forEach(n=>{if(n.role==='pickup')load+=n.scu;else if(n.role==='dropoff')load-=n.scu;loads.push(load);if(load>maxLoad)maxLoad=load;});return{loads,maxLoad};}
 function legGm(a,b){return sysOf(a)===sysOf(b)?dist3(a,b):0;}
-function gatewayLoc(thisSys,fromSys){const id=findLoc(fromSys+' Gateway ('+thisSys+')');return id?locById(id):null;}
+function gatewayLoc(thisSys,fromSys){
+  // Al llegar a "thisSys" viniendo de "fromSys", el punto de entrada físico
+  // es la estación llamada "{fromSys} Gateway" que está UBICADA en thisSys
+  // (ej: llegando a Nyx desde Pyro, entras por "Pyro Gateway" que está en Nyx).
+  // Nuestros nombres NO llevan sufijo "(sistema)" — son solo "Pyro Gateway",
+  // así que hay que filtrar por sistema real, no por texto en el label.
+  const targetName=(fromSys+' Gateway').toLowerCase();
+  for(const z of Object.values(DATA[thisSys]||{})){
+    const f=z.locs.find(l=>l.label.toLowerCase()===targetName);
+    if(f)return {...f,_sys:thisSys};
+  }
+  return null;
+}
 
 async function optimizeMultiSystemAsync(o,dest,nodes,cap,qSpeed,opt){
   if(!nodes.length)return null;
@@ -3636,7 +3774,6 @@ async function calculate(){
   try{
   const res=await optimizeMultiSystemAsync(o,dest,nodes,cap,qSpeed,optMode);
   $('output').style.display='block';
-  const{loads,maxLoad}=loadProfile(res.seq);
   const totalScu=nodes.filter(n=>n.role==='dropoff').reduce((a,n)=>a+n.scu,0);
   const jumps=res.jumps||0;
 
@@ -3645,20 +3782,77 @@ async function calculate(){
   // la API: fuel_consumption_scu_per_gm). qFuelMax = SCU del tanque de la
   // nave (dato real: quantum.quantum_fuel_capacity). Misma unidad (SCU),
   // se comparan directo sin ningún factor de escala inventado.
-  let fuelWarnings=0;
-  res.seq.forEach((n,i)=>{
-    if(i<res.seq.length-1){
-      const d=dist3(res.seq[i],res.seq[i+1]);
-      const fuelNeeded=d*(drive.fuel||0.02);
-      if(fuelNeeded>qFuelMax)fuelWarnings++;
+  function legsNeedingFuel(seq){
+    const bad=[];
+    seq.forEach((n,i)=>{
+      if(i<seq.length-1){
+        const d=dist3(seq[i],seq[i+1]);
+        const fuelNeeded=d*(drive.fuel||0.02);
+        if(fuelNeeded>qFuelMax)bad.push(i);
+      }
+    });
+    return bad;
+  }
+
+  // Auto-recarga inteligente: si un tramo se queda sin combustible,
+  // busca la estación más cercana al punto de origen de ese tramo
+  // (mismo sistema) y la inserta como parada de recarga automática.
+  function autoInsertRefuels(seq){
+    let bad=legsNeedingFuel(seq);
+    if(!bad.length)return{seq,inserted:0};
+    let result=seq.slice();
+    let inserted=0;
+    let guard=0;
+    while(bad.length&&guard++<20){
+      const i=bad[0];
+      const a=result[i];
+      const usedIds=new Set(result.map(n=>n.id));
+      let best=null,bestD=Infinity;
+      for(const s of STATIONS){
+        if(usedIds.has(s.id))continue;
+        if(sysOf(s)!==sysOf(a))continue;
+        const d=dist3(a,s);
+        if(d<bestD){bestD=d;best=s;}
+      }
+      if(!best)break; // no hay ninguna estación disponible en ese sistema, no se puede resolver solo
+      result=[...result.slice(0,i+1),
+        {...best,role:'refuel',scu:0,material:null,boxDetail:null,mnum:null},
+        ...result.slice(i+1)];
+      inserted++;
+      bad=legsNeedingFuel(result);
     }
-  });
+    return{seq:result,inserted};
+  }
+
+  let fuelWarnings=0;
+  const fuelResult=autoInsertRefuels(res.seq);
+  if(fuelResult.inserted>0){
+    res.seq=fuelResult.seq;
+    // Recalcular distancia y tiempo con las paradas de recarga insertadas
+    let newDist=0,newTime=0;
+    for(let i=0;i<res.seq.length-1;i++){
+      newDist+=dist3(res.seq[i],res.seq[i+1]);
+      newTime+=(optMode==='dist')?0:(function(a,b){
+        const d=dist3(a,b);const qt=d/qSpeed;let pt=150;
+        if(b.pad==='int')pt=240;else if(b.pad==='efe')pt=90;
+        if(b.type==='outpost'||b.type==='habitat')pt+=120;
+        if(a.type==='outpost'||a.type==='habitat')pt+=180;
+        return qt+pt;
+      })(res.seq[i],res.seq[i+1]);
+    }
+    res.dist=newDist;
+    if(optMode!=='dist')res.timeSeconds=newTime;
+  }
+  fuelWarnings=legsNeedingFuel(res.seq).length; // tramos que siguen sin resolverse (ninguna estación cerca)
+  const{loads,maxLoad}=loadProfile(res.seq);
 
   let alertHTML;
   if(!res.feasible||maxLoad>cap){
     alertHTML=`<div class="alert bad"><i class="ti ti-alert-triangle"></i> Peak load ${maxLoad} SCU exceeds your hold (${cap} SCU). Check or use a larger ship.</div>`;
   }else if(fuelWarnings>0){
-    alertHTML=`<div class="alert bad" style="background:var(--c-warn-bg,#3D2A0A);color:var(--c-warn-text,#F5A623)"><i class="ti ti-gas-station"></i> Fuel warning: ${fuelWarnings} leg${fuelWarnings!==1?'s':''} need${fuelWarnings===1?'s':''} more Quantum Fuel than ${driveKey} + ${shipObj.name} can hold. Plan a refuel stop.</div>`;
+    alertHTML=`<div class="alert bad" style="background:var(--c-warn-bg,#3D2A0A);color:var(--c-warn-text,#F5A623)"><i class="ti ti-gas-station"></i> Fuel warning: ${fuelWarnings} leg${fuelWarnings!==1?'s':''} need${fuelWarnings===1?'s':''} more Quantum Fuel than ${driveKey} + ${shipObj.name} can hold, and no station was found nearby to auto-insert a refuel stop.</div>`;
+  }else if(fuelResult.inserted>0){
+    alertHTML=`<div class="alert ok" style="background:var(--c-warn-bg,#3D2A0A);color:var(--c-warn-text,#F5A623)"><i class="ti ti-gas-station"></i> Auto-inserted ${fuelResult.inserted} refuel stop${fuelResult.inserted!==1?'s':''} — max load ${maxLoad} de ${cap} SCU${deliveryMode!=='full'?` (modo ${partialPct}%)`:' (100%)'}.${jumps>0?` Includes ${jumps} jump${jumps!==1?'s':''} entre sistemas.`:''}</div>`;
   }else{
     alertHTML=`<div class="alert ok"><i class="ti ti-circle-check"></i> All fits: max load ${maxLoad} de ${cap} SCU${deliveryMode!=='full'?` (modo ${partialPct}%)`:' (100%)'}.${jumps>0?` Includes ${jumps} jump${jumps!==1?'s':''} entre sistemas.`:''}</div>`;
   }
@@ -3724,6 +3918,9 @@ async function calculate(){
       iconCls=isNearest?'deliver-near':'deliver';
       iconName='ti-package-export';dotTxt='M'+n.mnum;
       scuLabel=n.scu+' SCU to deliver';
+    }else if(n.role==='refuel'){
+      dotCls='dot-f';headCls='refuel-hd';iconCls='refuel';
+      iconName='ti-gas-station';dotTxt='⛽';
     }else{
       dotCls='dot-j';headCls='jump-hd';iconCls='jump';
       iconName='ti-arrows-transfer-up';dotTxt='↗';
@@ -3736,6 +3933,7 @@ async function calculate(){
       'dot-d':'background:color-mix(in srgb,#D85A30 12%,var(--c-bg-1));color:#C2410C;border:2px solid #D85A30',
       'dot-dn':'background:color-mix(in srgb,var(--c-green) 15%,var(--c-bg-1));color:var(--c-green);border:2px solid var(--c-green)',
       'dot-j':'background:color-mix(in srgb,#7F77DD 15%,var(--c-bg-1));color:#534AB7;border:2px solid #7F77DD',
+      'dot-f':'background:color-mix(in srgb,#FAC775 15%,var(--c-bg-1));color:#B8860B;border:2px solid #FAC775',
     };
     const dotStyle=dotColors[dotCls]||'';
 
@@ -3745,6 +3943,7 @@ async function calculate(){
     else if(isDest)sub='Destination';
     else if(n.role==='pickup')sub=`Pick up ${n.material||''}${seg>0?' · +'+fmtDist(seg):''}${n.sys?' · '+n.sys:''}`;
     else if(n.role==='dropoff')sub=`Deliver ${n.material||''}${seg>0?' · +'+fmtDist(seg):''}`;
+    else if(n.role==='refuel')sub=`Auto-inserted refuel stop${seg>0?' · +'+fmtDist(seg):''}`;
     else if(isJump)sub=`Quantum jump → ${sysOf(n)}`;
 
     // EFE badge
@@ -4200,8 +4399,13 @@ function poblarNaves(){
 let smartOcrReady=false, Tesseract=null;
 
 // ── Helpers de búsqueda fuzzy de locs ──────────────────────
-function findLocFuzzy(q){
-  if(!q)return null;
+// Versión completa que expone el nivel de confianza de la coincidencia:
+// 1=exacto, 2=empieza con, 3=contiene, 4=palabra suelta (el más débil),
+// 0=sin coincidencia. Usar esto cuando importa saber si el match es
+// confiable (ej. validar resultados de OCR) — findLocFuzzy() de abajo
+// sigue devolviendo solo el id, para no romper nada de lo existente.
+function findLocFuzzyConfidence(q){
+  if(!q)return{id:null,tier:0};
   const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 
   // Detectar sistema de la query para priorizar búsqueda
@@ -4222,7 +4426,7 @@ function findLocFuzzy(q){
     .trim();
 
   const nq=norm(cleaned);
-  if(!nq||nq.length<2)return null;
+  if(!nq||nq.length<2)return{id:null,tier:0};
 
   // Función de búsqueda ordenada por sistema (Pyro primero si hay hint)
   const sysOrder=hintSys
@@ -4235,9 +4439,18 @@ function findLocFuzzy(q){
       for(const l of z.locs)
         allLocs.push({...l,_sys:sysName});
 
-  // 1. Exacto
-  for(const l of allLocs)
-    if(norm(l.label)===nq)return l.id;
+  // 1. Exacto — si hay varias ubicaciones con el mismo nombre exacto
+  // (ej: "Stanton Gateway" existe en Nyx Y en Pyro), priorizar la del
+  // sistema detectado en la query (hintSys) en vez de la primera que
+  // aparezca en el orden de iteración.
+  {
+    const exactMatches=allLocs.filter(l=>norm(l.label)===nq);
+    if(exactMatches.length===1)return{id:exactMatches[0].id,tier:1};
+    if(exactMatches.length>1){
+      const sysMatch=hintSys?exactMatches.find(l=>l._sys===hintSys):null;
+      return{id:(sysMatch||exactMatches[0]).id,tier:1};
+    }
+  }
 
   // 2. El label empieza con la query (ej: "Seer's Canyon" → "Seer's Canyon (Vatra)")
   let best=null,bestScore=0,bestSysMatch=false;
@@ -4250,7 +4463,7 @@ function findLocFuzzy(q){
       }
     }
   }
-  if(best)return best;
+  if(best)return{id:best,tier:2};
 
   // 3. Query contenida en el label (match parcial)
   bestScore=0;bestSysMatch=false;
@@ -4263,7 +4476,7 @@ function findLocFuzzy(q){
       }
     }
   }
-  if(best)return best;
+  if(best)return{id:best,tier:3};
 
   // 4. Búsqueda por palabras significativas (solo palabras >4 chars)
   // IMPORTANTE: no buscar palabras genéricas que causan falsos positivos
@@ -4285,7 +4498,11 @@ function findLocFuzzy(q){
     if(best)break;
   }
 
-  return best;
+  return{id:best,tier:best?4:0};
+}
+
+function findLocFuzzy(q){
+  return findLocFuzzyConfidence(q).id;
 }
 
 function findMatFuzzy(q){
@@ -4326,14 +4543,17 @@ function createMissionFromParsed(parsed){
     const seen=new Map(); // locId -> entry combinada
     const order=[];
     entries.forEach(e=>{
-      const id=findLocFuzzy(e.location);
+      const{id,tier}=findLocFuzzyConfidence(e.location);
       if(!id)return;
       if(seen.has(id)){
         const ex=seen.get(id);
         if(e.scu)ex.scu=(ex.scu||0)+e.scu;
         if(!ex.material&&e.material)ex.material=e.material;
       }else{
-        seen.set(id,{locId:id,scu:e.scu,material:e.material});
+        // matchTier>=3 = coincidencia débil (no exacta ni "empieza con")
+        // se guarda el texto original para poder avisar en la UI
+        seen.set(id,{locId:id,scu:e.scu,material:e.material,
+          matchTier:tier,rawText:tier>=3?e.location:null});
         order.push(id);
       }
     });
@@ -4367,7 +4587,8 @@ function createMissionFromParsed(parsed){
       id:++pickSeq,
       locId:p.locId,
       scu:p.scu||remainingPerMissing||Math.round(fallbackTotal/pickResolved.length),
-      material:findMatFuzzy(p.material)||fallbackMat
+      material:findMatFuzzy(p.material)||fallbackMat,
+      matchTier:p.matchTier,rawText:p.rawText
     }));
   }else{
     pickupsArr=[{id:++pickSeq,material:fallbackMat,scu:fallbackTotal,locId:fallbackPickId}];
@@ -4386,7 +4607,8 @@ function createMissionFromParsed(parsed){
       id:++delivSeq,
       locId:d.locId,
       scu:d.scu||remainingPerMissing||Math.round(pickupsTotal/delivResolved.length),
-      material:d.material?findMatFuzzy(d.material):null // null = usa el material del pickup por defecto
+      material:d.material?findMatFuzzy(d.material):null, // null = usa el material del pickup por defecto
+      matchTier:d.matchTier,rawText:d.rawText
     }));
   }else{
     deliveriesArr=[{id:++delivSeq,locId:fallbackDelivId,scu:null,material:null}];
@@ -5248,6 +5470,7 @@ function renderRouteVisual2(seq,loads,cap){
     if(n.role==='dest')return{bg:'#D85A30',border:'#D85A30'};
     if(n.role==='pickup')return{bg:'var(--c-blue)',border:'var(--c-blue)'};
     if(n.role==='dropoff')return{bg:'#C2410C',border:'#C2410C'};
+    if(n.role==='refuel')return{bg:'#FAC775',border:'#FAC775'};
     return{bg:'#888',border:'#888'};
   };
   const dotIcon=n=>{
@@ -5255,6 +5478,7 @@ function renderRouteVisual2(seq,loads,cap){
     if(n.role==='dest')return'⚑';
     if(n.role==='pickup')return'↑';
     if(n.role==='dropoff')return'↓';
+    if(n.role==='refuel')return'⛽';
     return'·';
   };
 
