@@ -122,6 +122,24 @@ function summarizeMatrix(matrix) {
   return summary;
 }
 
+// El objeto de reputación del juego mezcla 3 escaleras distintas en el
+// mismo bloque: Afinidad general (Applicant/Neutral), la carrera vieja
+// de Delivery/Courier (Jr. Runner/Runner/Jr. Contractor/Contractor/
+// Sr. Contractor/Veteran Contractor), y la carrera de Hauling (freight
+// elevator, parche 3.24+) que es la única que nos importa. Confirmado
+// cruzando contra MissionTokens.ReputationRank de los contratos reales
+// de scunpacked-data — ese campo SOLO usa estos 7 nombres en misiones
+// de HaulingOrders, nunca "Jr. Runner" ni "Contractor".
+const HAULING_RANKS = ['Trainee', 'Rookie', 'Junior', 'Member', 'Experienced', 'Senior', 'Master'];
+
+function filterToHaulingRanks(rawRanks) {
+  const filtered = {};
+  for (const [name, xp] of Object.entries(rawRanks)) {
+    if (HAULING_RANKS.includes(name)) filtered[name] = xp;
+  }
+  return filtered;
+}
+
 async function fetchRankThresholds() {
   console.log('[update-faction-rules] Descargando umbrales de rango reales desde la API…');
   const thresholds = {};
@@ -158,10 +176,18 @@ async function fetchRankThresholds() {
         continue;
       }
 
-      thresholds[faction] = Object.fromEntries(
+      const rawObj = Object.fromEntries(
         [...ranks.entries()].sort((a, b) => a[1] - b[1])
       );
-      console.log(`  ✓ ${faction}: ${ranks.size} rangos, ${totalMissions} misiones revisadas`);
+      const haulingOnly = filterToHaulingRanks(rawObj);
+      const missingHaulingRanks = HAULING_RANKS.filter(r => !(r in haulingOnly));
+
+      thresholds[faction] = {
+        hauling: haulingOnly, // ← usar esto en la app (solo los 7 rangos reales de Hauling)
+        raw: rawObj,          // ← las 3 escaleras mezcladas (Afinidad + Delivery + Hauling), para referencia/cruce manual
+        missingFromThisFaction: missingHaulingRanks // rangos de Hauling que no aparecieron en la muestra de ESTA facción
+      };
+      console.log(`  ✓ ${faction}: ${ranks.size} rangos crudos, ${totalMissions} misiones revisadas, ${Object.keys(haulingOnly).length}/7 rangos de Hauling confirmados${missingHaulingRanks.length ? ' (faltan: '+missingHaulingRanks.join(', ')+')' : ''}`);
     } catch (e) {
       console.warn(`  ⚠ ${faction}: ${e.message}`);
     }
@@ -182,7 +208,7 @@ async function main() {
         'github.com/StarCitizenWiki/scunpacked-data (contracts/ — HaulingOrders, ReputationGained, Deadline reales)',
         'api.star-citizen.wiki/api/missions (min_standing — umbrales de rango acumulados reales)'
       ],
-      note: 'minScu/maxScu/maxContainer/repPerMission vienen de contratos reales de hauling (freight elevator). rankThresholds vienen de la API de misiones (nombres y XP acumulado real por rango). Combinaciones con menos de ' + MIN_SAMPLE_SIZE + ' muestras se omiten — no se inventa ningún número.',
+      note: 'minScu/maxScu/maxContainer/repPerMission vienen de contratos reales de hauling (freight elevator). rankThresholds.hauling = solo los 7 rangos reales de la carrera Hauling (Trainee..Master), filtrados de la respuesta cruda de la API que mezcla 3 escaleras distintas (Afinidad general, Delivery/Courier viejo, y Hauling). rankThresholds.raw conserva todo sin filtrar por si hace falta cruzar manualmente. missingFromThisFaction avisa qué rangos de Hauling no aparecieron en la muestra de esa facción específica (puede inferirse de otra facción si la escalera resulta ser universal — verificar antes de asumir). Combinaciones con menos de ' + MIN_SAMPLE_SIZE + ' muestras se omiten — no se inventa ningún número.',
       generated: new Date().toISOString()
     },
     haulingByGradeAndRank: haulingSummary,
