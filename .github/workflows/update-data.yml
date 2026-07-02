@@ -37,11 +37,14 @@ jobs:
       - name: Update materials.json (real commodity list from star-citizen.wiki API)
         run: node scripts/update-materials.js
 
+      - name: Update faction-rules.json (real hauling rules from scunpacked-data contracts + wiki API)
+        run: node scripts/update-faction-rules.js
+
       - name: Commit changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/locations.json data/ships.json data/drives.json data/materials.json
+          git add data/locations.json data/ships.json data/drives.json data/materials.json data/faction-rules.json
           if git diff --cached --quiet; then
             echo "No changes — data already up to date."
           else
