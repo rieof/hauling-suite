@@ -25,6 +25,9 @@ jobs:
       - name: Update locations.json (real coordinates from scunpacked-data)
         run: node scripts/update-locations.js
 
+      - name: Update locations.json pad type (real EFE data from UEX)
+        run: node scripts/update-efe.js
+
       - name: Update ships.json (SCU + real qFuel from star-citizen.wiki API)
         run: node scripts/update-ships.js
 
