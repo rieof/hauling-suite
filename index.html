@@ -852,7 +852,13 @@ html.force-light{
   <!-- Barra de sesión -->
   <div id="session-bar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;padding:6px 12px;margin-bottom:8px;"></div>
 
-  <div class="section-lbl"><span>CONTRACT LIST <span id="mcount" style="color:var(--c-text-3)"></span></span><span class="hint">max 10 missions</span></div>
+  <div class="section-lbl"><span>CONTRACT LIST <span id="mcount" style="color:var(--c-text-3)"></span></span>
+    <button id="picker-rec-btn" style="display:none;margin-left:8px;font-size:10px;padding:2px 8px;
+      border-radius:99px;border:0.5px solid #F5A623;background:color-mix(in srgb,#F5A623 12%,transparent);
+      color:#F5A623;cursor:pointer;font-family:var(--font-mono)">
+      <i class="ti ti-list-check"></i> Help me choose
+    </button>
+    <span class="hint">max 10 missions</span></div>
 
   <div id="cap-alert"></div>
 
@@ -2585,6 +2591,14 @@ function renderRankGuide(){
 
 // ===== COMBOS DE FARMEO =====
 function sysOf(n){return(n&&n.sys)||'Stanton';}
+// Velocidad del motor cuántico actualmente seleccionado — usado para
+// convertir distancia en tiempo real de vuelo en los clusters
+function getCurrentQSpeed(){
+  const driveKey=$('drive-sel')?.value||QD_DEFAULT;
+  const drive=QUANTUM_DRIVES[driveKey]||QUANTUM_DRIVES[QD_DEFAULT];
+  return drive?.speed||0.2;
+}
+
 function farmCombos(){
   if(deliveryMode==='full')return[];
   const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;
@@ -2597,11 +2611,19 @@ function farmCombos(){
     const b=plan.best;
     items.push({mnum:mi+1,mat:b.mat,amt:b.amt,boxes:b.boxes,pick:b.pickLoc,drop:b.nd,sys:sysOf(b.pickLoc)});
   });
-  const THRESH=1.5;
+  // Umbral por TIEMPO de vuelo real (no distancia fija en Gm) — así se
+  // adapta solo a tu nave/motor actual: con un motor rápido, más Gm
+  // cuentan como "cerca" en minutos; con uno lento, menos.
+  const qSpeed=getCurrentQSpeed();
+  const THRESH_SEC=300; // 5 minutos de vuelo estimado
   const clusters=[];
   items.forEach(it=>{
     let placed=false;
-    for(const c of clusters){if(c.sys===it.sys&&dist3(c.pick,it.pick)<=THRESH&&dist3(c.drop,it.drop)<=THRESH){c.items.push(it);placed=true;break;}}
+    for(const c of clusters){
+      if(c.sys===it.sys&&_timeCostSync(c.pick,it.pick,qSpeed)<=THRESH_SEC&&_timeCostSync(c.drop,it.drop,qSpeed)<=THRESH_SEC){
+        c.items.push(it);placed=true;break;
+      }
+    }
     if(!placed)clusters.push({sys:it.sys,pick:it.pick,drop:it.drop,items:[it]});
   });
   const cap=getCap();
@@ -3081,7 +3103,8 @@ function renderSmartCombos(){
 // de tus candidatas conviene aceptar de verdad en el juego (límite 10).
 function missionClusterRecommendations(){
   const cap=getCap();
-  const THRESH=3; // Gm — un poco más laxo que farmCombos, para agrupar "zona" no solo el mismo punto exacto
+  const qSpeed=getCurrentQSpeed();
+  const THRESH_SEC=420; // 7 minutos — un poco más laxo que farmCombos, agrupa "zona" no solo el mismo punto exacto
   const items=missions.map((m,mi)=>{
     const pickLoc=locById(m.pickups[0]?.locId);
     if(!pickLoc)return null;
@@ -3092,7 +3115,7 @@ function missionClusterRecommendations(){
   items.forEach(it=>{
     let placed=false;
     for(const c of clusters){
-      if(c.sys===it.sys&&dist3(c.pickRef,it.pickLoc)<=THRESH){
+      if(c.sys===it.sys&&_timeCostSync(c.pickRef,it.pickLoc,qSpeed)<=THRESH_SEC){
         c.items.push(it);placed=true;break;
       }
     }
@@ -3110,10 +3133,12 @@ function missionClusterRecommendations(){
   return clusters;
 }
 
+let pickerRecShown=false; // el panel solo se calcula/muestra si el usuario clickea "Help me choose"
+
 function renderPickerRecommendation(){
   const wrap=$('picker-rec-wrap');
   if(!wrap)return;
-  if(missions.length<=GAME_MISSION_LIMIT){wrap.style.display='none';wrap.innerHTML='';return;}
+  if(!pickerRecShown||missions.length<=GAME_MISSION_LIMIT){wrap.style.display='none';wrap.innerHTML='';return;}
 
   const clusters=missionClusterRecommendations();
   wrap.style.display='block';
@@ -3121,7 +3146,8 @@ function renderPickerRecommendation(){
   let html=`<div class="alert" style="background:color-mix(in srgb,#F5A623 12%,transparent);
     border:0.5px solid color-mix(in srgb,#F5A623 30%,transparent);color:#F5A623;margin-bottom:8px">
     <i class="ti ti-alert-triangle"></i> Tienes <b>${missions.length}</b> contratos cargados, pero el juego
-    solo permite <b>${GAME_MISSION_LIMIT} activos</b> a la vez. Los grupos de abajo muestran cuáles
+    solo permite <b>${GAME_MISSION_LIMIT} activos</b> a la vez. Recuerda que otros jugadores pueden tomar
+    estos contratos si te demoras — decide rápido cuáles aceptar. Los grupos de abajo muestran cuáles
     conviene aceptar de verdad — priorizados por cuántos se combinan bien entre sí.
   </div>`;
 
@@ -3154,6 +3180,13 @@ function renderMissions(){
   if(bottomBtn)bottomBtn.disabled=missions.length>=MAX_MISSIONS;
   renderCapacityAlert();
   renderSmartCombos();
+  // El botón "Help me choose" solo aparece cuando hace falta (>10) — el
+  // panel en sí solo se calcula/muestra si el usuario lo pide, no solo
+  // porque cargó muchas misiones (en el juego se pueden perder si no
+  // las aceptás rápido, así que no tiene sentido forzar la comparación)
+  const pickerBtn=$('picker-rec-btn');
+  if(pickerBtn)pickerBtn.style.display=overGameLimit?'inline-flex':'none';
+  if(!overGameLimit)pickerRecShown=false; // si bajó de 10, ocultar el panel si estaba abierto
   renderPickerRecommendation();
   if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderFarmCombos();return;}
   el.innerHTML='';
@@ -5719,6 +5752,7 @@ async function init(){
   // tol slider removed — convenient stops removed
   $('add-missionssion').addEventListener('click',addMission);
   $('add-missionssion-bottom')?.addEventListener('click',addMission);
+  $('picker-rec-btn')?.addEventListener('click',()=>{pickerRecShown=!pickerRecShown;renderMissions();});
   $('calc-btn').addEventListener('click',calculate);
   $('clear-all').addEventListener('click',()=>{missions=[];renderMissions();});
   $('bmode-optimal').addEventListener('click',()=>{boxMode='optimal';$('bmode-optimal').classList.add('on');$('bmode-single').classList.remove('on');renderMissions();});
