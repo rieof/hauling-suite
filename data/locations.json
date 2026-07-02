@@ -3,13 +3,13 @@
     "version": "4.8.2",
     "source": "StarCitizenWiki/scunpacked-data (auto-updated weekly via GitHub Action)",
     "source_url": "https://github.com/StarCitizenWiki/scunpacked-data",
-    "generated": "2026-07-02T00:40:12.640Z",
+    "generated": "2026-07-02T05:20:04.238Z",
     "total": 432,
     "note": "Coordinates in Gm (gigameters). Each system has its own coordinate space.",
     "efe_source": "api.uexcorp.uk/2.0/terminals (has_freight_elevator) — dato real reportado por la comunidad",
     "efe_matched": 155,
     "efe_unmatched": 276,
-    "efe_updated_at": "2026-07-02T00:40:13.177Z"
+    "efe_updated_at": "2026-07-02T05:20:04.918Z"
   },
   "locations": [
     {

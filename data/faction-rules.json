@@ -1,0 +1,272 @@
+{
+  "_meta": {
+    "version": "4.8.2",
+    "sources": [
+      "github.com/StarCitizenWiki/scunpacked-data (contracts/ — HaulingOrders, ReputationGained, Deadline reales)",
+      "api.star-citizen.wiki/api/missions (min_standing — umbrales de rango acumulados reales)"
+    ],
+    "note": "minScu/maxScu/maxContainer/repPerMission vienen de contratos reales de hauling (freight elevator). rankThresholds vienen de la API de misiones (nombres y XP acumulado real por rango). Combinaciones con menos de 3 muestras se omiten — no se inventa ningún número.",
+    "generated": "2026-07-02T05:20:47.227Z"
+  },
+  "haulingByGradeAndRank": {
+    "Covalex": {
+      "Member|Medium": {
+        "minScu": 17,
+        "maxScu": 112,
+        "maxContainer": 8,
+        "repPerMission": 1000,
+        "deadlineMinutes": 360,
+        "sampleSize": 7
+      },
+      "Senior|Medium": {
+        "minScu": 7,
+        "maxScu": 200,
+        "maxContainer": 16,
+        "repPerMission": 4000,
+        "deadlineMinutes": 480,
+        "sampleSize": 29
+      },
+      "Rookie|Extra Small": {
+        "minScu": 3,
+        "maxScu": 12,
+        "maxContainer": 1,
+        "repPerMission": 50,
+        "deadlineMinutes": 300,
+        "sampleSize": 50
+      },
+      "Rookie|Small": {
+        "minScu": 2,
+        "maxScu": 32,
+        "maxContainer": 4,
+        "repPerMission": 50,
+        "deadlineMinutes": 300,
+        "sampleSize": 66
+      },
+      "Master|Large": {
+        "minScu": 32,
+        "maxScu": 938,
+        "maxContainer": 16,
+        "repPerMission": 8000,
+        "deadlineMinutes": 420,
+        "sampleSize": 3
+      },
+      "Junior|Small": {
+        "minScu": 2,
+        "maxScu": 32,
+        "maxContainer": 4,
+        "repPerMission": 500,
+        "deadlineMinutes": 300,
+        "sampleSize": 53
+      },
+      "Member|Small": {
+        "minScu": 2,
+        "maxScu": 11,
+        "maxContainer": 4,
+        "repPerMission": 1000,
+        "deadlineMinutes": 300,
+        "sampleSize": 51
+      },
+      "Rookie|Medium": {
+        "minScu": 40,
+        "maxScu": 112,
+        "maxContainer": 8,
+        "repPerMission": 50,
+        "deadlineMinutes": 300,
+        "sampleSize": 24
+      },
+      "Experienced|Medium": {
+        "minScu": 7,
+        "maxScu": 432,
+        "maxContainer": 16,
+        "repPerMission": 2000,
+        "deadlineMinutes": 480,
+        "sampleSize": 32
+      },
+      "Master|Bulk": {
+        "minScu": 1,
+        "maxScu": null,
+        "maxContainer": null,
+        "repPerMission": null,
+        "deadlineMinutes": null,
+        "sampleSize": 14
+      },
+      "Junior|Medium": {
+        "minScu": 28,
+        "maxScu": 112,
+        "maxContainer": 8,
+        "repPerMission": 500,
+        "deadlineMinutes": 300,
+        "sampleSize": 42
+      },
+      "Experienced|Large": {
+        "minScu": 200,
+        "maxScu": 4608,
+        "maxContainer": 32,
+        "repPerMission": 2000,
+        "deadlineMinutes": 360,
+        "sampleSize": 19
+      },
+      "Junior|Extra Small": {
+        "minScu": 3,
+        "maxScu": 12,
+        "maxContainer": 1,
+        "repPerMission": 500,
+        "deadlineMinutes": 300,
+        "sampleSize": 7
+      },
+      "Experienced|Small": {
+        "minScu": 2,
+        "maxScu": 8,
+        "maxContainer": 4,
+        "repPerMission": 2000,
+        "deadlineMinutes": 360,
+        "sampleSize": 20
+      },
+      "Trainee|Extra Small": {
+        "minScu": 1,
+        "maxScu": 6,
+        "maxContainer": 1,
+        "repPerMission": 50,
+        "deadlineMinutes": 300,
+        "sampleSize": 10
+      },
+      "Master|Medium": {
+        "minScu": 41,
+        "maxScu": 200,
+        "maxContainer": 16,
+        "repPerMission": 8000,
+        "deadlineMinutes": 480,
+        "sampleSize": 8
+      }
+    },
+    "DeadSaints": {
+      "Rookie|Medium": {
+        "minScu": 4,
+        "maxScu": null,
+        "maxContainer": 8,
+        "repPerMission": 100,
+        "deadlineMinutes": null,
+        "sampleSize": 3
+      }
+    },
+    "RedWind": {
+      "Master|Large": {
+        "minScu": 100,
+        "maxScu": 150,
+        "maxContainer": 32,
+        "repPerMission": 4000,
+        "deadlineMinutes": null,
+        "sampleSize": 12
+      },
+      "Junior|Small": {
+        "minScu": 1,
+        "maxScu": 16,
+        "maxContainer": 4,
+        "repPerMission": 250,
+        "deadlineMinutes": null,
+        "sampleSize": 22
+      },
+      "Experienced|Large": {
+        "minScu": 400,
+        "maxScu": 600,
+        "maxContainer": 32,
+        "repPerMission": 1000,
+        "deadlineMinutes": null,
+        "sampleSize": 30
+      },
+      "Trainee|Small": {
+        "minScu": 6,
+        "maxScu": 32,
+        "maxContainer": 4,
+        "repPerMission": 50,
+        "deadlineMinutes": null,
+        "sampleSize": 40
+      },
+      "Rookie|Small": {
+        "minScu": 1,
+        "maxScu": 32,
+        "maxContainer": 4,
+        "repPerMission": 100,
+        "deadlineMinutes": null,
+        "sampleSize": 32
+      },
+      "Junior|Medium": {
+        "minScu": 50,
+        "maxScu": 350,
+        "maxContainer": 8,
+        "repPerMission": 250,
+        "deadlineMinutes": null,
+        "sampleSize": 16
+      },
+      "Member|Medium": {
+        "minScu": 16,
+        "maxScu": 175,
+        "maxContainer": 8,
+        "repPerMission": 500,
+        "deadlineMinutes": null,
+        "sampleSize": 12
+      },
+      "Senior|Large": {
+        "minScu": 132,
+        "maxScu": 300,
+        "maxContainer": 32,
+        "repPerMission": 2000,
+        "deadlineMinutes": null,
+        "sampleSize": 24
+      },
+      "Experienced|Medium": {
+        "minScu": 12,
+        "maxScu": 87,
+        "maxContainer": 8,
+        "repPerMission": 1000,
+        "deadlineMinutes": null,
+        "sampleSize": 6
+      },
+      "Member|Small": {
+        "minScu": 1,
+        "maxScu": 8,
+        "maxContainer": 4,
+        "repPerMission": 500,
+        "deadlineMinutes": null,
+        "sampleSize": 11
+      },
+      "Rookie|Bulk": {
+        "minScu": 1,
+        "maxScu": null,
+        "maxContainer": null,
+        "repPerMission": 200,
+        "deadlineMinutes": null,
+        "sampleSize": 4
+      }
+    },
+    "LingFamilyHauling": {
+      "Rookie|Small": {
+        "minScu": 1,
+        "maxScu": null,
+        "maxContainer": 2,
+        "repPerMission": 100,
+        "deadlineMinutes": null,
+        "sampleSize": 4
+      }
+    }
+  },
+  "rankThresholds": {
+    "Covalex": {
+      "Applicant": 0,
+      "Trainee": 0,
+      "Neutral": 0,
+      "Jr. Runner": 1,
+      "Rookie": 50,
+      "Junior": 250,
+      "Jr. Contractor": 800,
+      "Runner": 2500,
+      "Member": 5250,
+      "Experienced": 27750,
+      "Senior": 77750,
+      "Master": 237750
+    },
+    "Red Wind": {},
+    "Ling Family": {},
+    "Udmurt": {}
+  }
+}
