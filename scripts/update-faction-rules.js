@@ -32,7 +32,13 @@ const OUT_PATH = path.join(__dirname, '..', 'data', 'faction-rules.json');
 const MIN_SAMPLE_SIZE = 3; // combinaciones con menos muestras que esto se omiten
 
 const WIKI_API = 'https://api.star-citizen.wiki/api/missions';
-const FACTIONS_WIKI = ['Covalex', 'Red Wind', 'Ling Family', 'Udmurt'];
+// Nombres completos verificados (aparecen en texto plano en las misiones
+// reales, ej. "Faction · Red Wind Linehaul" en api.star-citizen.wiki/missions/...)
+// NOTA: la API tiene un bug/limitación conocido donde filter[faction] a
+// veces ignora el valor y devuelve datos de Covalex sin importar qué se
+// pida — fetchRankThresholds() valida esto y descarta el dato si no
+// coincide, en vez de guardarlo mal etiquetado.
+const FACTIONS_WIKI = ['Covalex', 'Red Wind Linehaul', 'Ling Family Hauling', 'Udmurt'];
 
 function sparseCloneContracts() {
   console.log('[update-faction-rules] Clonando contracts/ de scunpacked-data (sparse)…');
@@ -121,20 +127,41 @@ async function fetchRankThresholds() {
   const thresholds = {};
   for (const faction of FACTIONS_WIKI) {
     try {
-      const url = `${WIKI_API}?filter[faction]=${encodeURIComponent(faction)}&page[size]=100`;
-      const res = await fetch(url, { headers: { Accept: 'application/json' } });
-      if (!res.ok) { console.warn(`  ⚠ ${faction}: HTTP ${res.status}`); continue; }
-      const json = await res.json();
+      // CLAVE: filter[faction] SOLO no filtra bien (bug/limitación de la
+      // API — siempre devuelve Covalex). Pero combinado con
+      // filter[reward_scope]=Hauling sí filtra correctamente. Confirmado
+      // con Red Wind Linehaul: 298 misiones reales, todas con
+      // faction.name="Red Wind Linehaul".
       const ranks = new Map();
-      for (const m of (json.data || [])) {
-        if (m.min_standing && m.min_standing.name) {
-          ranks.set(m.min_standing.name, m.min_standing.min_reputation);
+      let page = 1, lastPage = 1, totalMissions = 0;
+      do {
+        const url = `${WIKI_API}?filter[reward_scope]=Hauling&filter[faction]=${encodeURIComponent(faction)}&page[number]=${page}`;
+        const res = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!res.ok) { console.warn(`  ⚠ ${faction}: HTTP ${res.status}`); break; }
+        const json = await res.json();
+        const missions = json.data || [];
+        lastPage = json.meta?.last_page || 1;
+        totalMissions += missions.length;
+
+        for (const m of missions) {
+          if (m.min_standing && m.min_standing.name) {
+            ranks.set(m.min_standing.name, m.min_standing.min_reputation);
+          }
         }
+        page++;
+      } while (page <= lastPage);
+
+      // Validación: confirmar que lo que volvió es realmente de esta
+      // facción (por si acaso, aunque ya lo confirmamos manualmente)
+      if (ranks.size === 0) {
+        console.warn(`  ⚠ ${faction}: sin datos de rango encontrados`);
+        continue;
       }
+
       thresholds[faction] = Object.fromEntries(
         [...ranks.entries()].sort((a, b) => a[1] - b[1])
       );
-      console.log(`  ✓ ${faction}: ${ranks.size} rangos encontrados`);
+      console.log(`  ✓ ${faction}: ${ranks.size} rangos, ${totalMissions} misiones revisadas`);
     } catch (e) {
       console.warn(`  ⚠ ${faction}: ${e.message}`);
     }
