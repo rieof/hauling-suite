@@ -6,7 +6,7 @@
       "api.star-citizen.wiki/api/missions (min_standing — umbrales de rango acumulados reales)"
     ],
     "note": "minScu/maxScu/maxContainer/repPerMission vienen de contratos reales de hauling (freight elevator). rankThresholds vienen de la API de misiones (nombres y XP acumulado real por rango). Combinaciones con menos de 3 muestras se omiten — no se inventa ningún número.",
-    "generated": "2026-07-02T05:20:47.227Z"
+    "generated": "2026-07-02T05:30:20.918Z"
   },
   "haulingByGradeAndRank": {
     "Covalex": {
@@ -253,20 +253,40 @@
   "rankThresholds": {
     "Covalex": {
       "Applicant": 0,
-      "Trainee": 0,
       "Neutral": 0,
+      "Trainee": 0,
+      "Jr. Runner": 1,
+      "Rookie": 50,
+      "Jr. Contractor": 800,
+      "Contractor": 2200,
+      "Runner": 2500,
+      "Member": 5250,
+      "Sr. Contractor": 5800,
+      "Master": 237750
+    },
+    "Red Wind Linehaul": {
+      "Applicant": 0,
+      "Neutral": 0,
+      "Trainee": 0,
       "Jr. Runner": 1,
       "Rookie": 50,
       "Junior": 250,
       "Jr. Contractor": 800,
+      "Contractor": 2200,
       "Runner": 2500,
       "Member": 5250,
+      "Sr. Contractor": 5800,
+      "Veteran Contractor": 15000,
       "Experienced": 27750,
       "Senior": 77750,
       "Master": 237750
     },
-    "Red Wind": {},
-    "Ling Family": {},
-    "Udmurt": {}
+    "Ling Family Hauling": {
+      "Trainee": 0,
+      "Applicant": 0,
+      "Jr. Runner": 1,
+      "Rookie": 50,
+      "Runner": 2500
+    }
   }
 }
