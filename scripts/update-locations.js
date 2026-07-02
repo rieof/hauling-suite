@@ -17,13 +17,31 @@ const RELEVANT_TYPES = new Set([
 const EFE_KEYWORDS = [
   'Ruin Station','Gaslight','Checkmate','Everus Harbor',
   'Baijini Point','Seraphim','Port Tressler','Orison',
-  'Orbituary','Endgame','Levski',"Dudley","Rod's Fuel",
+  'Orbituary','Endgame','Levski',"Dudley",
   "Rat's Nest",'Megumi','Starlight','Patch City',
   'RAB-','Distribution Centre','Distribution Hub',
-  'Relay Post','Recovery'
+  'Relay Post','Recovery',
+  // Parche 4.4 "External Freight Elevator Testing" expandió EFE a las
+  // estaciones Gateway entre sistemas (Nyx/Stanton/Pyro)
+  'Gateway'
 ];
+// NOTA: existe un jump point directo Nyx-Stanton (agregado en 4.4, aunque
+// la wiki lo marca como "placeholder" — sigue activo). Por eso "Nyx Gateway"
+// legítimamente aparece tanto en Pyro como en Stanton, y "Stanton Gateway"
+// tanto en Pyro como en Nyx. NO filtrar estas combinaciones — las 6
+// entradas Gateway (Stanton↔Pyro, Pyro↔Nyx, Nyx↔Stanton) son reales.
+
+// ── Overrides confirmados en el juego por el usuario ─────────────────
+// Estos SIEMPRE ganan sobre el heurístico de keywords de arriba, sin
+// importar qué diga el nombre. Confirmado a pie de nave, no adivinado.
+// Agregar acá cualquier corrección verificada en persona en el juego.
+const PAD_OVERRIDES = {
+  "rod's fuel 'n supplies": 'int', // confirmado sin EFE en el juego (2026-07-01)
+};
 
 function classifyPad(name, etype) {
+  const overrideKey = name.toLowerCase();
+  if (overrideKey in PAD_OVERRIDES) return PAD_OVERRIDES[overrideKey];
   if (etype === 'Outpost' || etype === 'Outpost_InvalidQT') return 'efe';
   for (const kw of EFE_KEYWORDS) {
     if (name.toLowerCase().includes(kw.toLowerCase())) return 'efe';
