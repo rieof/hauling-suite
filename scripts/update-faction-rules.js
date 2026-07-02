@@ -34,11 +34,11 @@ const MIN_SAMPLE_SIZE = 3; // combinaciones con menos muestras que esto se omite
 const WIKI_API = 'https://api.star-citizen.wiki/api/missions';
 // Nombres completos verificados (aparecen en texto plano en las misiones
 // reales, ej. "Faction · Red Wind Linehaul" en api.star-citizen.wiki/missions/...)
-// NOTA: la API tiene un bug/limitación conocido donde filter[faction] a
-// veces ignora el valor y devuelve datos de Covalex sin importar qué se
-// pida — fetchRankThresholds() valida esto y descarta el dato si no
-// coincide, en vez de guardarlo mal etiquetado.
-const FACTIONS_WIKI = ['Covalex', 'Red Wind Linehaul', 'Ling Family Hauling', 'Udmurt'];
+// Solo 3 facciones de hauling reales confirmadas por la wiki oficial:
+// Covalex Shipping, Red Wind Linehaul, Ling Family Hauling.
+// ("Udmurt" no es una facción de hauling real — quitada tras verificar
+// que no aparece en ningún lado como mission-giver de carga)
+const FACTIONS_WIKI = ['Covalex', 'Red Wind Linehaul', 'Ling Family Hauling'];
 
 function sparseCloneContracts() {
   console.log('[update-faction-rules] Clonando contracts/ de scunpacked-data (sparse)…');
