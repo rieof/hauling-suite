@@ -9,8 +9,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   update-data:
@@ -42,11 +40,14 @@ jobs:
       - name: Update faction-rules.json (real hauling rules from scunpacked-data contracts + wiki API)
         run: node scripts/update-faction-rules.js
 
+      - name: Update trade-rules.json (real produces/consumes tags per location)
+        run: node scripts/update-trade-rules.js
+
       - name: Commit changes if any
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/locations.json data/ships.json data/drives.json data/materials.json data/faction-rules.json
+          git add data/locations.json data/ships.json data/drives.json data/materials.json data/faction-rules.json data/trade-rules.json
           if git diff --cached --quiet; then
             echo "No changes — data already up to date."
           else
