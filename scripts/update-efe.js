@@ -37,6 +37,8 @@ const LOCATIONS_PATH = path.join(__dirname, '..', 'data', 'locations.json');
 // update-locations.js. ────────────────────────────────────────────
 const PAD_OVERRIDES = {
   "rod's fuel 'n supplies": 'int', // confirmado sin EFE en el juego (2026-07-01)
+  "patch city": 'int', // confirmado sin EFE en el juego (2026-07-03)
+  "dudley & daughters": 'efe', // confirmado CON EFE por texto real de contrato (ver update-locations.js)
 };
 
 function normName(s) {
