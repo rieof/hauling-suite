@@ -1,0 +1,1452 @@
+{
+  "_meta": {
+    "version": "4.8.2",
+    "source": "github.com/StarCitizenWiki/scunpacked-data (trade_locations.json — ProducesTags/ConsumesTags reales)",
+    "note": "Solo incluye ubicaciones con coincidencia EXACTA de nombre contra locations.json, y solo materiales que existen en nuestra lista curada (materials.json). No se adivina ninguna asociación.",
+    "totalActiveInSource": 684,
+    "matchedToOurLocations": 132,
+    "generated": "2026-07-03T05:06:28.148Z"
+  },
+  "rules": {
+    "Dupree Industrial Manufacturing Facility": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap"
+      ]
+    },
+    "Cry-Astro Processing Plant 19-02": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap"
+      ]
+    },
+    "Cry-Astro Processing Plant 34-12": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap"
+      ]
+    },
+    "Greycat Stanton I Production Complex-B": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap"
+      ]
+    },
+    "Greycat Stanton IV Production Complex-A": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "HDPC-Cassillo": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon",
+        "Waste",
+        "Processed Food"
+      ]
+    },
+    "HDPC-Farnesway": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon",
+        "Waste",
+        "Processed Food"
+      ]
+    },
+    "Sakura Sun Magnolia Workcenter": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "Sakura Sun Goldenrod Workcenter": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "microTech Logistics Depot S4LD01": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "microTech Logistics Depot S4LD13": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Scrap",
+        "Hydrogen",
+        "Waste",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Ludlow": {
+      "produces": [
+        "Hydrogen"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Medical Supplies"
+      ]
+    },
+    "Finn's Folly": {
+      "produces": [
+        "Hydrogen"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Medical Supplies"
+      ]
+    },
+    "Zephyr": {
+      "produces": [
+        "Hydrogen"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Medical Supplies"
+      ]
+    },
+    "Weeping Cove": {
+      "produces": [
+        "Hydrogen"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Medical Supplies"
+      ]
+    },
+    "Stanton Gateway": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Pyro Gateway": {
+      "produces": [
+        "Waste",
+        "Silicon"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Silicon",
+        "Waste",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Terra Gateway": {
+      "produces": [
+        "Waste",
+        "Hydrogen",
+        "Silicon",
+        "Agricultural Supplies",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Silicon",
+        "Waste"
+      ]
+    },
+    "Devlin Scrap & Salvage": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Waste",
+        "Maze",
+        "Processed Food"
+      ]
+    },
+    "Reclamation & Disposal Orinth": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Waste",
+        "Maze",
+        "Processed Food"
+      ]
+    },
+    "Levski": {
+      "produces": [
+        "Waste",
+        "Fluorine",
+        "Medical Supplies",
+        "Scrap"
+      ],
+      "consumes": [
+        "Fluorine",
+        "Medical Supplies",
+        "Scrap",
+        "Waste"
+      ]
+    },
+    "Grim HEX": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Construction Materials",
+        "Widow"
+      ]
+    },
+    "Orison": {
+      "produces": [],
+      "consumes": [
+        "Aphorite"
+      ]
+    },
+    "HDMS-Lathan": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Iron"
+      ],
+      "consumes": [
+        "Scrap",
+        "Aphorite",
+        "Hadanite",
+        "Processed Food"
+      ]
+    },
+    "Shepherd's Rest": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Agricultural Supplies",
+        "Waste"
+      ]
+    },
+    "Narena's Rest": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Prophet's Peak": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Bueno Ravine": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Aphorite",
+        "Hadanite",
+        "Waste"
+      ]
+    },
+    "Sunset Mesa": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Chawla's Beach": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Jackson's Swap": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Sacren's Plot": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Canard View": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Windfall": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Rustville": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Seer's Canyon": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Last Landings": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "The Golden Riviera": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Fallow Field": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Ashland": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shadowfall": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Last Ditch": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Bullock's Reach": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Stag's Rut": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Yang's Place": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Frigid Knot": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Blackrock Exchange": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Kabir's Post": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "The Yard": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Kinder Plots": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Ostler's Claim": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Carver's Ridge": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Arid Reach": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Goner's Deal": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Rough Landing": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Stonetree": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Jumptown": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Paradise Cove": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Raven's Roost": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Barton Flats Aid Shelter": {
+      "produces": [
+        "Waste",
+        "Medical Supplies"
+      ],
+      "consumes": [
+        "Medical Supplies"
+      ]
+    },
+    "Ashburn Channel Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Flanagan's Ravine Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Julep Ravine Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Mogote Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Dunlow Ridge Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Eager Flats Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Tamdon Plains Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Wolf Point Aid Shelter": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": []
+    },
+    "Shady Glen Farms": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Bud's Growery": {
+      "produces": [
+        "Waste"
+      ],
+      "consumes": [
+        "Waste"
+      ]
+    },
+    "Tram & Myers Mining": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": []
+    },
+    "Kudre Ore": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": []
+    },
+    "Humboldt Mines": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": []
+    },
+    "Loveridge Mineral Reserve": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": []
+    },
+    "HDMS-Edmond": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Copper",
+        "Iron"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite",
+        "Titanium",
+        "Copper"
+      ]
+    },
+    "HDMS-Hadley": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Copper",
+        "Iron"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite",
+        "Titanium",
+        "Copper"
+      ]
+    },
+    "HDMS-Oparei": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Copper",
+        "Iron"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite",
+        "Titanium",
+        "Copper"
+      ]
+    },
+    "HDMS-Pinewood": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Copper",
+        "Iron"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite",
+        "Titanium",
+        "Copper"
+      ]
+    },
+    "HDMS-Stanhope": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Copper",
+        "Iron"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite",
+        "Titanium",
+        "Copper"
+      ]
+    },
+    "HDMS-Thedus": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Copper",
+        "Iron"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite",
+        "Titanium",
+        "Copper"
+      ]
+    },
+    "HDMS-Anderson": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "HDMS-Norgaard": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "HDMS-Hahn": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Copper",
+        "Laranite"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "HDMS-Perlman": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Copper",
+        "Laranite"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "HDMS-Ryder": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Iron",
+        "Titanium"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "HDMS-Woodruff": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Iron",
+        "Titanium"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "ArcCorp Mining Area 141": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SCD-1": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SAL-2": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SAL-5": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "ArcCorp Mining Area 045": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "ArcCorp Mining Area 048": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "ArcCorp Mining Area 056": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "ArcCorp Mining Area 061": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SM0-10": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SM0-13": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SM0-18": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SM0-22": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SMCa-6": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Shubin Mining Facility SMCa-8": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Processed Food",
+        "Aphorite",
+        "Hadanite"
+      ]
+    },
+    "Hickes Research Outpost": {
+      "produces": [
+        "Waste",
+        "Scrap"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Rayari Deltana Research Outpost": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Agricultural Supplies"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Rayari Anvik Research Outpost": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Agricultural Supplies"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Rayari Kaltag Research Outpost": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Agricultural Supplies"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Rayari Cantwell Research Outpost": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Agricultural Supplies"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "Rayari McGrath Research Outpost": {
+      "produces": [
+        "Waste",
+        "Scrap",
+        "Agricultural Supplies"
+      ],
+      "consumes": [
+        "Hydrogen",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    },
+    "People's Service Station Alpha": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Waste"
+      ]
+    },
+    "People's Service Station Delta": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Waste"
+      ]
+    },
+    "People's Service Station Theta": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Waste"
+      ]
+    },
+    "People's Service Station Lambda": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Waste"
+      ]
+    },
+    "Everus Harbor": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Agricultural Supplies",
+        "Processed Food",
+        "Copper",
+        "Medical Supplies",
+        "Chlorine",
+        "Iodine",
+        "Astatine",
+        "Fluorine"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Waste",
+        "Agricultural Supplies",
+        "Processed Food",
+        "Copper",
+        "Iron",
+        "Iodine",
+        "Medical Supplies"
+      ]
+    },
+    "HUR-L1 Green Glade Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "HUR-L2 Faithful Dream Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "HUR-L3 Thundering Express Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "HUR-L4 Melodic Fields Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "HUR-L5 High Course Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "CRU-L1 Ambitious Dream Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Aluminum",
+        "Titanium",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "CRU-L4 Shallow Fields Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Aluminum",
+        "Tungsten"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "CRU-L5 Beautiful Glen Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "Seraphim Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Agricultural Supplies",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Waste",
+        "Agricultural Supplies",
+        "Processed Food",
+        "Aphorite"
+      ]
+    },
+    "Baijini Point": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Waste",
+        "Processed Food",
+        "Aphorite"
+      ]
+    },
+    "ARC-L1 Wide Forest Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Aluminum",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "ARC-L2 Lively Pathway Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Aluminum",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "ARC-L3 Modern Express Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "ARC-L4 Faint Glen Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "ARC-L5 Yellow Core Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Aluminum",
+        "Tungsten"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "MIC-L1 Shallow Frontier Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Corundum",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "MIC-L2 Long Forest Station": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Corundum",
+        "Laranite",
+        "Silicon"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "MIC-L3 Endless Odyssey Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "MIC-L4 Red Crossroads Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Silicon",
+        "Processed Food"
+      ]
+    },
+    "MIC-L5 Modern Icarus Station": {
+      "produces": [
+        "Scrap",
+        "Waste"
+      ],
+      "consumes": [
+        "Scrap",
+        "Processed Food"
+      ]
+    },
+    "Port Tressler": {
+      "produces": [
+        "Scrap",
+        "Waste",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Agricultural Supplies",
+        "Processed Food"
+      ],
+      "consumes": [
+        "Scrap",
+        "Quartz",
+        "Aluminum",
+        "Titanium",
+        "Tungsten",
+        "Corundum",
+        "Laranite",
+        "Hydrogen",
+        "Silicon",
+        "Waste",
+        "Agricultural Supplies",
+        "Processed Food"
+      ]
+    }
+  }
+}
