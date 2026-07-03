@@ -5,158 +5,255 @@
     "note": "Solo incluye ubicaciones con coincidencia EXACTA de nombre contra locations.json, y solo materiales que existen en nuestra lista curada (materials.json). No se adivina ninguna asociación.",
     "totalActiveInSource": 684,
     "matchedToOurLocations": 132,
-    "generated": "2026-07-03T05:06:28.148Z"
+    "generated": "2026-07-03T05:24:13.407Z"
   },
   "rules": {
     "Dupree Industrial Manufacturing Facility": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "Cry-Astro Processing Plant 19-02": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "Cry-Astro Processing Plant 34-12": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "Greycat Stanton I Production Complex-B": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "Greycat Stanton IV Production Complex-A": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
+        "Carbon",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "HDPC-Cassillo": {
       "produces": [
         "Waste",
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
+        "Carbon",
         "Silicon",
         "Waste",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "HDPC-Farnesway": {
       "produces": [
         "Waste",
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
+        "Carbon",
         "Silicon",
         "Waste",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Sakura Sun Magnolia Workcenter": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
+        "Carbon",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Sakura Sun Goldenrod Workcenter": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
+        "Carbon",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "microTech Logistics Depot S4LD01": {
       "produces": [
         "Waste",
-        "Scrap"
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Quantum Fuel",
+        "Ship Ammunition"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "microTech Logistics Depot S4LD13": {
       "produces": [
         "Waste",
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Stims"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Oxygen",
         "Hydrogen",
         "Waste",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Ludlow": {
@@ -204,10 +301,14 @@
     "Pyro Gateway": {
       "produces": [
         "Waste",
+        "Tin",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Waste",
         "Agricultural Supplies",
@@ -217,59 +318,108 @@
     "Terra Gateway": {
       "produces": [
         "Waste",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Agricultural Supplies",
         "Processed Food"
       ],
       "consumes": [
+        "Carbon",
         "Silicon",
         "Waste"
       ]
     },
     "Devlin Scrap & Salvage": {
       "produces": [
-        "Waste"
+        "Waste",
+        "Osoian Hides",
+        "CK13-GID Seed Blend",
+        "Gasping Weevil Eggs",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits",
+        "Human Food Bars"
       ],
       "consumes": [
         "Scrap",
         "Waste",
+        "Mixed Mining",
+        "Inert Materials",
+        "LifeCure Medsticks",
+        "HLX99 Hyperprocessors",
         "Maze",
-        "Processed Food"
+        "Processed Food",
+        "Stims"
       ]
     },
     "Reclamation & Disposal Orinth": {
       "produces": [
-        "Waste"
+        "Waste",
+        "Osoian Hides",
+        "CK13-GID Seed Blend",
+        "Gasping Weevil Eggs",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits",
+        "Human Food Bars"
       ],
       "consumes": [
         "Scrap",
         "Waste",
+        "Mixed Mining",
+        "Inert Materials",
+        "LifeCure Medsticks",
+        "HLX99 Hyperprocessors",
         "Maze",
-        "Processed Food"
+        "Processed Food",
+        "Stims"
       ]
     },
     "Levski": {
       "produces": [
         "Waste",
+        "Osoian Hides",
+        "CK13-GID Seed Blend",
+        "Gasping Weevil Eggs",
+        "Human Food Bars",
+        "HLX99 Hyperprocessors",
+        "RS1 Odysey Spacesuits",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
         "Fluorine",
         "Medical Supplies",
-        "Scrap"
+        "Ship Ammunition",
+        "Scrap",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Fluorine",
         "Medical Supplies",
+        "Ship Ammunition",
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "Grim HEX": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "RS1 Odysey Spacesuits",
+        "mobyGlass Personal Computers",
+        "HLX99 Hyperprocessors",
+        "Osoian Hides",
+        "CK13-GID Seed Blend",
+        "Gasping Weevil Eggs",
+        "Human Food Bars"
       ],
       "consumes": [
+        "Carbon",
+        "Potassium",
         "Construction Materials",
-        "Widow"
+        "WiDoW"
       ]
     },
     "Orison": {
@@ -282,13 +432,26 @@
       "produces": [
         "Waste",
         "Scrap",
-        "Iron"
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron",
+        "Iron (Ore)",
+        "Quartz (Raw)"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
+        "Glacosite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "Shepherd's Rest": {
@@ -296,7 +459,12 @@
         "Waste"
       ],
       "consumes": [
+        "Ranta Dung",
         "Agricultural Supplies",
+        "Dolivine",
+        "Beradom",
+        "Feynmaline",
+        "Glacosite",
         "Waste"
       ]
     },
@@ -318,7 +486,11 @@
       ],
       "consumes": [
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Beradom",
+        "Feynmaline",
+        "Glacosite",
         "Waste"
       ]
     },
@@ -327,7 +499,10 @@
         "Waste"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "Glacosite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "Chawla's Beach": {
@@ -335,7 +510,11 @@
         "Waste"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "Dolivine",
+        "Feynmaline",
+        "Beradom",
+        "Glacosite"
       ]
     },
     "Jackson's Swap": {
@@ -345,7 +524,11 @@
       "consumes": [
         "Waste",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Glacosite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "Sacren's Plot": {
@@ -355,7 +538,11 @@
       "consumes": [
         "Waste",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Beradom",
+        "Glacosite"
       ]
     },
     "Canard View": {
@@ -365,15 +552,25 @@
       "consumes": [
         "Waste",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Glacosite",
+        "Beradom"
       ]
     },
     "Windfall": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ]
     },
     "Rustville": {
@@ -381,7 +578,11 @@
         "Waste"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "Dolivine",
+        "Beradom",
+        "Feynmaline",
+        "Glacosite"
       ]
     },
     "Seer's Canyon": {
@@ -389,7 +590,11 @@
         "Waste"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "Dolivine",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "Last Landings": {
@@ -397,37 +602,71 @@
         "Waste"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "Dolivine",
+        "Feynmaline",
+        "Glacosite",
+        "Beradom"
       ]
     },
     "The Golden Riviera": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
         "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Feynmaline",
+        "Glacosite"
       ]
     },
     "Fallow Field": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
         "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Beradom",
+        "Glacosite"
       ]
     },
     "Ashland": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
         "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Beradom",
+        "Glacosite"
       ]
     },
     "Shadowfall": {
@@ -514,31 +753,52 @@
     },
     "Arid Reach": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ]
     },
     "Goner's Deal": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ]
     },
     "Rough Landing": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ],
       "consumes": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "mobyGlass Personal Computers",
+        "RS1 Odysey Spacesuits"
       ]
     },
     "Stonetree": {
       "produces": [
-        "Waste"
+        "Waste",
+        "LifeCure Medsticks",
+        "RS1 Odysey Spacesuits",
+        "mobyGlass Personal Computers"
       ],
       "consumes": []
     },
@@ -671,13 +931,21 @@
       "produces": [
         "Scrap",
         "Waste",
+        "Iron (Ore)",
         "Copper",
         "Iron"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline",
         "Titanium",
         "Copper"
       ]
@@ -686,13 +954,21 @@
       "produces": [
         "Scrap",
         "Waste",
+        "Iron (Ore)",
         "Copper",
         "Iron"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline",
         "Titanium",
         "Copper"
       ]
@@ -701,13 +977,21 @@
       "produces": [
         "Scrap",
         "Waste",
+        "Iron (Ore)",
         "Copper",
         "Iron"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline",
         "Titanium",
         "Copper"
       ]
@@ -716,13 +1000,21 @@
       "produces": [
         "Scrap",
         "Waste",
+        "Iron (Ore)",
         "Copper",
         "Iron"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline",
         "Titanium",
         "Copper"
       ]
@@ -731,13 +1023,21 @@
       "produces": [
         "Scrap",
         "Waste",
+        "Iron (Ore)",
         "Copper",
         "Iron"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Glacosite",
+        "Beradom",
+        "Feynmaline",
         "Titanium",
         "Copper"
       ]
@@ -746,13 +1046,21 @@
       "produces": [
         "Scrap",
         "Waste",
+        "Iron (Ore)",
         "Copper",
         "Iron"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
+        "Dolivine",
         "Hadanite",
+        "Glacosite",
+        "Beradom",
+        "Feynmaline",
         "Titanium",
         "Copper"
       ]
@@ -760,23 +1068,43 @@
     "HDMS-Anderson": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Quartz (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Glacosite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "HDMS-Norgaard": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Quartz (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Glacosite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "HDMS-Hahn": {
@@ -785,12 +1113,19 @@
         "Waste",
         "Quartz",
         "Copper",
-        "Laranite"
+        "Laranite",
+        "Iron (Ore)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "HDMS-Perlman": {
@@ -799,12 +1134,19 @@
         "Waste",
         "Quartz",
         "Copper",
-        "Laranite"
+        "Laranite",
+        "Iron (Ore)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "HDMS-Ryder": {
@@ -812,12 +1154,20 @@
         "Scrap",
         "Waste",
         "Iron",
-        "Titanium"
+        "Titanium",
+        "Iron (Ore)",
+        "Copper (Ore)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "HDMS-Woodruff": {
@@ -825,166 +1175,308 @@
         "Scrap",
         "Waste",
         "Iron",
-        "Titanium"
+        "Titanium",
+        "Iron (Ore)",
+        "Copper (Ore)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Hadanite",
+        "Dolivine",
+        "Feynmaline",
+        "Beradom"
       ]
     },
     "ArcCorp Mining Area 141": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Titanium (Ore)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Feynmaline",
+        "Glacosite"
       ]
     },
     "Shubin Mining Facility SCD-1": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Titanium (Ore)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Feynmaline",
+        "Glacosite"
       ]
     },
     "Shubin Mining Facility SAL-2": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SAL-5": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "ArcCorp Mining Area 045": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "ArcCorp Mining Area 048": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "ArcCorp Mining Area 056": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "ArcCorp Mining Area 061": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SM0-10": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SM0-13": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Glacosite",
+        "Beradom",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SM0-18": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SM0-22": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Beradom",
+        "Glacosite",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SMCa-6": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Glacosite",
+        "Beradom",
+        "Feynmaline"
       ]
     },
     "Shubin Mining Facility SMCa-8": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)"
       ],
       "consumes": [
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite",
-        "Hadanite"
+        "Dolivine",
+        "Hadanite",
+        "Glacosite",
+        "Beradom",
+        "Feynmaline"
       ]
     },
     "Hickes Research Outpost": {
@@ -993,9 +1485,13 @@
         "Scrap"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Rayari Deltana Research Outpost": {
@@ -1005,9 +1501,13 @@
         "Agricultural Supplies"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Rayari Anvik Research Outpost": {
@@ -1017,9 +1517,13 @@
         "Agricultural Supplies"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Rayari Kaltag Research Outpost": {
@@ -1029,9 +1533,13 @@
         "Agricultural Supplies"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Rayari Cantwell Research Outpost": {
@@ -1041,9 +1549,13 @@
         "Agricultural Supplies"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Rayari McGrath Research Outpost": {
@@ -1053,85 +1565,132 @@
         "Agricultural Supplies"
       ],
       "consumes": [
+        "Oxygen",
         "Hydrogen",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "People's Service Station Alpha": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "People's Service Station Delta": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "People's Service Station Theta": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "People's Service Station Lambda": {
       "produces": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ],
       "consumes": [
         "Scrap",
-        "Waste"
+        "Waste",
+        "Mixed Mining",
+        "Inert Materials"
       ]
     },
     "Everus Harbor": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Quartz (Raw)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Agricultural Supplies",
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
+        "Osoian Hides",
         "Copper",
         "Medical Supplies",
         "Chlorine",
         "Iodine",
         "Astatine",
-        "Fluorine"
+        "Fluorine",
+        "HLX99 Hyperprocessors",
+        "Virus Cultures",
+        "Biological Samples"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Quartz (Raw)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Waste",
         "Agricultural Supplies",
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
+        "Osoian Hides",
         "Copper",
         "Iron",
         "Iodine",
@@ -1141,311 +1700,529 @@
     "HUR-L1 Green Glade Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "HUR-L2 Faithful Dream Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Quartz",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Quartz (Raw)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "HUR-L3 Thundering Express Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "HUR-L4 Melodic Fields Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "HUR-L5 High Course Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "CRU-L1 Ambitious Dream Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Aluminum",
         "Titanium",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Aluminum (Ore)",
+        "Titanium (Ore)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "CRU-L4 Shallow Fields Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Aluminum",
         "Tungsten"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "CRU-L5 Beautiful Glen Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Seraphim Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Aluminum (Ore)",
+        "Titanium (Ore)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Iron (Ore)",
+        "Copper (Ore)",
+        "Aluminum (Ore)",
+        "Titanium (Ore)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Waste",
         "Agricultural Supplies",
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite"
       ]
     },
     "Baijini Point": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Waste",
         "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
         "Aphorite"
       ]
     },
     "ARC-L1 Wide Forest Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Aluminum",
         "Tungsten",
         "Corundum",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "ARC-L2 Lively Pathway Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Aluminum",
         "Tungsten",
         "Corundum",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Aluminum (Ore)",
+        "Tungsten (Ore)",
+        "Corundum (Raw)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "ARC-L3 Modern Express Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "ARC-L4 Faint Glen Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "ARC-L5 Yellow Core Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Aluminum",
         "Tungsten"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "MIC-L1 Shallow Frontier Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Quartz",
         "Corundum",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Quartz (Raw)",
+        "Corundum (Raw)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "MIC-L2 Long Forest Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
         "Quartz",
         "Corundum",
         "Laranite",
+        "Carbon",
         "Silicon"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Quartz (Raw)",
+        "Corundum (Raw)",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "MIC-L3 Endless Odyssey Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "MIC-L4 Red Crossroads Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Silicon",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "MIC-L5 Modern Icarus Station": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste"
       ],
       "consumes": [
         "Scrap",
-        "Processed Food"
+        "Mixed Mining",
+        "Inert Materials",
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     },
     "Port Tressler": {
       "produces": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
         "Waste",
+        "Quartz (Raw)",
+        "Corundum (Raw)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims",
+        "Ranta Dung"
       ],
       "consumes": [
         "Scrap",
+        "Mixed Mining",
+        "Inert Materials",
+        "Quartz (Raw)",
+        "Corundum (Raw)",
         "Quartz",
         "Aluminum",
         "Titanium",
         "Tungsten",
         "Corundum",
+        "Tin",
         "Laranite",
+        "Oxygen",
         "Hydrogen",
+        "Carbon",
         "Silicon",
         "Waste",
         "Agricultural Supplies",
-        "Processed Food"
+        "Processed Food",
+        "Quantum Fuel",
+        "Ship Ammunition",
+        "Stims"
       ]
     }
   }
