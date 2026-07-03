@@ -1195,7 +1195,7 @@ const DATA={
     {label:"Cloudrest Retreat",x:-18.9696,y:-2.6664,z:0.0,type:"outpost",pad:'efe'},
     {label:"Comm Array ST2-55",x:-18.9636,y:-2.6562,z:0.0,type:"station",pad:'int'},
     {label:"Empyrean Park",x:-18.9611,y:-2.6577,z:0.0015,type:"outpost",pad:'efe'},
-    {label:"Orison",x:-18.9569,y:-2.6658,z:0.0053,type:"habitat",pad:'efe'},
+    {label:"Orison",x:-18.9569,y:-2.6658,z:0.0053,type:"habitat",pad:'int'},
     {label:"Prospect Point",x:-18.9589,y:-2.6662,z:0.0067,type:"outpost",pad:'efe'},
     {label:"Seraphim Station",x:-18.9563,y:-2.6663,z:0.0056,type:"station",pad:'efe'},
     ]},
@@ -1519,15 +1519,15 @@ const DATA={
     "Pyro":{locs:[
     {label:"Checkmate",x:1.8334,y:10.4345,z:0.0026,type:"station",pad:'efe'},
     {label:"Dudley & Daughters",x:23.3426,y:-64.226,z:-0.0108,type:"station",pad:'efe'},
-    {label:"Endgame",x:48.2968,y:48.292,z:0.0027,type:"station",pad:'efe'},
+    {label:"Endgame",x:48.2968,y:48.292,z:0.0027,type:"station",pad:'int'},
     {label:"Gaslight",x:46.4944,y:-8.1909,z:0.0177,type:"station",pad:'efe'},
     {label:"Megumi Refueling",x:-59.1456,y:34.1455,z:0.0127,type:"station",pad:'efe'},
     {label:"Nyx Gateway",x:32.994,y:-38.1517,z:0.0,type:"station",pad:'efe'},
     {label:"Stanton Gateway",x:-37.6092,y:37.4357,z:0.0,type:"station",pad:'efe'},
-    {label:"Patch City",x:11.4453,y:13.6223,z:0.0028,type:"station",pad:'efe'},
-    {label:"Rat's Nest",x:3.7326,y:-42.7669,z:0.0185,type:"station",pad:'efe'},
+    {label:"Patch City",x:11.4453,y:13.6223,z:0.0028,type:"station",pad:'int'},
+    {label:"Rat's Nest",x:3.7326,y:-42.7669,z:0.0185,type:"station",pad:'int'},
     {label:"Rod's Fuel 'N Supplies",x:14.6643,y:40.3386,z:-0.0095,type:"station",pad:'int'},
-    {label:"Starlight Service Station",x:-7.7566,y:-14.0089,z:0.0014,type:"station",pad:'efe'},
+    {label:"Starlight Service Station",x:-7.7566,y:-14.0089,z:0.0014,type:"station",pad:'int'},
     ]},
     "Pyro I":{locs:[
     {label:"Gray Gardens Depot",x:1.7196,y:-8.0919,z:-0.0001,type:"outpost",pad:'efe'},
@@ -1575,7 +1575,7 @@ const DATA={
   },
   "Nyx":{
     "Nyx":{locs:[
-    {label:"Levski",x:-9.6417,y:-11.4907,z:-0.0001,type:"station",pad:'efe'},
+    {label:"Levski",x:-9.6417,y:-11.4907,z:-0.0001,type:"station",pad:'int'},
     {label:"People's Service Station Alpha",x:-45.8043,y:-14.3513,z:0.0,type:"station",pad:'int'},
     {label:"People's Service Station Delta",x:-6.4325,y:-47.567,z:0.0,type:"station",pad:'int'},
     {label:"People's Service Station Lambda",x:43.3278,y:20.6568,z:0.0,type:"station",pad:'int'},
@@ -1741,6 +1741,7 @@ const QUANTUM_DRIVES={
 const QD_DEFAULT="Torrent (S2)";
 // --- AUTOGEN SHIPS END ---
 // --- AUTOGEN MATS START ---
+let TRADE_RULES={}; // ubicación real -> {produces:[...], consumes:[...]} — datos reales de trade_locations.json
 let MATERIALS=["— Select commodity —","Acryliplex Composite","Agricium","Agricultural Supplies","Aluminum","Amioshi Plague","Ammonia","Aphorite","Argon","Astatine","Beryl","Bexalite","Chlorine","Cobalt","Construction Materials","Copper","Corundum","Diamond","Distilled Spirits","Fluorine","Gold","Hadanite","Helium","Hydrogen","Iodine","Iron","Krypton","Laranite","Maze","Medical Supplies","Mercury","Methane","Neon","Nitrogen","Pressurized Ice","Processed Food","Quantanium","Quartz","Recycled Material Composite","Scrap","Silicon","SLAM","Steel","Titanium","Tungsten","Waste","Widow"];
 // --- AUTOGEN MATS END ---
 const ALL_BOX_SIZES=[1,2,4,8,16,24,32];
@@ -2356,6 +2357,18 @@ function locTypeTag(l){
 
 // Badge visual compacto (ícono + texto) para mostrar junto a una ubicación
 // resuelta en las tarjetas de misión — mismo criterio que locAccessInfo
+// Si esta ubicación tiene datos reales de trade_locations.json y produce
+// EXACTAMENTE un material de nuestra lista, lo sugiere — solo si el
+// material actual sigue siendo el placeholder (no pisa una elección real)
+function suggestMaterialFor(locId,currentMat){
+  const loc=locById(locId);
+  if(!loc)return null;
+  if(currentMat&&currentMat!=='— Select commodity —')return null; // ya hay algo elegido, no pisar
+  const rule=TRADE_RULES[loc.label];
+  if(!rule||!rule.produces||rule.produces.length!==1)return null;
+  return rule.produces[0];
+}
+
 function accessBadgeEl(locId){
   const l=locById(locId);
   if(!l)return null;
@@ -2365,6 +2378,20 @@ function accessBadgeEl(locId){
     padding:2px 7px;border-radius:99px;color:${acc.color};background:${acc.bg};
     white-space:nowrap;margin-top:3px;`;
   el.innerHTML=`<i class="ti ${acc.icon}" style="font-size:11px" aria-hidden="true"></i>${acc.label}`;
+  return el;
+}
+
+// Aviso cuando el material de una entrega no coincide con lo que ese
+// lugar realmente consume, según datos reales de trade_locations.json
+function materialWarningEl(entry){
+  if(!entry||!entry.materialWarning)return null;
+  const el=document.createElement('div');
+  el.style.cssText=`display:flex;align-items:flex-start;gap:5px;font-size:10px;
+    color:#E8A0A0;background:color-mix(in srgb,#E84040 10%,transparent);
+    border:0.5px solid color-mix(in srgb,#E84040 30%,transparent);
+    border-radius:6px;padding:5px 8px;margin-top:4px;line-height:1.4;`;
+  el.innerHTML=`<i class="ti ti-alert-circle" style="font-size:12px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+    <span>${entry.materialWarning}</span>`;
   return el;
 }
 
@@ -3323,7 +3350,7 @@ function renderMissions(){
             <div class="cm-inputs"><select class="js-loc" style="flex:1"></select></div>
           </div>
           ${m.pickups.length>1?'<button class="cm-mini-btn js-rm-pick"><i class="ti ti-x"></i></button>':''}`;
-        const ls=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;p.matchTier=null;p.rawText=null;renderMissions();});
+        const ls=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;p.matchTier=null;p.rawText=null;const sugg=suggestMaterialFor(id,p.material);if(sugg)p.material=sugg;renderMissions();});
         pickRow.querySelector('.js-loc').replaceWith(ls);
         const pAccBadge=accessBadgeEl(p.locId);
         if(pAccBadge)ls.appendChild(pAccBadge);
@@ -3390,6 +3417,8 @@ function renderMissions(){
         if(dAccBadge)ls.appendChild(dAccBadge);
         const dConfWarn=confidenceWarningEl(d);
         if(dConfWarn)dRow.appendChild(dConfWarn);
+        const dMatWarn=materialWarningEl(d);
+        if(dMatWarn)dRow.appendChild(dMatWarn);
         if(m.deliveries.length>1)dRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
         card.appendChild(dRow);
       });
@@ -3494,7 +3523,7 @@ function renderMissions(){
         content.appendChild(matSearch);
 
         // Ubicación — búsqueda libre
-        const locSearch=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;p.matchTier=null;p.rawText=null;renderMissions();});
+        const locSearch=createLocSearch(p.locId,(id)=>{p.locId=id||p.locId;p.matchTier=null;p.rawText=null;const sugg=suggestMaterialFor(id,p.material);if(sugg)p.material=sugg;renderMissions();});
         locSearch.style.marginTop='3px';
         content.appendChild(locSearch);
         const pAccBadge2=accessBadgeEl(p.locId);
@@ -3579,7 +3608,7 @@ function renderMissions(){
 
         // Material propio de esta entrega — búsqueda libre (opcional,
         // si se deja vacío usa el material del pickup)
-        const dMatSearch=createMatSearch(d.material||'',(mat)=>{d.material=mat||null;renderMissions();});
+        const dMatSearch=createMatSearch(d.material||'',(mat)=>{d.material=mat||null;d.materialWarning=null;renderMissions();});
         dMatSearch.style.marginTop='3px';
         content.appendChild(dMatSearch);
 
@@ -3590,6 +3619,8 @@ function renderMissions(){
         if(dAccBadge2)content.appendChild(dAccBadge2);
         const dConfWarn2=confidenceWarningEl(d);
         if(dConfWarn2)content.appendChild(dConfWarn2);
+        const dMatWarn2=materialWarningEl(d);
+        if(dMatWarn2)content.appendChild(dMatWarn2);
         tlItem.appendChild(content);
         card.appendChild(tlItem);
       });
@@ -4198,11 +4229,12 @@ const DATA_CACHE_DAYS=7;
 async function loadStaticData(){
   // Carga asíncrona en paralelo — data/*.json con fallback si falla
   try{
-    const [shipsRes,drivesRes,matsRes,factionsRes]=await Promise.all([
+    const [shipsRes,drivesRes,matsRes,factionsRes,tradeRes]=await Promise.all([
       fetch('./data/ships.json').catch(()=>null),
       fetch('./data/drives.json').catch(()=>null),
       fetch('./data/materials.json').catch(()=>null),
       fetch('./data/factions.json').catch(()=>null),
+      fetch('./data/trade-rules.json').catch(()=>null),
     ]);
 
     if(shipsRes&&shipsRes.ok){
@@ -4241,6 +4273,14 @@ async function loadStaticData(){
       if(fd&&Object.keys(fd).length){
         Object.assign(FACTION_DATA,fd);
         console.info('[data] factions.json loaded:',Object.keys(fd).length,'factions');
+      }
+    }
+    if(tradeRes&&tradeRes.ok){
+      const td=await tradeRes.json();
+      const rules=td.rules||td;
+      if(rules&&Object.keys(rules).length){
+        TRADE_RULES=rules;
+        console.info('[data] trade-rules.json loaded:',Object.keys(rules).length,'locations');
       }
     }
   }catch(e){
@@ -4717,13 +4757,28 @@ function createMissionFromParsed(parsed){
     const remainingPerMissing=missingScuCount>0
       ?Math.max(1,Math.round((pickupsTotal-knownTotal)/missingScuCount)||pickupsTotal/delivResolved.length)
       :0;
-    deliveriesArr=delivResolved.map(d=>({
-      id:++delivSeq,
-      locId:d.locId,
-      scu:d.scu||remainingPerMissing||Math.round(pickupsTotal/delivResolved.length),
-      material:d.material?findMatFuzzy(d.material):null, // null = usa el material del pickup por defecto
-      matchTier:d.matchTier,rawText:d.rawText
-    }));
+    deliveriesArr=delivResolved.map(d=>{
+      const finalMat=d.material?findMatFuzzy(d.material):null;
+      // Validar contra datos reales de qué consume ese lugar — si hay
+      // dato real y el material NO está en la lista, avisar (no bloquear,
+      // Gemini puede haberse equivocado o el dato real puede no cubrir
+      // todos los materiales posibles de ese lugar)
+      let materialWarning=null;
+      if(finalMat){
+        const loc=locById(d.locId);
+        const rule=loc?TRADE_RULES[loc.label]:null;
+        if(rule&&rule.consumes&&rule.consumes.length&&!rule.consumes.includes(finalMat)){
+          materialWarning=`${loc.label} no suele aceptar ${finalMat} según datos reales del juego (acepta: ${rule.consumes.join(', ')})`;
+        }
+      }
+      return{
+        id:++delivSeq,
+        locId:d.locId,
+        scu:d.scu||remainingPerMissing||Math.round(pickupsTotal/delivResolved.length),
+        material:finalMat, // null = usa el material del pickup por defecto
+        matchTier:d.matchTier,rawText:d.rawText,materialWarning
+      };
+    });
   }else{
     deliveriesArr=[{id:++delivSeq,locId:fallbackDelivId,scu:null,material:null}];
   }
