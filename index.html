@@ -1002,6 +1002,19 @@ html.force-light{
 
   <!-- ROUTE TAB -->
   <div id="route-tab">
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+      <button id="quick-loop-btn" title="Encuentra automáticamente el mejor grupo chico de misiones cercanas entre sí"
+        style="flex:1;min-width:140px;padding:8px 10px;background:color-mix(in srgb,var(--c-blue) 12%,var(--c-bg-2));
+        border:0.5px solid color-mix(in srgb,var(--c-blue) 35%,transparent);border-radius:var(--r-sm);
+        color:var(--c-blue);cursor:pointer;font-size:12px;font-family:var(--font-mono)">
+        <i class="ti ti-route-2"></i> Quick Loop (auto-select nearby)
+      </button>
+      <button id="select-all-btn" title="Volver a incluir todas las misiones en la ruta"
+        style="padding:8px 10px;background:var(--c-bg-2);border:0.5px solid var(--c-border-2);
+        border-radius:var(--r-sm);color:var(--c-text-3);cursor:pointer;font-size:12px;font-family:var(--font-mono)">
+        <i class="ti ti-checks"></i> All
+      </button>
+    </div>
     <button class="calc-btn" id="calc-btn" style="margin-bottom:10px">
       <i class="ti ti-route"></i> Calculate Best Route
     </button>
@@ -2591,12 +2604,71 @@ function renderRankGuide(){
 
 // ===== COMBOS DE FARMEO =====
 function sysOf(n){return(n&&n.sys)||'Stanton';}
+// Tiempo de vuelo PURO entre dos puntos (sin penalización de aterrizaje/
+// despegue) — para saber "qué tan cerca están" dos lugares. _timeCostSync
+// no sirve para esto porque incluye el tiempo de aterrizaje incluso a
+// distancia cero (mide el costo de un TRAMO de ruta, no cercanía espacial).
+function pureTravelTime(a,b,qSpeed){return dist3(a,b)/qSpeed;}
+
 // Velocidad del motor cuántico actualmente seleccionado — usado para
 // convertir distancia en tiempo real de vuelo en los clusters
 function getCurrentQSpeed(){
   const driveKey=$('drive-sel')?.value||QD_DEFAULT;
   const drive=QUANTUM_DRIVES[driveKey]||QUANTUM_DRIVES[QD_DEFAULT];
   return drive?.speed||0.2;
+}
+
+// ── Quick Loop: detecta automáticamente el mejor grupo chico entre
+// TODAS las misiones cargadas (sin importar el modo) — 1 pickup con
+// varias entregas cercanas, o varios pickups cercanos con 1 entrega
+// compartida. Marca esas misiones como "incluidas" y desmarca el resto,
+// para calcular una ruta corta en vez de las 10 completas.
+function findBestQuickLoop(){
+  const qSpeed=getCurrentQSpeed();
+  const THRESH_SEC=90; // 90s de vuelo puro (sin aterrizaje) — "cerca"
+  const cap=getCap();
+
+  function clusterBy(keyFn,pattern){
+    const items=missions.map((m,mi)=>{
+      const loc=locById(keyFn(m));
+      if(!loc)return null;
+      return{mnum:mi,loc,sys:sysOf(loc),scu:missionssionTotal(m)};
+    }).filter(Boolean);
+    const clusters=[];
+    items.forEach(it=>{
+      let placed=false;
+      for(const c of clusters){
+        if(c.sys===it.sys&&pureTravelTime(c.ref,it.loc,qSpeed)<=THRESH_SEC){
+          c.items.push(it);placed=true;break;
+        }
+      }
+      if(!placed)clusters.push({sys:it.sys,ref:it.loc,items:[it],pattern});
+    });
+    return clusters.filter(c=>c.items.length>1); // solo interesa si combina 2+
+  }
+
+  const byPickup=clusterBy(m=>m.pickups[0]?.locId,'pickup');
+  const byDelivery=clusterBy(m=>m.deliveries[0]?.locId,'delivery');
+  const all=[...byPickup,...byDelivery];
+  if(!all.length)return null;
+
+  all.forEach(c=>{c.totalScu=c.items.reduce((a,x)=>a+x.scu,0);c.fits=c.totalScu<=cap;});
+  // Priorizar: que quepa en la bodega, y entre esos el que combine más misiones
+  all.sort((a,b)=>{
+    if(a.fits!==b.fits)return a.fits?-1:1;
+    return b.items.length-a.items.length;
+  });
+  return all[0];
+}
+
+function applyQuickLoop(){
+  const best=findBestQuickLoop();
+  if(!best){setBadge('error','No se encontró un grupo de 2+ misiones cercanas entre sí');return;}
+  const selectedIdx=new Set(best.items.map(x=>x.mnum));
+  missions.forEach((m,mi)=>{m.selected=selectedIdx.has(mi);});
+  renderMissions();
+  const patternLabel=best.pattern==='pickup'?'mismo pickup, entregas cercanas':'pickups cercanos, misma entrega';
+  setBadge('ok',`✓ Quick Loop: ${best.items.length} misiones seleccionadas (${patternLabel})${best.fits?'':' — ⚠ no cabe todo en la bodega'}`);
 }
 
 function farmCombos(){
@@ -2615,12 +2687,12 @@ function farmCombos(){
   // adapta solo a tu nave/motor actual: con un motor rápido, más Gm
   // cuentan como "cerca" en minutos; con uno lento, menos.
   const qSpeed=getCurrentQSpeed();
-  const THRESH_SEC=300; // 5 minutos de vuelo estimado
+  const THRESH_SEC=90; // 90s de vuelo puro (sin aterrizaje) — "cerca"
   const clusters=[];
   items.forEach(it=>{
     let placed=false;
     for(const c of clusters){
-      if(c.sys===it.sys&&_timeCostSync(c.pick,it.pick,qSpeed)<=THRESH_SEC&&_timeCostSync(c.drop,it.drop,qSpeed)<=THRESH_SEC){
+      if(c.sys===it.sys&&pureTravelTime(c.pick,it.pick,qSpeed)<=THRESH_SEC&&pureTravelTime(c.drop,it.drop,qSpeed)<=THRESH_SEC){
         c.items.push(it);placed=true;break;
       }
     }
@@ -3104,7 +3176,7 @@ function renderSmartCombos(){
 function missionClusterRecommendations(){
   const cap=getCap();
   const qSpeed=getCurrentQSpeed();
-  const THRESH_SEC=420; // 7 minutos — un poco más laxo que farmCombos, agrupa "zona" no solo el mismo punto exacto
+  const THRESH_SEC=150; // 150s — un poco más laxo que farmCombos, agrupa "zona" no solo el mismo punto exacto
   const items=missions.map((m,mi)=>{
     const pickLoc=locById(m.pickups[0]?.locId);
     if(!pickLoc)return null;
@@ -3115,7 +3187,7 @@ function missionClusterRecommendations(){
   items.forEach(it=>{
     let placed=false;
     for(const c of clusters){
-      if(c.sys===it.sys&&_timeCostSync(c.pickRef,it.pickLoc,qSpeed)<=THRESH_SEC){
+      if(c.sys===it.sys&&pureTravelTime(c.pickRef,it.pickLoc,qSpeed)<=THRESH_SEC){
         c.items.push(it);placed=true;break;
       }
     }
@@ -3198,9 +3270,14 @@ function renderMissions(){
     const mat0=m.pickups[0]?.material;
     const elapsed=m.startedAt?Math.floor((Date.now()-m.startedAt)/1000):0;
     const elapsedStr=`${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
+    const isSelected=m.selected!==false;
+    card.style.opacity=isSelected?'1':'0.5';
     const head=document.createElement('div');head.className='cm-card-header';
     head.innerHTML=`
       <div class="cm-card-meta">
+        <label style="display:flex;align-items:center;cursor:pointer" title="Incluir en el cálculo de ruta">
+          <input type="checkbox" class="js-route-include" ${isSelected?'checked':''} style="cursor:pointer">
+        </label>
         <span class="cm-badge">M${mi+1}</span>
         ${oneBoxMode
           ?`<span class="cm-scu-badge">${oneBoxSize} SCU</span><span style="font-size:9px;background:#E84040;color:#fff;border-radius:99px;padding:1px 7px">1 box</span>`
@@ -3213,6 +3290,9 @@ function renderMissions(){
         <button class="js-done"><i class="ti ti-check"></i> Done</button>
         <button class="js-rm"><i class="ti ti-trash"></i></button>
       </div>`;
+    head.querySelector('.js-route-include').addEventListener('change',e=>{
+      m.selected=e.target.checked;renderMissions();
+    });
     head.querySelector('.js-rm').addEventListener('click',()=>removeMission(m.id));
     head.querySelector('.js-done').addEventListener('click',()=>completeMission(m.id));
     head.querySelector('.js-clone').addEventListener('click',()=>cloneMission(m.id));
@@ -3625,6 +3705,7 @@ function nearestStation(loc,excludeId){
 function buildNodes(){
   const nodes=[];
   missions.forEach((m,mi)=>{
+    if(m.selected===false)return; // excluida manualmente o por "Quick Loop"
     const total=missionssionTotal(m);if(!total)return;
     const mid=''+mi;
     const mat=m.pickups[0]?.material||'cargo';
@@ -5753,6 +5834,8 @@ async function init(){
   $('add-missionssion').addEventListener('click',addMission);
   $('add-missionssion-bottom')?.addEventListener('click',addMission);
   $('picker-rec-btn')?.addEventListener('click',()=>{pickerRecShown=!pickerRecShown;renderMissions();});
+  $('quick-loop-btn')?.addEventListener('click',applyQuickLoop);
+  $('select-all-btn')?.addEventListener('click',()=>{missions.forEach(m=>m.selected=true);renderMissions();setBadge('ok','✓ Todas las misiones incluidas de nuevo');});
   $('calc-btn').addEventListener('click',calculate);
   $('clear-all').addEventListener('click',()=>{missions=[];renderMissions();});
   $('bmode-optimal').addEventListener('click',()=>{boxMode='optimal';$('bmode-optimal').classList.add('on');$('bmode-single').classList.remove('on');renderMissions();});
