@@ -990,12 +990,6 @@ html.force-light{
       <div id="session-history" style="margin-top:6px;overflow-x:auto"></div>
     </div>
 
-    <!-- FARMING COMBOS -->
-    <div id="farm-combos-wrap">
-      <div class="section-lbl"><span>COMBOS DE FARMEO</span><span class="hint">which contracts to combine (25% mode)</span></div>
-      <div class="com-table" id="farm-combos"></div>
-    </div>
-
     <div class="section-lbl"><span>SHIP GUIDE BY RANK</span></div>
     <div class="rank-guide" id="rank-guide"></div>
   </div>
@@ -1003,11 +997,11 @@ html.force-light{
   <!-- ROUTE TAB -->
   <div id="route-tab">
     <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
-      <button id="quick-loop-btn" title="Encuentra automáticamente el mejor grupo chico de misiones cercanas entre sí"
+      <button id="quick-loop-btn" title="Aplica directo el mejor grupo encontrado — o mirá todas las opciones abajo"
         style="flex:1;min-width:140px;padding:8px 10px;background:color-mix(in srgb,var(--c-blue) 12%,var(--c-bg-2));
         border:0.5px solid color-mix(in srgb,var(--c-blue) 35%,transparent);border-radius:var(--r-sm);
         color:var(--c-blue);cursor:pointer;font-size:12px;font-family:var(--font-mono)">
-        <i class="ti ti-route-2"></i> Quick Loop (auto-select nearby)
+        <i class="ti ti-route-2"></i> Quick Loop (use best group)
       </button>
       <button id="select-all-btn" title="Volver a incluir todas las misiones en la ruta"
         style="padding:8px 10px;background:var(--c-bg-2);border:0.5px solid var(--c-border-2);
@@ -1015,6 +1009,13 @@ html.force-light{
         <i class="ti ti-checks"></i> All
       </button>
     </div>
+
+    <!-- Sugerencias de grupos — funciona en cualquier modo, muestra XP cuando aplica (25%) -->
+    <div id="farm-combos-wrap">
+      <div class="section-lbl"><span>GRUPOS SUGERIDOS</span><span class="hint">which contracts to combine — click a card to use it</span></div>
+      <div class="com-table" id="farm-combos"></div>
+    </div>
+
     <button class="calc-btn" id="calc-btn" style="margin-bottom:10px">
       <i class="ti ti-route"></i> Calculate Best Route
     </button>
@@ -1042,18 +1043,29 @@ html.force-light{
 
       <!-- Step by step checklist -->
       <div class="section-lbl" id="steps-lbl" style="margin-top:12px"><span>STEP BY STEP</span><span class="hint">click any step to check it off</span></div>
+      <div id="route-progress" style="display:none;background:var(--c-bg-2);border:0.5px solid var(--c-border-2);
+        border-radius:var(--r-sm);padding:8px 12px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+          <span style="font-size:12px;font-weight:600">Route progress</span>
+          <span id="route-progress-count" style="font-size:11px;color:var(--c-text-3);font-family:var(--font-mono)"></span>
+        </div>
+        <div style="height:6px;background:var(--c-bg-1);border-radius:99px;overflow:hidden;margin-bottom:4px">
+          <div id="route-progress-bar" style="height:100%;width:0%;background:var(--c-green);border-radius:99px;transition:width .2s"></div>
+        </div>
+        <div id="route-progress-pct" style="font-size:10px;color:var(--c-text-3)"></div>
+      </div>
       <div class="step-list" id="step-list"></div>
     </div>
   </div>
 
   <!-- PESTAÑA CAJAS -->
   <div id="boxes-tab" style="display:none">
+    <div class="section-lbl"><span>QUICK BOX CALCULATOR</span><span class="hint">total boxes before you even calculate a route</span></div>
     <div class="mode-row"><span class="lbl">Boxes:</span><button class="mbtn on" id="bmode-optimal">Automatic (1–32, mixed)</button><button class="mbtn" id="bmode-single">Fixed size</button></div>
     <div id="size-wrap" style="display:none"><div class="size-label" id="size-lbl"><i class="ti ti-resize" aria-hidden="true" style="font-size:12px"></i> Tamaño de box</div><div class="size-row" id="size-row"></div></div>
     <div class="grand-total" id="grand-total"></div>
-    <div class="section-lbl"><span>BOXES PER MISSION AND COMMODITY</span><span class="hint" id="boxes-hint"></span></div>
-    <div class="com-table" id="com-table"></div>
     <div class="note" id="box-note"></div>
+    <div class="note" style="margin-top:6px;opacity:0.75"><i class="ti ti-info-circle" aria-hidden="true"></i> Para el desglose caja por caja de cada parada, usá el step-by-step en la pestaña "Optimal Route" después de calcular — ahí está en el orden real de vuelo.</div>
   </div>
 </div>
 <div class="page-foot">Hauling Suite · unofficial tool for Star Citizen · your progress is saved in this browser</div>
@@ -2383,6 +2395,33 @@ function accessBadgeEl(locId){
 
 // Aviso cuando el material de una entrega no coincide con lo que ese
 // lugar realmente consume, según datos reales de trade_locations.json
+// Combina los avisos de confianza baja Y material incompatible en UNA
+// sola caja (si aplican ambos a la vez) en vez de mostrar dos cajas
+// apiladas — menos ruido visual en la tarjeta cuando hay varios avisos.
+function entryWarningsEl(entry){
+  if(!entry)return null;
+  const msgs=[];
+  if(entry.matchTier&&entry.matchTier>=3){
+    msgs.push({icon:'ti-alert-triangle',color:'#FAC775',
+      text:`Low-confidence match${entry.rawText?` for "${entry.rawText}"`:''} — double-check this is right.`});
+  }
+  if(entry.materialWarning){
+    msgs.push({icon:'ti-alert-circle',color:'#E84040',text:entry.materialWarning});
+  }
+  if(!msgs.length)return null;
+  const mainColor=msgs.some(m=>m.color==='#E84040')?'#E84040':'#FAC775';
+  const el=document.createElement('div');
+  el.style.cssText=`display:flex;flex-direction:column;gap:4px;font-size:10px;
+    background:color-mix(in srgb,${mainColor} 10%,transparent);
+    border:0.5px solid color-mix(in srgb,${mainColor} 30%,transparent);
+    border-radius:6px;padding:5px 8px;margin-top:4px;line-height:1.4;`;
+  el.innerHTML=msgs.map(m=>`<div style="display:flex;align-items:flex-start;gap:5px;color:${m.color}">
+    <i class="ti ${m.icon}" style="font-size:12px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+    <span style="color:var(--c-text-1)">${m.text}</span>
+  </div>`).join('');
+  return el;
+}
+
 function materialWarningEl(entry){
   if(!entry||!entry.materialWarning)return null;
   const el=document.createElement('div');
@@ -2650,16 +2689,24 @@ function getCurrentQSpeed(){
 // varias entregas cercanas, o varios pickups cercanos con 1 entrega
 // compartida. Marca esas misiones como "incluidas" y desmarca el resto,
 // para calcular una ruta corta en vez de las 10 completas.
-function findBestQuickLoop(){
+// ── Sistema unificado de clustering — reemplaza los 2 sistemas
+// separados que había antes (Farm Combos solo-25% + Quick Loop
+// auto-aplicado). Ahora es UNO: funciona en cualquier modo, muestra
+// TODAS las opciones rankeadas (no aplica ninguna sola), y calcula XP
+// cuando corresponde (modo 25%).
+function computeClusters(){
   const qSpeed=getCurrentQSpeed();
   const THRESH_SEC=90; // 90s de vuelo puro (sin aterrizaje) — "cerca"
   const cap=getCap();
+  const inXpMode=deliveryMode==='partial';
+  const base=(CONTRACT_RANKS[currentRank]?.xpMission)||8000;
+  const xpPer=Math.round(base*(partialPct/100));
 
   function clusterBy(keyFn,pattern){
     const items=missions.map((m,mi)=>{
       const loc=locById(keyFn(m));
       if(!loc)return null;
-      return{mnum:mi,loc,sys:sysOf(loc),scu:missionssionTotal(m)};
+      return{mnum:mi+1,loc,sys:sysOf(loc),scu:missionssionTotal(m),pay:m.pay||0};
     }).filter(Boolean);
     const clusters=[];
     items.forEach(it=>{
@@ -2674,93 +2721,109 @@ function findBestQuickLoop(){
     return clusters.filter(c=>c.items.length>1); // solo interesa si combina 2+
   }
 
+  // Patrón "ajustado" (tight): pickup Y entrega cerca A LA VEZ — loops
+  // genuinamente eficientes de punta a punta, no solo un extremo. Se
+  // prioriza sobre los patrones flojos (solo pickup, o solo entrega).
+  function clusterTight(){
+    const items=missions.map((m,mi)=>{
+      const pickLoc=locById(m.pickups[0]?.locId);
+      const dropLoc=locById(m.deliveries[0]?.locId);
+      if(!pickLoc||!dropLoc)return null;
+      return{mnum:mi+1,pickLoc,dropLoc,sys:sysOf(pickLoc),scu:missionssionTotal(m),pay:m.pay||0};
+    }).filter(Boolean);
+    const clusters=[];
+    items.forEach(it=>{
+      let placed=false;
+      for(const c of clusters){
+        if(c.sys===it.sys
+          &&pureTravelTime(c.pickRef,it.pickLoc,qSpeed)<=THRESH_SEC
+          &&pureTravelTime(c.dropRef,it.dropLoc,qSpeed)<=THRESH_SEC){
+          c.items.push(it);placed=true;break;
+        }
+      }
+      if(!placed)clusters.push({sys:it.sys,pickRef:it.pickLoc,dropRef:it.dropLoc,ref:it.pickLoc,items:[it],pattern:'tight'});
+    });
+    return clusters.filter(c=>c.items.length>1);
+  }
+
+  const byTight=clusterTight();
   const byPickup=clusterBy(m=>m.pickups[0]?.locId,'pickup');
   const byDelivery=clusterBy(m=>m.deliveries[0]?.locId,'delivery');
-  const all=[...byPickup,...byDelivery];
-  if(!all.length)return null;
 
-  all.forEach(c=>{c.totalScu=c.items.reduce((a,x)=>a+x.scu,0);c.fits=c.totalScu<=cap;});
-  // Priorizar: que quepa en la bodega, y entre esos el que combine más misiones
+  // Deduplicar: si un cluster flojo tiene EXACTAMENTE el mismo conjunto
+  // de misiones que uno ajustado, es redundante — el ajustado ya lo
+  // cubre mejor (más info, más eficiente), así que se omite el flojo
+  const tightSets=byTight.map(c=>new Set(c.items.map(x=>x.mnum)));
+  function isRedundant(cluster){
+    const set=new Set(cluster.items.map(x=>x.mnum));
+    return tightSets.some(ts=>ts.size===set.size&&[...set].every(m=>ts.has(m)));
+  }
+  const byPickupFiltered=byPickup.filter(c=>!isRedundant(c));
+  const byDeliveryFiltered=byDelivery.filter(c=>!isRedundant(c));
+
+  const all=[...byTight,...byPickupFiltered,...byDeliveryFiltered];
+
+  all.forEach(c=>{
+    c.totalScu=c.items.reduce((a,x)=>a+x.scu,0);
+    c.totalPay=c.items.reduce((a,x)=>a+(x.pay||0),0);
+    c.fits=c.totalScu<=cap;
+    if(inXpMode)c.xp=c.items.length*xpPer;
+  });
+  // Priorizar: que quepa en la bodega, luego los "tight" (loops más
+  // eficientes de punta a punta), y entre esos el que combine más misiones
   all.sort((a,b)=>{
     if(a.fits!==b.fits)return a.fits?-1:1;
+    if((a.pattern==='tight')!==(b.pattern==='tight'))return a.pattern==='tight'?-1:1;
     return b.items.length-a.items.length;
   });
-  return all[0];
+  return all;
 }
 
-function applyQuickLoop(){
-  const best=findBestQuickLoop();
-  if(!best){setBadge('error','No se encontró un grupo de 2+ misiones cercanas entre sí');return;}
-  const selectedIdx=new Set(best.items.map(x=>x.mnum));
+function applyCluster(cluster){
+  const selectedIdx=new Set(cluster.items.map(x=>x.mnum-1));
   missions.forEach((m,mi)=>{m.selected=selectedIdx.has(mi);});
   renderMissions();
-  const patternLabel=best.pattern==='pickup'?'mismo pickup, entregas cercanas':'pickups cercanos, misma entrega';
-  setBadge('ok',`✓ Quick Loop: ${best.items.length} misiones seleccionadas (${patternLabel})${best.fits?'':' — ⚠ no cabe todo en la bodega'}`);
+  setBadge('ok',`✓ ${cluster.items.length} misiones seleccionadas para la ruta`);
 }
 
-function farmCombos(){
-  if(deliveryMode==='full')return[];
-  const oLocId=$('o-loc')?.value;const o=oLocId?locById(oLocId):null;
-  const base=(CONTRACT_RANKS[currentRank]?.xpMission)||8000;
-  const xpPer=Math.round(base*(partialPct/100));
-  const items=[];
-  missions.forEach((m,mi)=>{
-    const plan=bestCommodityPlan(m);
-    if(!plan||!plan.best||!plan.best.pickLoc||!plan.best.nd)return;
-    const b=plan.best;
-    items.push({mnum:mi+1,mat:b.mat,amt:b.amt,boxes:b.boxes,pick:b.pickLoc,drop:b.nd,sys:sysOf(b.pickLoc)});
-  });
-  // Umbral por TIEMPO de vuelo real (no distancia fija en Gm) — así se
-  // adapta solo a tu nave/motor actual: con un motor rápido, más Gm
-  // cuentan como "cerca" en minutos; con uno lento, menos.
-  const qSpeed=getCurrentQSpeed();
-  const THRESH_SEC=90; // 90s de vuelo puro (sin aterrizaje) — "cerca"
-  const clusters=[];
-  items.forEach(it=>{
-    let placed=false;
-    for(const c of clusters){
-      if(c.sys===it.sys&&pureTravelTime(c.pick,it.pick,qSpeed)<=THRESH_SEC&&pureTravelTime(c.drop,it.drop,qSpeed)<=THRESH_SEC){
-        c.items.push(it);placed=true;break;
-      }
-    }
-    if(!placed)clusters.push({sys:it.sys,pick:it.pick,drop:it.drop,items:[it]});
-  });
-  const cap=getCap();
-  clusters.forEach(c=>{
-    c.boxes=c.items.reduce((a,x)=>a+x.boxes,0);
-    c.scu=c.items.reduce((a,x)=>a+x.amt,0);
-    c.xp=c.items.length*xpPer;
-    let loop=0,jumps=0;
-    if(o){if(sysOf(o)===c.sys){loop=dist3(o,c.pick)+dist3(c.pick,c.drop);}else{jumps=1;loop=dist3(c.pick,c.drop);}}
-    else{loop=dist3(c.pick,c.drop);}
-    c.jumps=jumps;c.loopGm=loop;c.fits=c.scu<=cap;
-  });
-  clusters.sort((a,b)=>(b.items.length-a.items.length)||(a.loopGm-b.loopGm));
-  return clusters;
-}
-function renderFarmCombos(){
+function renderClusterOptions(){
   const wrap=$('farm-combos-wrap');const el=$('farm-combos');
   if(!wrap||!el)return;
-  if(deliveryMode==='full'){wrap.style.display='none';return;}
+  const clusters=computeClusters();
+  if(!clusters.length){
+    wrap.style.display=missions.length>1?'block':'none';
+    el.innerHTML='<div class="empty">No contracts share a nearby pickup or delivery area yet.</div>';
+    return;
+  }
   wrap.style.display='block';
-  const clusters=farmCombos();
-  if(!clusters.length){el.innerHTML='<div class="empty">Add contracts (in 25% mode) to see which ones to combine.</div>';return;}
-  const cap=getCap();const anyCombo=clusters.some(c=>c.items.length>1);
+  const cap=getCap();
   el.innerHTML='';
   clusters.forEach((c,ci)=>{
-    const best=ci===0&&c.items.length>1;
+    const best=ci===0;
     const badges=c.items.map(x=>`<span class="mhead-num">${x.mnum}</span>`).join('');
-    const fitWarn=c.fits?'':`<div class="cgroup-detail" style="color:#FCA5A5"><i class="ti ti-alert-triangle" aria-hidden="true"></i> No cabe completo (${fmt(c.scu)} SCU > ${cap} hold). Lleva un subconjunto.</div>`;
-    const title=c.items.length>1?`${best?'★ Mejor combo':'Combo'} · ${c.items.length} contracts combined`:`Contract ${c.items[0].mnum} (solo)`;
-    const card=document.createElement('div');card.className='com-card'+(best?' best-combo':'');
-    card.innerHTML=`<div class="com-head"><div><span class="com-name">${title}</span><div class="cgroup-sub" style="margin-top:5px">${badges}</div></div><span class="com-scu">+${c.xp.toLocaleString()} XP</span></div>
-      <div class="cgroup-sub"><span class="d" style="background:#378ADD"></span>pick up at <b style="color:var(--c-text-1)">${c.pick.label}</b></div>
-      <div class="cgroup-sub"><span class="d"></span>deliver to <b style="color:var(--c-text-1)">${c.drop.label}</b></div>
-      <div class="cgroup-detail">${c.boxes} boxes · ${fmt(c.scu)} SCU · loop ${fmtGm(c.loopGm)} Gm${c.jumps?` + ${c.jumps} jump`:''} · ${c.sys}</div>
-      ${fitWarn}`;
+    const fitWarn=c.fits?'':`<div class="cgroup-detail" style="color:#FCA5A5"><i class="ti ti-alert-triangle" aria-hidden="true"></i> No cabe completo (${c.totalScu} SCU > ${cap} hold) — considera dejar alguna afuera.</div>`;
+    const patternLabel=c.pattern==='tight'?'pickup y entrega cerca — loop eficiente':c.pattern==='pickup'?'mismo pickup':'misma entrega';
+    const tightBadge=c.pattern==='tight'?'★★ ':'';
+    const title=`${tightBadge}${best?'★ Mejor grupo':'Grupo'} · ${c.items.length} contratos cerca de ${c.ref.label} (${patternLabel})`;
+    const xpBadge=c.xp?`<span class="com-scu">+${c.xp.toLocaleString()} XP</span>`:'';
+    const payBadge=c.totalPay>0?`<span class="com-scu" style="color:var(--c-green)">${c.totalPay.toLocaleString()} aUEC</span>`:'';
+    const card=document.createElement('div');card.className='com-card'+(best?' best-combo':'');card.style.cursor='pointer';
+    card.innerHTML=`<div class="com-head"><div><span class="com-name">${title}</span>
+        <div class="cgroup-sub" style="margin-top:5px">${badges}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">${xpBadge}${payBadge}</div></div>
+      <div class="cgroup-detail">${c.totalScu} SCU total · ${c.items.length} contratos · ${c.sys}</div>
+      ${fitWarn}
+      <button class="js-use-cluster" style="margin-top:6px;width:100%;padding:6px;font-size:11px;
+        border-radius:var(--r-sm);border:0.5px solid var(--c-blue);background:transparent;
+        color:var(--c-blue);cursor:pointer;font-family:var(--font-mono)">Use this group</button>`;
+    card.querySelector('.js-use-cluster').addEventListener('click',e=>{e.stopPropagation();applyCluster(c);});
     el.appendChild(card);
   });
-  if(!anyCombo){const note=document.createElement('div');note.className='cgroup-detail';note.style.marginTop='4px';note.innerHTML='<i class="ti ti-info-circle" aria-hidden="true"></i> No contracts share the same pickup and delivery area. To combine, take contracts with the same pickup point and nearby delivery.';el.appendChild(note);}
+}
+
+function resetClusterSelection(){
+  missions.forEach(m=>m.selected=true);
+  renderMissions();
+  setBadge('ok','✓ Todas las misiones incluidas de nuevo');
 }
 
 function newMission(){
@@ -3287,7 +3350,7 @@ function renderMissions(){
   if(pickerBtn)pickerBtn.style.display=overGameLimit?'inline-flex':'none';
   if(!overGameLimit)pickerRecShown=false; // si bajó de 10, ocultar el panel si estaba abierto
   renderPickerRecommendation();
-  if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderFarmCombos();return;}
+  if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderClusterOptions();return;}
   el.innerHTML='';
   missions.forEach((m,mi)=>{
     const card=document.createElement('div');card.className='cm-card';card.id='mission-card-'+m.id;
@@ -3299,7 +3362,15 @@ function renderMissions(){
     const elapsedStr=`${String(Math.floor(elapsed/60)).padStart(2,'0')}:${String(elapsed%60).padStart(2,'0')}`;
     const isSelected=m.selected!==false;
     card.style.opacity=isSelected?'1':'0.5';
+    const isCollapsed=m.collapsed===true;
     const head=document.createElement('div');head.className='cm-card-header';
+    // Resumen compacto de ubicaciones para cuando está colapsada
+    const pickLbl=locById(m.pickups[0]?.locId)?.label||'?';
+    const dropLbls=[...new Set(m.deliveries.map(d=>locById(d.locId)?.label).filter(Boolean))];
+    const routeSummary=isCollapsed?`<span style="font-size:10px;color:var(--c-text-3);white-space:nowrap;
+        overflow:hidden;text-overflow:ellipsis;max-width:180px" title="${pickLbl} → ${dropLbls.join(', ')}">
+        ${pickLbl} → ${dropLbls[0]||'?'}${dropLbls.length>1?` +${dropLbls.length-1}`:''}
+      </span>`:'';
     head.innerHTML=`
       <div class="cm-card-meta">
         <label style="display:flex;align-items:center;cursor:pointer" title="Incluir en el cálculo de ruta">
@@ -3310,13 +3381,18 @@ function renderMissions(){
           ?`<span class="cm-scu-badge">${oneBoxSize} SCU</span><span style="font-size:9px;background:#E84040;color:#fff;border-radius:99px;padding:1px 7px">1 box</span>`
           :`<span class="cm-scu-badge">${scuTotal} SCU</span>${mat0&&mat0!=='— Select commodity —'?`<span class="cm-mat-badge">${mat0}</span>`:''}`}
         ${m.pay>0?`<span class="cm-pay-badge">${(m.pay/1000).toFixed(0)}K aUEC</span>`:''}
+        ${routeSummary}
         <span class="cm-timer${session.active?' running':''}"><i class="ti ti-clock" style="font-size:10px"></i>${elapsedStr}</span>
       </div>
       <div class="cm-actions">
+        <button class="js-collapse" title="${isCollapsed?'Expandir':'Colapsar'}"><i class="ti ti-chevron-${isCollapsed?'down':'up'}"></i></button>
         <button class="js-clone" title="Apilar"><i class="ti ti-copy"></i></button>
         <button class="js-done"><i class="ti ti-check"></i> Done</button>
         <button class="js-rm"><i class="ti ti-trash"></i></button>
       </div>`;
+    head.querySelector('.js-collapse').addEventListener('click',e=>{
+      e.stopPropagation();m.collapsed=!isCollapsed;renderMissions();
+    });
     head.querySelector('.js-route-include').addEventListener('change',e=>{
       m.selected=e.target.checked;renderMissions();
     });
@@ -3332,6 +3408,7 @@ function renderMissions(){
 
     // ── Cuerpo timeline ───────────────────────────────────────
     const body=document.createElement('div');body.className='cm-timeline';
+    body.style.display=isCollapsed?'none':'';
     card.appendChild(body);
     // Reasignar card.appendChild para que apunte al body del timeline
     const origAppend=card.appendChild.bind(card);
@@ -3354,8 +3431,8 @@ function renderMissions(){
         pickRow.querySelector('.js-loc').replaceWith(ls);
         const pAccBadge=accessBadgeEl(p.locId);
         if(pAccBadge)ls.appendChild(pAccBadge);
-        const pConfWarn=confidenceWarningEl(p);
-        if(pConfWarn)pickRow.appendChild(pConfWarn);
+        const pWarn=entryWarningsEl(p);
+        if(pWarn)pickRow.appendChild(pWarn);
         if(m.pickups.length>1)pickRow.querySelector('.js-rm-pick').addEventListener('click',()=>removePickup(m.id,p.id));
         card.appendChild(pickRow);
       });
@@ -3415,10 +3492,8 @@ function renderMissions(){
         dRow.querySelector('.js-loc').replaceWith(ls);
         const dAccBadge=accessBadgeEl(d.locId);
         if(dAccBadge)ls.appendChild(dAccBadge);
-        const dConfWarn=confidenceWarningEl(d);
-        if(dConfWarn)dRow.appendChild(dConfWarn);
-        const dMatWarn=materialWarningEl(d);
-        if(dMatWarn)dRow.appendChild(dMatWarn);
+        const dWarn=entryWarningsEl(d);
+        if(dWarn)dRow.appendChild(dWarn);
         if(m.deliveries.length>1)dRow.querySelector('.js-rm-del').addEventListener('click',()=>removeDelivery(m.id,d.id));
         card.appendChild(dRow);
       });
@@ -3528,8 +3603,8 @@ function renderMissions(){
         content.appendChild(locSearch);
         const pAccBadge2=accessBadgeEl(p.locId);
         if(pAccBadge2)content.appendChild(pAccBadge2);
-        const pConfWarn2=confidenceWarningEl(p);
-        if(pConfWarn2)content.appendChild(pConfWarn2);
+        const pWarn2=entryWarningsEl(p);
+        if(pWarn2)content.appendChild(pWarn2);
 
         tlItem.appendChild(content);
         card.appendChild(tlItem);
@@ -3617,10 +3692,8 @@ function renderMissions(){
         content.appendChild(locSearch);
         const dAccBadge2=accessBadgeEl(d.locId);
         if(dAccBadge2)content.appendChild(dAccBadge2);
-        const dConfWarn2=confidenceWarningEl(d);
-        if(dConfWarn2)content.appendChild(dConfWarn2);
-        const dMatWarn2=materialWarningEl(d);
-        if(dMatWarn2)content.appendChild(dMatWarn2);
+        const dWarn2=entryWarningsEl(d);
+        if(dWarn2)content.appendChild(dWarn2);
         tlItem.appendChild(content);
         card.appendChild(tlItem);
       });
@@ -3709,7 +3782,7 @@ function renderMissions(){
     if(compactMode)card.appendChild(buildCompactLine(m));
     el.appendChild(card);
   });
-  refreshBoxes();refreshCandidates();renderFarmCombos();
+  refreshBoxes();refreshCandidates();renderClusterOptions();
 }
 
 // Update solo los timers de missions (sin re-render completo)
@@ -4091,6 +4164,16 @@ async function calculate(){
     else if(n.role==='refuel')sub=`Auto-inserted refuel stop${seg>0?' · +'+fmtDist(seg):''}`;
     else if(isJump)sub=`Quantum jump → ${sysOf(n)}`;
 
+    // Datos de la misión completa (no solo esta parada) — pago total y
+    // SCU total, para saber "de qué se trata" sin volver al panel de arriba
+    const missionObj=(n.role==='pickup'||n.role==='dropoff')?missions[parseInt(n.mid)]:null;
+    const missionTotal=missionObj?missionssionTotal(missionObj):null;
+    const missionPay=missionObj?.pay||0;
+    const missionMetaHtml=missionObj?`<div class="sc-mission-meta" style="display:flex;gap:8px;margin-top:2px;font-size:10px;color:var(--c-text-3);font-family:var(--font-mono)">
+        <span>M${n.mnum} total: ${missionTotal} SCU</span>
+        ${missionPay>0?`<span style="color:var(--c-green)">${missionPay.toLocaleString()} aUEC</span>`:''}
+      </div>`:'';
+
     // EFE badge
     const efeBadge=n.pad==='efe'?'<span class="pad-ext" style="font-size:10px">EFE</span>':
                    n.pad==='int'?'<span class="pad-int" style="font-size:10px">Hangar</span>':'';
@@ -4119,8 +4202,32 @@ async function calculate(){
       <div class="sc-hold-pct">${pct}% full</div>
     </div>`;
 
+    // Resumen expandible de la misión completa: todos los pickups y
+    // entregas de ESA misión, para no tener que volver al panel de arriba
+    let missionSummaryHtml='';
+    if(missionObj){
+      const pickupRows=missionObj.pickups.map(p=>{
+        const loc=locById(p.locId);
+        return `<div class="sc-msum-row"><i class="ti ti-package-import" style="font-size:11px;color:var(--c-blue)" aria-hidden="true"></i> ${p.scu} SCU ${p.material||''} @ ${loc?.label||'?'}</div>`;
+      }).join('');
+      const deliveryRows=missionObj.deliveries.map(d=>{
+        const loc=locById(d.locId);
+        const amt=d.scu!=null?d.scu:'auto';
+        return `<div class="sc-msum-row"><i class="ti ti-package-export" style="font-size:11px;color:#C2410C" aria-hidden="true"></i> ${amt} SCU ${d.material||missionObj.pickups[0]?.material||''} @ ${loc?.label||'?'}</div>`;
+      }).join('');
+      missionSummaryHtml=`<div class="sc-mission-summary" id="mission-summary-${i}" style="display:none;margin-top:8px;padding:8px;
+        background:var(--c-bg-1);border-radius:var(--r-sm);border:0.5px solid var(--c-border-3);font-size:11px">
+        <div style="font-weight:600;margin-bottom:4px">M${n.mnum} — full contract</div>
+        ${pickupRows}${deliveryRows}
+        ${missionPay>0?`<div style="margin-top:4px;color:var(--c-green);font-family:var(--font-mono)">${missionPay.toLocaleString()} aUEC</div>`:''}
+      </div>`;
+    }
+    const expandBtn=missionObj?`<button class="sc-expand-btn" onclick="event.stopPropagation();toggleMissionSummary(${i})"
+        style="background:none;border:none;color:var(--c-text-3);cursor:pointer;padding:2px 6px;font-size:11px"
+        title="Ver detalle completo de esta misión"><i class="ti ti-chevron-down" aria-hidden="true"></i></button>`:'';
+
     const bodyHtml=(boxesHtml&&(n.role==='pickup'||n.role==='dropoff'))
-      ?`<div class="sc-body">${boxesHtml}${holdHtml}</div>`:'';
+      ?`<div class="sc-body">${boxesHtml}${holdHtml}${missionSummaryHtml}</div>`:missionSummaryHtml?`<div class="sc-body">${missionSummaryHtml}</div>`:'';
 
     stepHtml+=`<div class="step-wrap">
       <div class="step-left">
@@ -4131,8 +4238,9 @@ async function calculate(){
         <div class="sc-head ${headCls}">
           <div class="sc-icon ${iconCls}"><i class="ti ${iconName}" aria-hidden="true"></i></div>
           <div class="sc-text">
-            <div class="sc-name">${n.label}${efeBadge}${nearBadge}</div>
+            <div class="sc-name">${n.label}${efeBadge}${nearBadge}${expandBtn}</div>
             <div class="sc-sub">${sub}</div>
+            ${missionMetaHtml}
           </div>
           ${scuLabel?`<div class="sc-scu"><div class="sc-scu-val">${n.scu}</div><div class="sc-scu-lbl">${n.role==='pickup'?'to load':'to deliver'}</div></div>`:''}
           <div class="sc-check"><i class="ti ti-check" aria-hidden="true" style="font-size:12px"></i></div>
@@ -4157,36 +4265,32 @@ async function calculate(){
 }
 
 function refreshBoxes(){
-  const gt=$('grand-total'),tbl=$('com-table');
-  $('boxes-hint').textContent=deliveryMode==='full'?`100% load · boxes ${boxMode==='single'?'de '+boxSize:'auto 1–'+maxBox()}`:`load ${partialPct}% · boxes ${boxMode==='single'?'de '+boxSize:'auto 1–'+maxBox()}`;
-  if(!missions.length){gt.innerHTML='<div><span class="gtv">0</span> <span class="gtl">boxes — add missions</span></div>';tbl.innerHTML='<div class="empty">No missions.</div>';$('box-note').innerHTML='';return;}
+  const gt=$('grand-total');
+  if(!missions.length){gt.innerHTML='<div><span class="gtv">0</span> <span class="gtl">boxes — add missions</span></div>';$('box-note').innerHTML='';return;}
   $('size-wrap').style.display=boxMode==='single'?'block':'none';
-  let grandBoxes=0,grandScu=0;tbl.innerHTML='';
-  missions.forEach((m,mi)=>{
-    const card=document.createElement('div');card.className='com-card';let missionBoxes=0,missionScu=0,groups='';
+  let grandBoxes=0,grandScu=0;
+  missions.forEach(m=>{
     if(deliveryMode==='full'){
-      const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,loc:p.locId});byMat[p.material].scu+=p.scu;});
-      Object.entries(byMat).forEach(([mat,info])=>{
-        const amt=info.scu;missionScu+=amt;let boxesN,detail;
-        if(boxMode==='single'){const r=boxesForSingle(amt,boxSize);boxesN=r.n;detail=r.exact?'exacto':`${r.n}×${boxSize} (sobran ${fmt(r.rem)})`;}
-        else{const used=boxesOptimal(amt);boxesN=used.reduce((a,u)=>a+u.n,0);detail=used.map(u=>`${u.n}×${u.size}`).join(' · ');}
-        missionBoxes+=boxesN;
-        const dests=m.deliveries.map(d=>{const l=locById(d.locId);return l?l.label:'?';}).join(' · ');
-        groups+=`<div class="cgroup"><div class="cgroup-head"><span class="cgroup-mat">${mat}</span><span class="cgroup-box"><span class="x">×</span>${boxesN}</span></div><div class="cgroup-detail">${fmt(amt)} SCU · ${detail}</div><div class="cgroup-sub"><span class="d"></span>deliver to: ${dests}</div></div>`;
+      const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0});byMat[p.material].scu+=p.scu;});
+      Object.values(byMat).forEach(info=>{
+        const amt=info.scu;grandScu+=amt;
+        if(boxMode==='single'){grandBoxes+=boxesForSingle(amt,boxSize).n;}
+        else{grandBoxes+=boxesOptimal(amt).reduce((a,u)=>a+u.n,0);}
       });
     }else{
       const plan=bestCommodityPlan(m);
-      if(plan&&plan.best){const b=plan.best;missionScu+=b.amt;let boxesN,detail;if(boxMode==='single'){const r=boxesForSingle(b.amt,boxSize);boxesN=r.n;detail=r.exact?'exacto':`${r.n}×${boxSize} (sobran ${fmt(r.rem)})`;}else{const used=boxesOptimal(b.amt);boxesN=used.reduce((a,u)=>a+u.n,0);detail=used.map(u=>`${u.n}×${u.size}`).join(' · ');}missionBoxes+=boxesN;groups+=`<div class="cgroup"><div class="cgroup-head"><span class="cgroup-mat">${b.mat} <span style="font-size:9px;color:#378ADD">(optimal ${partialPct}%)</span></span><span class="cgroup-box"><span class="x">×</span>${boxesN}</span></div><div class="cgroup-detail">${fmt(b.amt)} SCU · ${detail}</div><div class="cgroup-sub"><span class="d"></span>deliver to: ${b.nd?b.nd.label:'?'} (nearest)</div></div>`;}
+      if(plan&&plan.best){
+        const b=plan.best;grandScu+=b.amt;
+        if(boxMode==='single'){grandBoxes+=boxesForSingle(b.amt,boxSize).n;}
+        else{grandBoxes+=boxesOptimal(b.amt).reduce((a,u)=>a+u.n,0);}
+      }
     }
-    grandBoxes+=missionBoxes;grandScu+=missionScu;
-    card.innerHTML=`<div class="com-head"><div><span class="mhead-num">${mi+1}</span><span class="com-name">Mission ${mi+1}</span></div><span class="com-scu">${missionBoxes} boxes · ${fmt(missionScu)} SCU</span></div>${groups}`;
-    tbl.appendChild(card);
   });
   gt.innerHTML=`<div><span class="gtv">${grandBoxes}</span> <span class="gtl">total boxes</span></div><div><span class="gtv">${fmt(grandScu)}</span> <span class="gtl">SCU to load</span></div><div><span class="gtv">${missions.length}</span> <span class="gtl">missions</span></div>`;
   $('box-note').innerHTML=deliveryMode==='full'?`<i class="ti ti-info-circle"></i> 100% mode: boxes for full load, by commodity. Max box in ${currentRank}: ${maxBox()} SCU.`:`<i class="ti ti-info-circle"></i> Mode ${partialPct}%: optimal commodity only (fewest boxes), delivered to nearest stop. ${boxMode==='optimal'?'Auto-packing combining boxes 1 to '+maxBox()+' SCU.':'Fixed size of '+boxSize+' SCU.'}`;
 }
 
-function switchTab(t){['loop','route','boxes'].forEach(x=>{$('tab-'+x).classList.toggle('on',x===t);$(x+'-tab').style.display=x===t?'block':'none';});if(t==='boxes')refreshBoxes();if(t==='loop'){renderXP();renderRankGuide();renderFarmCombos();}}
+function switchTab(t){['loop','route','boxes'].forEach(x=>{$('tab-'+x).classList.toggle('on',x===t);$(x+'-tab').style.display=x===t?'block':'none';});if(t==='boxes')refreshBoxes();if(t==='loop'){renderXP();renderRankGuide();}if(t==='route'){renderClusterOptions();}}
 function setMode(mode){
   deliveryMode=mode;
   $('mode-full').classList.toggle('on',mode==='full');
@@ -5555,6 +5659,34 @@ let routeChecklist={};// {stepIdx: true/false}
 function initChecklist(seq){
   routeChecklist={};
   seq.forEach((_,i)=>routeChecklist[i]=false);
+  updateRouteProgress();
+}
+
+// Actualiza la barra de progreso fija arriba del step-by-step — cuántas
+// paradas ya tildaste como hechas, para no perder la cuenta en rutas largas
+function updateRouteProgress(){
+  const wrap=document.getElementById('route-progress');
+  if(!wrap)return;
+  const total=Object.keys(routeChecklist).length;
+  if(!total){wrap.style.display='none';return;}
+  const done=Object.values(routeChecklist).filter(Boolean).length;
+  const pct=Math.round((done/total)*100);
+  wrap.style.display='block';
+  document.getElementById('route-progress-count').textContent=`${done} of ${total} stops`;
+  document.getElementById('route-progress-bar').style.width=pct+'%';
+  const left=total-done;
+  document.getElementById('route-progress-pct').textContent=
+    done===total?'Route complete!':`${pct}% complete — ${left} stop${left!==1?'s':''} left`;
+}
+
+// Muestra/oculta el resumen completo de la misión en un paso del step-by-step
+function toggleMissionSummary(idx){
+  const el=document.getElementById('mission-summary-'+idx);
+  if(!el)return;
+  const showing=el.style.display!=='none';
+  el.style.display=showing?'none':'block';
+  const btn=document.querySelector(`.step-card[data-idx="${idx}"] .sc-expand-btn i`);
+  if(btn)btn.className=showing?'ti ti-chevron-down':'ti ti-chevron-up';
 }
 
 function toggleCheck(idx){
@@ -5575,6 +5707,7 @@ function toggleCheck(idx){
       }
     }
   }
+  updateRouteProgress();
 }
 
 // ══════════════════════════════════════════════════════
@@ -5889,8 +6022,8 @@ async function init(){
   $('add-missionssion').addEventListener('click',addMission);
   $('add-missionssion-bottom')?.addEventListener('click',addMission);
   $('picker-rec-btn')?.addEventListener('click',()=>{pickerRecShown=!pickerRecShown;renderMissions();});
-  $('quick-loop-btn')?.addEventListener('click',applyQuickLoop);
-  $('select-all-btn')?.addEventListener('click',()=>{missions.forEach(m=>m.selected=true);renderMissions();setBadge('ok','✓ Todas las misiones incluidas de nuevo');});
+  $('quick-loop-btn')?.addEventListener('click',()=>{const cl=computeClusters();if(cl.length)applyCluster(cl[0]);else setBadge('error','No hay grupos de 2+ misiones cercanas entre sí');});
+  $('select-all-btn')?.addEventListener('click',resetClusterSelection);
   $('calc-btn').addEventListener('click',calculate);
   $('clear-all').addEventListener('click',()=>{missions=[];renderMissions();});
   $('bmode-optimal').addEventListener('click',()=>{boxMode='optimal';$('bmode-optimal').classList.add('on');$('bmode-single').classList.remove('on');renderMissions();});
