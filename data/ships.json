@@ -3,7 +3,7 @@
     "version": "4.8.2",
     "source": "api.star-citizen.wiki/api/vehicles — campo real quantum.quantum_fuel_capacity (SCU), confirmado en vivo",
     "note": "SCU y qFuel desde la API en vivo. qFuel en las mismas unidades (SCU) que fuel_consumption_scu_per_gm de drives.json — combinan directo sin factor de escala.",
-    "generated": "2026-07-02T19:42:01.809Z",
+    "generated": "2026-07-03T03:56:41.597Z",
     "total": 133
   },
   "ships": [
