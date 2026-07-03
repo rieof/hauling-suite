@@ -14,22 +14,14 @@ const RELEVANT_TYPES = new Set([
   'LandingZone', 'PointOfInterest'
 ]);
 
-const EFE_KEYWORDS = [
-  'Ruin Station','Gaslight','Checkmate','Everus Harbor',
-  'Baijini Point','Seraphim','Port Tressler','Orison',
-  'Orbituary','Endgame','Levski',"Dudley",
-  "Rat's Nest",'Megumi','Starlight','Patch City',
-  'RAB-','Distribution Centre','Distribution Hub',
-  'Relay Post','Recovery',
-  // Parche 4.4 "External Freight Elevator Testing" expandió EFE a las
-  // estaciones Gateway entre sistemas (Nyx/Stanton/Pyro)
-  'Gateway'
-];
 // NOTA: existe un jump point directo Nyx-Stanton (agregado en 4.4, aunque
 // la wiki lo marca como "placeholder" — sigue activo). Por eso "Nyx Gateway"
 // legítimamente aparece tanto en Pyro como en Stanton, y "Stanton Gateway"
 // tanto en Pyro como en Nyx. NO filtrar estas combinaciones — las 6
 // entradas Gateway (Stanton↔Pyro, Pyro↔Nyx, Nyx↔Stanton) son reales.
+// (Las 4 Gateway están confirmadas EFE por la lista oficial de
+// "Loading Dock" — update-efe.js las sube automático, no hace falta
+// adivinarlas acá.)
 
 // ── Overrides confirmados en el juego por el usuario ─────────────────
 // Estos SIEMPRE ganan sobre el heurístico de keywords de arriba, sin
@@ -37,16 +29,31 @@ const EFE_KEYWORDS = [
 // Agregar acá cualquier corrección verificada en persona en el juego.
 const PAD_OVERRIDES = {
   "rod's fuel 'n supplies": 'int', // confirmado sin EFE en el juego (2026-07-01)
+  "patch city": 'int', // confirmado sin EFE en el juego (2026-07-03)
+  "dudley & daughters": 'efe', // confirmado CON EFE por texto real de contrato
+    // ("Freight elevator at Dudley & Daughters" — contrato Junior real,
+    // captura del usuario 2026-07-01). Es type:Manmade_VisibleOnInteraction,
+    // no Outpost, así que no le toca la regla automática de outposts, y
+    // tampoco aparece en la lista oficial angosta de "Loading Dock" (esa
+    // lista solo cubre ~25 grandes hubs de trading, no lugares chicos
+    // como este que igual tienen freight elevator confirmado).
 };
 
+// IMPORTANTE — cambio de diseño (2026-07-03): antes esta función adivinaba
+// EFE por keywords en el nombre (ej. "Gaslight", "Endgame") — pero esas
+// keywords eran mi estimación inicial, nunca verificada contra dato real,
+// y varias resultaron mal (Rod's Fuel, Patch City confirmados sin EFE en
+// el juego). Ahora las ESTACIONES quedan 'int' por defecto — la única
+// fuente que puede subirlas a 'efe' es update-efe.js, que usa el tag
+// oficial "Commodity Trading - Loading Dock" del juego (starmap.json) o
+// el respaldo de UEX. Los OUTPOSTS mantienen su regla propia (efe
+// automático) porque esa sí está confirmada por mecánica de juego,
+// independiente del sistema de tags de Loading Dock.
 function classifyPad(name, etype) {
   const overrideKey = name.toLowerCase();
   if (overrideKey in PAD_OVERRIDES) return PAD_OVERRIDES[overrideKey];
   if (etype === 'Outpost' || etype === 'Outpost_InvalidQT') return 'efe';
-  for (const kw of EFE_KEYWORDS) {
-    if (name.toLowerCase().includes(kw.toLowerCase())) return 'efe';
-  }
-  return 'int';
+  return 'int'; // estaciones: sin adivinar — update-efe.js decide con dato real
 }
 
 function classifyType(name, etype) {
