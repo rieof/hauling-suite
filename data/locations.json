@@ -3,11 +3,11 @@
     "version": "4.8.2",
     "source": "StarCitizenWiki/scunpacked-data (auto-updated weekly via GitHub Action)",
     "source_url": "https://github.com/StarCitizenWiki/scunpacked-data",
-    "generated": "2026-07-03T05:23:43.525Z",
+    "generated": "2026-07-06T10:09:58.408Z",
     "total": 432,
     "note": "Coordinates in Gm (gigameters). Each system has its own coordinate space.",
     "efe_sources": "scunpacked-data starmap.json \"Loading Dock\" oficial (prioridad alta, distingue exterior/interior) + api.uexcorp.uk/2.0/terminals (respaldo de menor prioridad) — solo confirmación positiva, nunca marca int por ausencia",
-    "efe_updated_at": "2026-07-03T05:23:44.199Z"
+    "efe_updated_at": "2026-07-06T10:09:59.172Z"
   },
   "locations": [
     {
