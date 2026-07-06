@@ -2762,11 +2762,24 @@ function computeClusters(){
   const base=(CONTRACT_RANKS[currentRank]?.xpMission)||8000;
   const xpPer=Math.round(base*(partialPct/100));
 
+  // El SCU que "cuenta" para un grupo depende del modo: en 100% es el
+  // total real de la misión (se entrega todo), en 25% es solo lo que
+  // bestCommodityPlan elige cargar para esa misión — antes esto siempre
+  // usaba el total completo sin importar el modo, mostrando el mismo
+  // número en Grupos Sugeridos tanto en 25% como en 100%.
+  function modeAwareScu(m){
+    if(deliveryMode==='partial'){
+      const plan=bestCommodityPlan(m);
+      return plan?.best?.amt||0;
+    }
+    return missionssionTotal(m);
+  }
+
   function clusterBy(keyFn,pattern){
     const items=missions.map((m,mi)=>{
       const loc=locById(keyFn(m));
       if(!loc)return null;
-      return{mnum:mi+1,loc,sys:sysOf(loc),scu:missionssionTotal(m),pay:m.pay||0};
+      return{mnum:mi+1,loc,sys:sysOf(loc),scu:modeAwareScu(m),pay:m.pay||0};
     }).filter(Boolean);
     const clusters=[];
     items.forEach(it=>{
@@ -2789,7 +2802,7 @@ function computeClusters(){
       const pickLoc=locById(m.pickups[0]?.locId);
       const dropLoc=locById(m.deliveries[0]?.locId);
       if(!pickLoc||!dropLoc)return null;
-      return{mnum:mi+1,pickLoc,dropLoc,sys:sysOf(pickLoc),scu:missionssionTotal(m),pay:m.pay||0};
+      return{mnum:mi+1,pickLoc,dropLoc,sys:sysOf(pickLoc),scu:modeAwareScu(m),pay:m.pay||0};
     }).filter(Boolean);
     const clusters=[];
     items.forEach(it=>{
@@ -6269,4 +6282,3 @@ init();
 <div class="version-banner">🌐 rieof.github.io</div>
 </body>
 </html>
-
