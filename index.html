@@ -4056,6 +4056,54 @@ async function calculate(){
   const totalScu=nodes.filter(n=>n.role==='dropoff').reduce((a,n)=>a+n.scu,0);
   const jumps=res.jumps||0;
 
+  // ── Nivelación de pico de carga (paso extra, no toca el optimizador) ──
+  // El NN+2-Opt prioriza distancia/tiempo, no bajar el pico de SCU
+  // cargado — puede terminar acumulando casi todos los pickups seguidos
+  // antes de entregar nada. Este paso adicional, después del cálculo
+  // normal, busca entregas que YA se pueden hacer (su pickup ya pasó) y
+  // las adelanta hasta el punto del pico, para bajar el máximo cargado
+  // sin tocar el algoritmo de rutas en sí. Si no ayuda, no cambia nada.
+  function levelLoadPeaks(seq){
+    let iterations=0;
+    while(iterations++<20){
+      let load=0;
+      const loads=seq.map(n=>{
+        if(n.role==='pickup')load+=n.scu;
+        else if(n.role==='dropoff')load-=n.scu;
+        return load;
+      });
+      const maxLoad=Math.max(...loads);
+      if(maxLoad<=cap*0.85)break; // ya está en un margen razonable, no seguir forzando
+      const peakIdx=loads.indexOf(maxLoad);
+
+      // Buscar, DESPUÉS del pico, la primera entrega cuyo pickup (mismo
+      // mid) ya haya ocurrido antes o en el pico — es elegible para
+      // adelantarse sin romper el orden pickup→entrega de su misión
+      let moveIdx=-1;
+      for(let j=peakIdx+1;j<seq.length;j++){
+        if(seq[j].role==='dropoff'){
+          const pickupIdx=seq.findIndex((n,idx)=>idx<=peakIdx&&n.role==='pickup'&&n.mid===seq[j].mid);
+          if(pickupIdx!==-1){moveIdx=j;break;}
+        }
+      }
+      if(moveIdx===-1)break; // no hay ninguna entrega elegible para adelantar, no se puede mejorar más así
+      const[node]=seq.splice(moveIdx,1);
+      seq.splice(peakIdx,0,node);
+    }
+    return seq;
+  }
+  res.seq=levelLoadPeaks(res.seq);
+  // Recalcular distancia/tiempo ya que el orden pudo haber cambiado
+  {
+    let newDist=0,newTime=0;
+    for(let i=0;i<res.seq.length-1;i++){
+      newDist+=dist3(res.seq[i],res.seq[i+1]);
+      if(optMode!=='dist')newTime+=_timeCostSync(res.seq[i],res.seq[i+1],qSpeed);
+    }
+    res.dist=newDist;
+    if(optMode!=='dist')res.timeSeconds=newTime;
+  }
+
   // Comprobación de combustible — cada tramo vs tanque máximo
   // drive.fuel = SCU de combustible cuántico gastado por Gm (dato real de
   // la API: fuel_consumption_scu_per_gm). qFuelMax = SCU del tanque de la
