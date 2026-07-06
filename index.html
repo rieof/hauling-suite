@@ -2322,66 +2322,53 @@ function bestCommodityPlan(m){
   const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,locId:p.locId});byMat[p.material].scu+=p.scu;});
   const drops=m.deliveries.map(d=>({d,loc:locById(d.locId)})).filter(x=>!!x.loc);
 
-  // PRIORIDAD 1: si alguna entrega tiene SCU real conocido (escrito a
-  // mano o leído por OCR), usar ese número como referencia — el juego
-  // no acepta más de lo que existe realmente en cada entrega, PERO
-  // (confirmado por el usuario probándolo repetidas veces en el juego)
-  // sí acepta entregar MENOS del total pedido en una entrega única y
-  // de todas formas completa la misión. Por eso: si hay VARIAS entregas
-  // reales entre las que elegir, se sigue priorizando la más cercana al
-  // 25% ideal (no hace falta reducir más, ya elegís la más chica real).
-  // Si solo existe UNA entrega real (no hay opción entre la cual
-  // elegir), se aplica el % directamente sobre ese número real — no es
-  // inventar un valor sin base, es una fracción real de un número real.
-  const explicitDrops=drops.filter(x=>x.d.scu!=null&&x.d.scu>0);
-  if(explicitDrops.length>0){
-    const target25=total*partialPct/100; // el "25% ideal" — usado para elegir ENTRE las entregas reales cuando hay varias
-    let best=null;
-    Object.entries(byMat).forEach(([mat,info])=>{
-      const pickLoc=locById(info.locId);
-      explicitDrops.forEach(({d,loc})=>{
-        // Solo considerar si el material coincide (o si la entrega no
-        // especificó material propio, hereda el del pickup)
-        if(d.material&&d.material!==mat)return;
-        const amt=Math.min(d.scu,info.scu); // no exceder lo disponible en el pickup
-        if(amt<=0)return;
-        const boxes=boxCount(amt);
-        const dd=dist3(pickLoc,loc);
-        const distToTarget=Math.abs(amt-target25);
-        const cand={mat,amt,boxes,nd:loc,ndDist:dd,avail:info.scu,pickLoc,distToTarget};
-        // Priorizar la entrega real MÁS CERCANA al objetivo de 25% del
-        // total — nunca se inventa un número, siempre se usa una
-        // entrega real, pero entre las opciones reales se elige la que
-        // mejor representa "el 25%" en vez de la geográficamente más
-        // cercana (que podía ser mucho más carga de la necesaria).
-        if(!best||distToTarget<best.distToTarget||(distToTarget===best.distToTarget&&dd<best.ndDist))best=cand;
-      });
-    });
-    // Si solo había UNA entrega real posible (sin opción entre la cual
-    // elegir), reducir esa cantidad al % configurado — confirmado que
-    // el juego acepta entrega parcial en un destino único
-    if(best&&explicitDrops.length===1&&deliveryMode==='partial'){
-      const reduced=roundToBox(best.amt*partialPct/100);
-      if(reduced>0){
-        best={...best,amt:reduced,boxes:boxCount(reduced),partialOfSingle:true};
-      }
-    }
-    if(best)return{target:best.amt,best};
-  }
+  // Confirmado jugando (usuario, repetidas veces): el juego tiene un
+  // botón de "entrega parcial" que completa la misión con CUALQUIER
+  // cantidad, siempre que sea al menos el 25% del total de la misión.
+  // PERO — también confirmado — cada destino RECHAZA que le entregues
+  // más SCU del que pide específicamente (ej. un lugar que pide 23 SCU
+  // no acepta que le lleves 40). Por eso el destino elegido tiene que
+  // tener una capacidad real conocida >= al monto calculado — no vale
+  // cualquiera, solo los que realmente puedan recibir esa cantidad.
+  // effectivePct nunca baja de 25 — es un piso real del juego.
+  const effectivePct=Math.max(partialPct,25);
+  const target=roundToBox(total*effectivePct/100);
 
-  // PRIORIDAD 2 (respaldo): sin SCU real conocido en ninguna entrega,
-  // usar el % de farming de siempre (comportamiento original)
-  const target=roundToBox(total*partialPct/100);
   let best=null;
+  let bestFallback=null; // por si ningún destino real alcanza el 25% — usar el más grande disponible como respaldo
   Object.entries(byMat).forEach(([mat,info])=>{
-    const amt=roundToBox(Math.min(info.scu,target));
-    const boxes=boxCount(amt);
     const pickLoc=locById(info.locId);
-    let nd=null,ndDist=Infinity;drops.forEach(({loc})=>{const dd=dist3(pickLoc,loc);if(dd<ndDist){ndDist=dd;nd=loc;}});
-    const cand={mat,amt,boxes,nd,ndDist,avail:info.scu,pickLoc};
-    if(!best||cand.boxes<best.boxes||(cand.boxes===best.boxes&&cand.ndDist<best.ndDist))best=cand;
+    const matDrops=drops.filter(({d})=>!d.material||d.material===mat);
+
+    // Candidatos cuya capacidad real (si se conoce) alcanza para el target
+    matDrops.forEach(({d,loc})=>{
+      const dd=dist3(pickLoc,loc);
+      const cap=d.scu!=null?d.scu:Infinity; // sin dato real = asumimos que sí acepta (no hay info para descartarlo)
+      if(cap>=target){
+        const amt=roundToBox(Math.min(info.scu,target));
+        if(amt<=0)return;
+        const cand={mat,amt,boxes:boxCount(amt),nd:loc,ndDist:dd,avail:info.scu,pickLoc};
+        if(!best||cand.ndDist<best.ndDist)best=cand;
+      }
+      // Guardar como respaldo el destino de MAYOR capacidad real, por si ninguno alcanza el target
+      if(d.scu!=null&&(!bestFallback||d.scu>bestFallback.cap)){
+        bestFallback={mat,cap:d.scu,nd:loc,ndDist:dd,avail:info.scu,pickLoc};
+      }
+    });
   });
-  return{target,best};
+
+  if(best)return{target,best};
+
+  // Respaldo: ningún destino real alcanza el 25% calculado — usar el de
+  // mayor capacidad disponible con SU propio monto máximo (no se puede
+  // forzar más de lo que ese lugar específico acepta)
+  if(bestFallback){
+    const amt=roundToBox(Math.min(bestFallback.avail,bestFallback.cap));
+    if(amt>0){
+      return{target,best:{mat:bestFallback.mat,amt,boxes:boxCount(amt),nd:bestFallback.nd,ndDist:bestFallback.ndDist,avail:bestFallback.avail,pickLoc:bestFallback.pickLoc,belowTarget:true}};
+    }
+  }
+  return null;
 }
 
 function buildPlanetSelect(sel){sel.innerHTML='';Object.entries(DATA).forEach(([sys,planets])=>{const og=document.createElement('optgroup');og.label=sys;Object.keys(planets).forEach(p=>{const o=document.createElement('option');o.value=sys+'||'+p;o.textContent=p;og.appendChild(o);});sel.appendChild(og);});}
