@@ -990,6 +990,8 @@ html.force-light{
       <div id="session-history" style="margin-top:6px;overflow-x:auto"></div>
     </div>
 
+    <div id="completed-history"></div>
+
     <div class="section-lbl"><span>SHIP GUIDE BY RANK</span></div>
     <div class="rank-guide" id="rank-guide"></div>
   </div>
@@ -1081,9 +1083,9 @@ const PLAN={
   'Nyx I':{s:'Nyx',r:12,a:40},'Nyx II':{s:'Nyx',r:20,a:150},Delamar:{s:'Nyx',r:16,a:250},
 };
 function pPos(name){const p=PLAN[name];const c=SYS[p.s];return{x:c.cx+p.r*Math.cos(deg2rad(p.a)),y:c.cy+p.r*Math.sin(deg2rad(p.a)),z:0};}
-function lagP(name,which){const p=PLAN[name];const c=SYS[p.s];const a=deg2rad(p.a);const r=p.r;const off=r*0.10;let rr=r,aa=a;if(which==='L1')rr=r-off;else if(which==='L2')rr=r+off;else if(which==='L3')aa=a+Math.PI;else if(which==='L4')aa=a+deg2rad(60);else if(which==='L5')aa=a-deg2rad(60);return{x:c.cx+rr*Math.cos(aa),y:c.cy+rr*Math.sin(aa),z:0};}
+
 function near(name,dx,dy,dz){const pp=pPos(name);return{x:pp.x+(dx||0),y:pp.y+(dy||0),z:dz||0};}
-function sysEdge(sys,dx,dy){const c=SYS[sys];return{x:c.cx+dx,y:c.cy+dy,z:0};}
+
 function L(label,pos,type,pad){
   // pad types:
   //   'efe' = External Freight Elevator — dock ship outside, load directly (fastest)
@@ -1797,13 +1799,13 @@ const FACTION_DATA_FALLBACK={
   "Ling Family Hauling":{
     zone:"microTech / Stanton",color:"#4DB56A",emoji:"🟢",
     ranks:{
-      "Trainee":{scuMin:1,scuMax:10,typical:8,maxBox:1,xpReq:50,xpMission:50,ship:"Cutlass / Spirit C1",strat:"1 mission intro. New Babbage / Port Tressler as starting hub.",verified:false},
-      "Rookie":{scuMin:10,scuMax:50,typical:30,maxBox:8,xpReq:200,xpMission:75,ship:"Cutlass / RAFT",strat:"~3 missions. Port Tressler → Shubin SM0-18/22. Stack same route.",verified:false},
-      "Junior":{scuMin:10,scuMax:50,typical:40,maxBox:8,xpReq:5000,xpMission:250,ship:"RAFT / Taurus",strat:"~20 missions. Expand to moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC).",verified:false},
-      "Member":{scuMin:30,scuMax:100,typical:64,maxBox:8,xpReq:22500,xpMission:500,ship:"Taurus / C2",strat:"The wall (~45 missions). Routes between microTech outposts. Stack 10 missions.",verified:false},
-      "Experienced":{scuMin:50,scuMax:150,typical:128,maxBox:16,xpReq:50000,xpMission:1000,ship:"C2 Hercules",strat:"~50 missions. MIC-L points as hubs. Station-to-outpost loops by moons.",verified:false},
-      "Senior":{scuMin:150,scuMax:600,typical:384,maxBox:24,xpReq:160000,xpMission:2000,ship:"C2 Hercules",strat:"~80 missions. High payouts. Station→station missions microTech/Stanton.",verified:false},
-      "Master":{scuMin:600,scuMax:4608,typical:1500,maxBox:32,xpReq:0,xpMission:0,ship:"Ironclad / Hull C",strat:"Master Ling unlocks full Stanton interstellar routes.",verified:false},
+      "Trainee":{scuMin:1,scuMax:10,typical:8,maxBox:1,xpReq:0,xpMission:50,ship:"Cutlass / Spirit C1",strat:"1 mission intro. New Babbage / Port Tressler as starting hub.",verified:true},
+      "Rookie":{scuMin:10,scuMax:50,typical:30,maxBox:8,xpReq:50,xpMission:75,ship:"Cutlass / RAFT",strat:"~3 missions. Port Tressler → Shubin SM0-18/22. Stack same route.",verified:true},
+      "Junior":{scuMin:10,scuMax:50,typical:40,maxBox:8,xpReq:250,xpMission:250,ship:"RAFT / Taurus",strat:"~20 missions. Expand to moons: Calliope (SMCa), Clio (Rayari), Euterpe (SPMC).",verified:true},
+      "Member":{scuMin:30,scuMax:100,typical:64,maxBox:8,xpReq:5250,xpMission:500,ship:"Taurus / C2",strat:"The wall (~45 missions). Routes between microTech outposts. Stack 10 missions.",verified:true},
+      "Experienced":{scuMin:50,scuMax:150,typical:128,maxBox:16,xpReq:27750,xpMission:1000,ship:"C2 Hercules",strat:"~50 missions. MIC-L points as hubs. Station-to-outpost loops by moons.",verified:true},
+      "Senior":{scuMin:150,scuMax:600,typical:384,maxBox:24,xpReq:77750,xpMission:2000,ship:"C2 Hercules",strat:"~80 missions. High payouts. Station→station missions microTech/Stanton.",verified:true},
+      "Master":{scuMin:600,scuMax:4608,typical:1500,maxBox:32,xpReq:237750,xpMission:4000,ship:"Ironclad / Hull C",strat:"Master Ling unlocks full Stanton interstellar routes.",verified:true},
     },
   },
 };
@@ -1938,12 +1940,7 @@ function dist3(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2);}
 // Tiempo estimado de viaje en minutos
 // QT ~0.2 Gm/s para outposts, ~0.15 Gm/s promedio con aceleración
 // Tiempo de hangar/cargo: outpost ~2min, lagrange ~4min, city ~6min
-function travelCost(a,b){
-  const gm=dist3(a,b);
-  const qtSecs=gm/0.18; // ~0.18 Gm/s velocidad QT promedio
-  const landingSecs=(b.pad==='ext'?90:b.pad==='int'?240:150); // 1.5min ext, 4min int
-  return qtSecs+landingSecs;
-}
+
 
 // Distancia ajustada por tipo de pad — optimiza para tiempo real de viaje
 // QT speed ~0.18 Gm/s:
@@ -2254,7 +2251,7 @@ function _timeCostSync(a,b,qSpeed){
   return qtTime+padTime;
 }
 function _distCostSync(a,b){return dist3(a,b)+(b.pad==='int'?0.05:0);}
-function _getCostSync(a,b,qSpeed,opt){return opt==='dist'?_distCostSync(a,b):_timeCostSync(a,b,qSpeed);}
+
 
 function optimizeSync(o,dest,nodes,cap,qSpeed,opt){
   if(!nodes.length)return null;
@@ -2444,8 +2441,8 @@ function bestCommodityPlan(m){
   return null;
 }
 
-function buildPlanetSelect(sel){sel.innerHTML='';Object.entries(DATA).forEach(([sys,planets])=>{const og=document.createElement('optgroup');og.label=sys;Object.keys(planets).forEach(p=>{const o=document.createElement('option');o.value=sys+'||'+p;o.textContent=p;og.appendChild(o);});sel.appendChild(og);});}
-function buildLocOptions(planetSel,locSel){const[sys,planet]=planetSel.value.split('||');locSel.innerHTML='';(DATA[sys]?.[planet]?.locs||[]).forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=l.label;locSel.appendChild(o);});}
+
+
 
 // ── Búsqueda de ubicación por texto libre ──────────────────
 // Devuelve todos los locs que coinciden con el query (insensible a mayúsculas/acentos)
@@ -2497,11 +2494,7 @@ function locAccessInfo(l){
     color:'#FAC775',bg:'color-mix(in srgb,#FAC775 12%,transparent)'};
 }
 
-function locTypeTag(l){
-  const tags={station:'station',lagrange:'lagrange',habitat:'city',outpost:'outpost',moon:'moon',planet:'planet'};
-  const acc=locAccessInfo(l);
-  return (tags[l.type]||l.type)+' · '+acc.label+' · '+l.sys;
-}
+
 
 // Badge visual compacto (ícono + texto) para mostrar junto a una ubicación
 // resuelta en las tarjetas de misión — mismo criterio que locAccessInfo
@@ -2534,6 +2527,37 @@ function accessBadgeEl(locId){
 // Combina los avisos de confianza baja Y material incompatible en UNA
 // sola caja (si aplican ambos a la vez) en vez de mostrar dos cajas
 // apiladas — menos ruido visual en la tarjeta cuando hay varios avisos.
+// Detecta problemas de datos en una misión (típicamente por errores de
+// OCR o entrada manual) y devuelve una lista de avisos para mostrar en
+// la tarjeta — no bloquea nada, solo alerta al usuario para que revise.
+function missionValidationIssues(m){
+  const issues=[];
+  const pickupLocs=new Set(m.pickups.map(p=>p.locId).filter(Boolean));
+  // 1. Una entrega en el MISMO lugar que un pickup — no tiene sentido
+  //    cargar y "entregar" en el mismo sitio (típico error de OCR)
+  m.deliveries.forEach(d=>{
+    if(d.locId&&pickupLocs.has(d.locId)){
+      const loc=locById(d.locId);
+      issues.push(`Entrega en el mismo lugar que el pickup (${loc?.label||'?'}) — revisá si es un error.`);
+    }
+  });
+  // 2. SCU de pickup en cero o inválido
+  m.pickups.forEach(p=>{
+    if(p.locId&&(!p.scu||p.scu<1)){
+      issues.push('Un pickup tiene SCU en 0 o inválido.');
+    }
+  });
+  // 3. Suma de entregas mayor que lo que se recoge (imposible entregar más de lo cargado)
+  if(m.pickups.length===1&&m.deliveries.some(d=>d.scu!=null)){
+    const totalPick=m.pickups[0].scu||0;
+    const totalDeliv=m.deliveries.reduce((s,d)=>s+(d.scu||0),0);
+    if(totalDeliv>totalPick){
+      issues.push(`Las entregas suman ${totalDeliv} SCU pero el pickup solo carga ${totalPick} — no cuadra.`);
+    }
+  }
+  return issues;
+}
+
 function entryWarningsEl(entry){
   if(!entry)return null;
   const msgs=[];
@@ -2558,32 +2582,12 @@ function entryWarningsEl(entry){
   return el;
 }
 
-function materialWarningEl(entry){
-  if(!entry||!entry.materialWarning)return null;
-  const el=document.createElement('div');
-  el.style.cssText=`display:flex;align-items:flex-start;gap:5px;font-size:10px;
-    color:#E8A0A0;background:color-mix(in srgb,#E84040 10%,transparent);
-    border:0.5px solid color-mix(in srgb,#E84040 30%,transparent);
-    border-radius:6px;padding:5px 8px;margin-top:4px;line-height:1.4;`;
-  el.innerHTML=`<i class="ti ti-alert-circle" style="font-size:12px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
-    <span>${entry.materialWarning}</span>`;
-  return el;
-}
+
 
 // Aviso cuando una ubicación se resolvió con coincidencia débil (no exacta)
 // desde el OCR/parser — evita que un error de lectura de Gemini pase
 // desapercibido. entry = pickup o delivery object (tiene matchTier/rawText)
-function confidenceWarningEl(entry){
-  if(!entry||!entry.matchTier||entry.matchTier<3)return null; // solo avisar en tier 3-4 (débil)
-  const el=document.createElement('div');
-  el.style.cssText=`display:flex;align-items:flex-start;gap:5px;font-size:10px;
-    color:#B8860B;background:color-mix(in srgb,#FAC775 15%,transparent);
-    border:0.5px solid color-mix(in srgb,#FAC775 40%,transparent);
-    border-radius:6px;padding:5px 8px;margin-top:4px;line-height:1.4;`;
-  el.innerHTML=`<i class="ti ti-alert-triangle" style="font-size:12px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
-    <span>Low-confidence match${entry.rawText?` for "${entry.rawText}"`:''} — double-check this is right.</span>`;
-  return el;
-}
+
 
 // Crear un input de búsqueda con dropdown de sugerencias
 // onSelect(locId) se llama cuando el usuario elige una ubicación
@@ -2767,8 +2771,8 @@ function createLocSearch(initialLocId, onSelect){
 }
 
 // Versión legacy mantenida para compatibilidad (posición actual usa selects)
-function buildFlatLocSelect(sel,selId){sel.innerHTML='';Object.entries(DATA).forEach(([sys,planets])=>Object.entries(planets).forEach(([planet,z])=>{const og=document.createElement('optgroup');og.label=sys+' · '+planet;z.locs.forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=l.label;if(l.id===selId)o.selected=true;og.appendChild(o);});sel.appendChild(og);}));}
-function buildMatSelect(sel,selMat){sel.innerHTML='';MATERIALS.forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===selMat)o.selected=true;sel.appendChild(o);});}
+
+
 function getSelLoc(pId,lId){return locById($(lId).value)||null;}
 function getCap(){return parseInt($('cap-input').value)||0;}
 
@@ -3010,7 +3014,7 @@ function cloneMission(id){
   missions.splice(missions.findIndex(x=>x.id===id)+1,0,cloned);
   renderMissions();
 }
-function addPickup(mid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups.push({id:++pickSeq,material:'— Select commodity —',scu:Math.round(CONTRACT_RANKS[currentRank].typical/2),locId:$('o-loc').value||findLoc('HUR-L1')});renderMissions();}
+
 function removePickup(mid,pid){const m=missions.find(x=>x.id===mid);if(!m)return;m.pickups=m.pickups.filter(p=>p.id!==pid);if(!m.pickups.length)removeMission(mid);else renderMissions();}
 // Si todos los pickups de la misión comparten el mismo material (y no es
 // el placeholder), lo devuelve — así las entregas nuevas lo heredan solas
@@ -3274,12 +3278,70 @@ function completeMission(id){
   const xpGained=Math.round(base*frac);
   prog.xp[prog.f]=(prog.xp[prog.f]||0)+xpGained;
   // Sesión
-  const mPay=missions.find(x=>x.id===id)?.pay||0;
+  const mObj=missions.find(x=>x.id===id);
+  const mPay=mObj?.pay||0;
   if(session.active){session.missions++;session.xpEarned+=xpGained;session.aUECEarned+=mPay;renderSessionBar();}
+  // Historial de completadas del día (persistente)
+  recordCompletedMission(mObj,xpGained,mPay);
   saveProg();renderXP();renderRankGuide();
   removeMission(id);
   // Flash visual en barra de XP
   const wrap=$('xp-bar-wrap');if(wrap){wrap.classList.add('flash');setTimeout(()=>wrap.classList.remove('flash'),500);}
+}
+
+// ── Historial de misiones completadas hoy ──────────────────────
+const COMPLETED_HISTORY_KEY='sc_completed_history';
+function loadCompletedHistory(){
+  try{
+    const raw=localStorage.getItem(COMPLETED_HISTORY_KEY);
+    if(!raw)return[];
+    const data=JSON.parse(raw);
+    // Solo mantener las de HOY (se limpia solo al cambiar de día)
+    const today=new Date().toDateString();
+    return Array.isArray(data)?data.filter(x=>x.day===today):[];
+  }catch(e){return[];}
+}
+function recordCompletedMission(m,xp,pay){
+  if(!m)return;
+  const hist=loadCompletedHistory();
+  const pick=locById(m.pickups[0]?.locId)?.label||'?';
+  const drops=[...new Set(m.deliveries.map(d=>locById(d.locId)?.label).filter(Boolean))];
+  hist.unshift({
+    day:new Date().toDateString(),
+    time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),
+    faction:prog.f,route:`${pick} → ${drops.join(', ')||'?'}`,
+    xp,pay,mode:deliveryMode==='partial'?`${partialPct}%`:'100%'
+  });
+  try{localStorage.setItem(COMPLETED_HISTORY_KEY,JSON.stringify(hist.slice(0,50)));}catch(e){}
+  renderCompletedHistory();
+}
+function renderCompletedHistory(){
+  const el=$('completed-history');if(!el)return;
+  const hist=loadCompletedHistory();
+  if(!hist.length){el.innerHTML='';return;}
+  const totXp=hist.reduce((s,x)=>s+(x.xp||0),0);
+  const totPay=hist.reduce((s,x)=>s+(x.pay||0),0);
+  el.innerHTML=`
+    <div class="section-lbl" style="margin-top:12px"><span>COMPLETADAS HOY (${hist.length})</span>
+      <span class="hint">${totXp.toLocaleString()} XP · ${totPay.toLocaleString()} aUEC</span></div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      ${hist.slice(0,15).map(x=>`<div style="display:flex;justify-content:space-between;align-items:center;
+        font-size:11px;padding:5px 8px;background:var(--c-bg-2);border-radius:6px;
+        border:0.5px solid var(--c-border-3)">
+        <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%">
+          <span style="color:var(--c-text-3)">${x.time}</span> · ${x.route}</div>
+        <div style="color:var(--c-green);font-family:var(--font-mono);white-space:nowrap">
+          +${(x.xp||0).toLocaleString()} XP · ${x.mode}</div>
+      </div>`).join('')}
+    </div>
+    <button id="clear-completed-btn" style="margin-top:6px;font-size:10px;padding:3px 8px;
+      background:transparent;border:0.5px solid var(--c-border-2);border-radius:4px;
+      color:var(--c-text-3);cursor:pointer">Limpiar historial de hoy</button>`;
+  const clearBtn=$('clear-completed-btn');
+  if(clearBtn)clearBtn.addEventListener('click',()=>{
+    try{localStorage.removeItem(COMPLETED_HISTORY_KEY);}catch(e){}
+    renderCompletedHistory();
+  });
 }
 
 function totalMissionScu(){
@@ -3554,6 +3616,20 @@ function renderMissions(){
       if(v!==null){m.pay=parseInt(v.replace(/[^0-9]/g,''))||0;renderMissions();}
     });
     card.appendChild(head);
+
+    // Avisos de validación de datos (pickup=entrega, SCU inválido, etc.)
+    const valIssues=missionValidationIssues(m);
+    if(valIssues.length&&!isCollapsed){
+      const valBox=document.createElement('div');
+      valBox.style.cssText=`display:flex;flex-direction:column;gap:3px;font-size:10px;
+        background:color-mix(in srgb,#E84040 10%,transparent);
+        border:0.5px solid color-mix(in srgb,#E84040 30%,transparent);
+        border-radius:6px;padding:5px 8px;margin:4px 0;line-height:1.4;`;
+      valBox.innerHTML=valIssues.map(msg=>`<div style="display:flex;align-items:flex-start;gap:5px;color:#E84040">
+        <i class="ti ti-alert-triangle" style="font-size:12px;flex-shrink:0;margin-top:1px" aria-hidden="true"></i>
+        <span style="color:var(--c-text-1)">${msg}</span></div>`).join('');
+      card.appendChild(valBox);
+    }
 
     // ── Cuerpo timeline ───────────────────────────────────────
     const body=document.createElement('div');body.className='cm-timeline';
@@ -4494,7 +4570,7 @@ function refreshBoxes(){
   $('box-note').innerHTML=deliveryMode==='full'?`<i class="ti ti-info-circle"></i> 100% mode: boxes for full load, by commodity. Max box in ${currentRank}: ${maxBox()} SCU.`:`<i class="ti ti-info-circle"></i> Mode ${partialPct}%: optimal commodity only (fewest boxes), delivered to nearest stop. ${boxMode==='optimal'?'Auto-packing combining boxes 1 to '+maxBox()+' SCU.':'Fixed size of '+boxSize+' SCU.'}`;
 }
 
-function switchTab(t){['loop','route','boxes'].forEach(x=>{$('tab-'+x).classList.toggle('on',x===t);$(x+'-tab').style.display=x===t?'block':'none';});if(t==='boxes')refreshBoxes();if(t==='loop'){renderXP();renderRankGuide();}if(t==='route'){renderClusterOptions();}}
+function switchTab(t){['loop','route','boxes'].forEach(x=>{$('tab-'+x).classList.toggle('on',x===t);$(x+'-tab').style.display=x===t?'block':'none';});if(t==='boxes')refreshBoxes();if(t==='loop'){renderXP();renderRankGuide();renderCompletedHistory();}if(t==='route'){renderClusterOptions();}}
 // Update valor sugerido de XP por mission según rango y facción — global
 // (antes vivía anidada dentro de init(), lo que hacía que setMode() y
 // otros lugares tiraran "updateXpHint is not defined" al llamarla)
@@ -5177,14 +5253,7 @@ function parseContractText(text){
 }
 
 // ── Mode texto: parseo con Claude API ──────────────────────
-function parseTextLocal(text){
-  const t=text.toLowerCase();
-  const m=t.match(/^(\d+)\s+([a-z\s]+?)\s+(?:de|from|en)\s+([\w\s]+?)\s+(?:a|to|→|->)\s+([\w\s]+?)(?:\s+[\d,]+)?$/i);
-  if(m)return{scu:parseInt(m[1]),material:m[2].trim(),pickups:[m[3].trim()],deliveries:[m[4].trim()]};
-  const m2=t.match(/^([\w\s]+?)\s*[→\-]+\s*([\w\s]+?)(?:\s+(\d+)\s+([\w\s]+?))?$/);
-  if(m2)return{scu:parseInt(m2[3])||64,material:m2[4]?.trim()||null,pickups:[m2[1].trim()],deliveries:[m2[2].trim()]};
-  return null;
-}
+
 
 async function parseTextInput(text){
   if(!text.trim())return;
@@ -5440,10 +5509,7 @@ async function fetchGeminiWithRetry(url,body,{maxRetries=2,statusFn}={}){
   throw lastErr||new Error('Gemini request failed');
 }
 
-function resetGeminiKey(){
-  localStorage.removeItem('sc_gemini_key');
-  setSmartStatus('ocr','ok','Key cleared. Will ask again next time.');
-}
+
 
 // ── Auto-Resizer: reduce capturas pesadas (4K, etc.) antes de mandarlas
 //    a Gemini, evitando payloads gigantes y timeouts de red
@@ -6216,16 +6282,7 @@ async function init(){
 
   // ── Posición actual: búsqueda con autocompletado ─────────────
   // Auto-seleccionar el hotspot más activo de la zona de la facción activa
-  function getDefaultPosId(){
-    const fd=FACTION_DATA[_activeFactionKey];
-    const zone=fd.zone||'Stanton';
-    // Buscar por missionssion_count en las locs del sistema correspondiente
-    const sysFilt=zone==='Pyro'?['Pyro']:zone==='microTech'?['Stanton']:['Stanton'];
-    const best=STATIONS.filter(l=>sysFilt.includes(l.sys))
-      .sort((a,b)=>(b.missionssionCount||0)-(a.missionssionCount||0))[0];
-    // Fallback a HUR-L2 si no hay missionssion counts cargados
-    return best?.id||findLoc('HUR-L2')||STATIONS[0]?.id;
-  }
+  
 
   // Posición actual — vacía al start, el usuario escribe dónde está
   const oWrap=$('o-search-wrap');
