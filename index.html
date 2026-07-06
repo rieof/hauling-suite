@@ -1872,6 +1872,59 @@ const MAX_MISSIONS=25; // límite blando de la app — permite cargar más candi
 const FACTIONS=["Covalex Shipping","Red Wind Linehaul","Ling Family Hauling"];
 
 let missionSeq=0,pickSeq=0,delivSeq=0,missions=[],boxSize=16,boxMode='optimal',useDest=false,deliveryMode='partial',partialPct=25,currentRank="Senior",oneBoxMode=false,oneBoxSize=1;
+
+// ── Persistencia automática de misiones (localStorage) ──────────
+// Antes las misiones solo vivían en memoria — se perdían al recargar
+// la página sin ningún aviso. Ahora se guardan solas cada vez que
+// cambian, y se restauran al abrir la app de nuevo.
+const MISSIONS_STORAGE_KEY='sc_hauling_missions_state';
+
+function saveMissionsState(){
+  try{
+    const state={
+      missions,missionSeq,pickSeq,delivSeq,
+      deliveryMode,partialPct,oneBoxMode,oneBoxSize,currentRank,
+      dLoc:$('d-loc')?.value||null, // o-loc ya se persiste solo (sc_last_pos_id)
+      shipSel:$('ship-sel')?.value||null,
+      driveSel:$('drive-sel')?.value||null,
+      capInput:$('cap-input')?.value||null,
+      compactMode:typeof compactMode!=='undefined'?compactMode:false,
+      savedAt:Date.now()
+    };
+    localStorage.setItem(MISSIONS_STORAGE_KEY,JSON.stringify(state));
+  }catch(e){
+    console.warn('[missions] No se pudo guardar el estado:',e.message);
+  }
+}
+
+function loadMissionsState(){
+  try{
+    const raw=localStorage.getItem(MISSIONS_STORAGE_KEY);
+    if(!raw)return false;
+    const state=JSON.parse(raw);
+    if(!state||!Array.isArray(state.missions))return false;
+    missions=state.missions;
+    missionSeq=state.missionSeq||0;
+    pickSeq=state.pickSeq||0;
+    delivSeq=state.delivSeq||0;
+    if(state.deliveryMode)deliveryMode=state.deliveryMode;
+    if(state.partialPct)partialPct=state.partialPct;
+    if(state.oneBoxMode!==undefined)oneBoxMode=state.oneBoxMode;
+    if(state.oneBoxSize)oneBoxSize=state.oneBoxSize;
+    if(state.currentRank)currentRank=state.currentRank;
+    // Estos se restauran después, cuando sus <select>/elementos ya
+    // existen con sus opciones pobladas (ship-sel, drive-sel, etc.)
+    window._restoreDLoc=state.dLoc||null;
+    window._restoreShip=state.shipSel||null;
+    window._restoreDrive=state.driveSel||null;
+    window._restoreCap=state.capInput||null;
+    window._restoreCompact=state.compactMode||false;
+    return missions.length>0;
+  }catch(e){
+    console.warn('[missions] No se pudo restaurar el estado:',e.message);
+    return false;
+  }
+}
 let lastRouteResult=null;
 let prog={f:FACTIONS[0],xp:{"Covalex Shipping":0,"Red Wind Linehaul":0,"Ling Family Hauling":0}};
 
@@ -3350,7 +3403,7 @@ function renderMissions(){
   if(pickerBtn)pickerBtn.style.display=overGameLimit?'inline-flex':'none';
   if(!overGameLimit)pickerRecShown=false; // si bajó de 10, ocultar el panel si estaba abierto
   renderPickerRecommendation();
-  if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderClusterOptions();return;}
+  if(!missions.length){el.innerHTML='<div class="no-missions">No contracts yet. Click &quot;+ New Contract&quot; to add one.</div>';refreshBoxes();refreshCandidates();renderClusterOptions();saveMissionsState();return;}
   el.innerHTML='';
   missions.forEach((m,mi)=>{
     const card=document.createElement('div');card.className='cm-card';card.id='mission-card-'+m.id;
@@ -3783,6 +3836,7 @@ function renderMissions(){
     el.appendChild(card);
   });
   refreshBoxes();refreshCandidates();renderClusterOptions();
+  saveMissionsState();
 }
 
 // Update solo los timers de missions (sin re-render completo)
@@ -5462,8 +5516,12 @@ function exportConfig(){
     prog,
     savedRoutes,
     sessionHistory:loadSessionHistory(),
+    missions, // NUEVO: incluir las misiones actuales en el respaldo
     settings:{
       ship:document.getElementById('ship-sel')?.value,
+      drive:document.getElementById('drive-sel')?.value,
+      cap:document.getElementById('cap-input')?.value,
+      compactMode:typeof compactMode!=='undefined'?compactMode:false,
       theme:localStorage.getItem('sc_theme')||'auto',
     }
   };
@@ -5493,8 +5551,16 @@ function importConfig(file){
         localStorage.setItem('sc_session_history',JSON.stringify(data.sessionHistory));
         renderSessionHistory();
       }
+      if(Array.isArray(data.missions)){ // NUEVO: restaurar misiones del backup
+        missions=data.missions;
+      }
+      if(data.settings?.ship){window._restoreShip=data.settings.ship;}
+      if(data.settings?.drive){window._restoreDrive=data.settings.drive;}
+      if(data.settings?.cap){window._restoreCap=data.settings.cap;}
+      if(data.settings?.compactMode!==undefined){window._restoreCompact=data.settings.compactMode;}
+      applyRestoredSettings();
       if(data.settings?.theme)applyTheme(data.settings.theme);
-      renderXP();renderRankGuide();
+      renderXP();renderRankGuide();renderMissions();
       setBadge('ok','✓ Configuración importada');
     }catch(err){
       setBadge('error','Error al importar: '+err.message);
@@ -5870,7 +5936,36 @@ function showElevatorTip(){
   document.body.appendChild(overlay);
 }
 
+// Aplica nave/motor/cap/modo-compacto guardados — se llama después de
+// poblarNaves() para asegurar que los <select> ya tengan sus opciones
+function applyRestoredSettings(){
+  if(window._restoreShip){
+    const shipSel=$('ship-sel');
+    if(shipSel&&[...shipSel.options].some(o=>o.value===window._restoreShip)){
+      shipSel.value=window._restoreShip;
+      shipSel.dispatchEvent(new Event('change'));
+    }
+  }
+  if(window._restoreDrive){
+    const driveSel=$('drive-sel');
+    if(driveSel&&[...driveSel.options].some(o=>o.value===window._restoreDrive)){
+      driveSel.value=window._restoreDrive;
+    }
+  }
+  if(window._restoreCap){
+    const capInput=$('cap-input');
+    if(capInput){capInput.value=window._restoreCap;$('cap-show').textContent=window._restoreCap;}
+  }
+  if(window._restoreCompact&&typeof compactMode!=='undefined'&&!compactMode){
+    toggleCompact();
+  }
+}
+
 async function init(){
+  // Restaurar misiones guardadas ANTES que nada más — si el usuario
+  // recargó la página, no queremos que las pierda en silencio
+  const restored=loadMissionsState();
+
   // Load data files (static JSON + UEX API)
   await loadStaticData();
   await loadFactionData().catch(()=>{});
@@ -5881,9 +5976,11 @@ async function init(){
 
   // ── Auto-update: load caché + actualiza API en segundo plano ──
   poblarNaves(); // Poblar con datos hardcodeados primero (0 ms)
+  applyRestoredSettings(); // nave/motor/cap/modo compacto guardados (si había)
   autoUpdateData().then(seActualizo=>{
     if(seActualizo){
       poblarNaves();       // Re-poblar si la API trajo naves nuevas
+      applyRestoredSettings(); // re-aplicar por si poblarNaves reseteó algo
       renderMissions();    // Refrescar materiales en cards abiertas
     }
   });
@@ -5999,7 +6096,7 @@ async function init(){
   // Montar campo de búsqueda destino fijo
   const dWrap=$('d-search-wrap');
   if(dWrap&&!dWrap.hasChildNodes()){
-    const dInitId=findLoc('Everus')||STATIONS[0]?.id;
+    const dInitId=window._restoreDLoc||findLoc('Everus')||STATIONS[0]?.id;
     $('d-loc').value=dInitId||'';
     const dSearch=createLocSearch(dInitId,(id)=>{
       if(id){$('d-loc').value=id;refreshCandidates();}
