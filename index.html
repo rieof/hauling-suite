@@ -4413,6 +4413,15 @@ function refreshBoxes(){
 }
 
 function switchTab(t){['loop','route','boxes'].forEach(x=>{$('tab-'+x).classList.toggle('on',x===t);$(x+'-tab').style.display=x===t?'block':'none';});if(t==='boxes')refreshBoxes();if(t==='loop'){renderXP();renderRankGuide();}if(t==='route'){renderClusterOptions();}}
+// Update valor sugerido de XP por mission según rango y facción — global
+// (antes vivía anidada dentro de init(), lo que hacía que setMode() y
+// otros lugares tiraran "updateXpHint is not defined" al llamarla)
+function updateXpHint(){
+  const r=CONTRACT_RANKS[currentRank];
+  const base=r?r.xpMission:0;
+  const hint=$('xp-hint');if(hint)hint.textContent=base>0?`≈${base.toLocaleString()} XP/mission en ${currentRank} (${prog.f})`:'';
+}
+
 function setMode(mode){
   deliveryMode=mode;
   $('mode-full').classList.toggle('on',mode==='full');
@@ -6213,15 +6222,6 @@ async function init(){
     else prog.xp[prog.f]=base+Math.round(CONTRACT_RANKS[rank].xpReq*(pct/100));
     saveProg();renderXP();renderRankGuide();
   });
-  // Update valor sugerido de XP por mission según rango y facción
-  function updateXpHint(){
-    const r=CONTRACT_RANKS[currentRank];
-    const base=r?r.xpMission:0;
-    const frac=deliveryMode==='full'?1:partialPct/100;
-    const suggested=Math.round(base*frac);
-    // xp-amount ya no existe en el DOM, el XP se calcula automáticamente
-    const hint=$('xp-hint');if(hint)hint.textContent=base>0?`≈${base.toLocaleString()} XP/mission en ${currentRank} (${prog.f})`:'';
-  }
   // XP se agrega automáticamente al completar mission (botón ✓ en cada contrato)
   $('xp-reset').addEventListener('click',()=>{prog.xp[prog.f]=0;saveProg();renderXP();renderRankGuide();});
 
