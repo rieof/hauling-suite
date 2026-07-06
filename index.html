@@ -2322,50 +2322,123 @@ function bestCommodityPlan(m){
   const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,locId:p.locId});byMat[p.material].scu+=p.scu;});
   const drops=m.deliveries.map(d=>({d,loc:locById(d.locId)})).filter(x=>!!x.loc);
 
-  // Confirmado jugando (usuario, repetidas veces): el juego tiene un
-  // botón de "entrega parcial" que completa la misión con CUALQUIER
-  // cantidad, siempre que sea al menos el 25% del total de la misión.
-  // PERO — también confirmado — cada destino RECHAZA que le entregues
-  // más SCU del que pide específicamente (ej. un lugar que pide 23 SCU
-  // no acepta que le lleves 40). Por eso el destino elegido tiene que
-  // tener una capacidad real conocida >= al monto calculado — no vale
-  // cualquiera, solo los que realmente puedan recibir esa cantidad.
-  // effectivePct nunca baja de 25 — es un piso real del juego.
+  // Confirmado jugando (usuario, repetidas veces): el juego acepta
+  // entrega parcial con el botón correspondiente, con un mínimo real
+  // de 25% del total de la misión — y ese 25% se puede repartir entre
+  // VARIOS destinos reales (no tiene que ser uno solo), siempre que
+  // ninguno reciba más de lo que pide específicamente. La herramienta
+  // compara ir a 1 solo lugar vs repartir en 2, y elige la que salga
+  // más corta según el modo activo (tiempo o distancia), considerando
+  // el camino real pickup→parada1→parada2, no solo cada una por separado.
   const effectivePct=Math.max(partialPct,25);
   const target=roundToBox(total*effectivePct/100);
+  const qSpeed=getCurrentQSpeed();
+  const optMode=$('opt-mode-sel')?.value||'time';
+  const costFn=(a,b)=>optMode==='dist'?dist3(a,b):_timeCostSync(a,b,qSpeed);
 
-  let best=null;
-  let bestFallback=null; // por si ningún destino real alcanza el 25% — usar el más grande disponible como respaldo
+  let bestOverall=null; // {stops:[...], cost, mat}
+  let bestFallback=null;
+
   Object.entries(byMat).forEach(([mat,info])=>{
     const pickLoc=locById(info.locId);
-    const matDrops=drops.filter(({d})=>!d.material||d.material===mat);
+    const allMatDrops=drops.filter(({d})=>!d.material||d.material===mat);
+    // Para la comparación 1-vs-2-paradas (que depende de medir distancia
+    // real), solo tiene sentido comparar dentro del MISMO sistema — dist3
+    // no representa una distancia real cruzando sistemas. Pero si la
+    // misión es interestelar de verdad (todas sus entregas reales están
+    // en otro sistema, como los contratos reales de las capturas), no
+    // hay que descartarla — hay que ir igual, solo que no se puede
+    // "comparar y elegir la mejor" entre opciones que no existen en el
+    // sistema local.
+    const matDrops=allMatDrops.filter(({loc})=>sysOf(loc)===sysOf(pickLoc));
+    const hasSameSystemOption=matDrops.length>0;
 
-    // Candidatos cuya capacidad real (si se conoce) alcanza para el target
+    const bestOverallBefore=bestOverall;
+    // ── Opción A: un solo destino cuya capacidad alcance el target ──
     matDrops.forEach(({d,loc})=>{
-      const dd=dist3(pickLoc,loc);
-      const cap=d.scu!=null?d.scu:Infinity; // sin dato real = asumimos que sí acepta (no hay info para descartarlo)
+      const cap=d.scu!=null?d.scu:Infinity;
       if(cap>=target){
         const amt=roundToBox(Math.min(info.scu,target));
         if(amt<=0)return;
-        const cand={mat,amt,boxes:boxCount(amt),nd:loc,ndDist:dd,avail:info.scu,pickLoc};
-        if(!best||cand.ndDist<best.ndDist)best=cand;
+        const cost=costFn(pickLoc,loc);
+        const cand={mat,cost,stops:[{amt,boxes:boxCount(amt),nd:loc,ndDist:dist3(pickLoc,loc),d}]};
+        if(!bestOverall||cost<bestOverall.cost)bestOverall=cand;
       }
-      // Guardar como respaldo el destino de MAYOR capacidad real, por si ninguno alcanza el target
+    });
+
+    // ── Opción B: repartir entre 2 destinos cuya suma alcance el target ──
+    for(let i=0;i<matDrops.length;i++){
+      for(let j=i+1;j<matDrops.length;j++){
+        const dA=matDrops[i],dB=matDrops[j];
+        const capA=dA.d.scu!=null?dA.d.scu:0;
+        const capB=dB.d.scu!=null?dB.d.scu:0;
+        if(capA+capB<target)continue; // combinados no alcanzan, no sirve
+
+        // Visitar primero el que quede más cerce del pickup, cargar ahí
+        // lo máximo que acepte (sin pasarse del target), y el resto en
+        // el segundo — así se prioriza dejar la parte más grande en el
+        // tramo más corto
+        const distA=dist3(pickLoc,dA.loc),distB=dist3(pickLoc,dB.loc);
+        const[first,second]=distA<=distB?[dA,dB]:[dB,dA];
+        const capFirst=first.d.scu!=null?first.d.scu:0;
+        const amtFirst=roundToBox(Math.min(capFirst,target));
+        const amtSecond=roundToBox(Math.max(0,target-amtFirst));
+        if(amtSecond<=0)continue; // alcanzaba con uno solo, no es un caso real de "2 lugares"
+        const capSecond=second.d.scu!=null?second.d.scu:0;
+        if(amtSecond>capSecond)continue; // el segundo no puede aceptar lo que le tocaría
+
+        const cost=costFn(pickLoc,first.loc)+costFn(first.loc,second.loc);
+        const cand={mat,cost,stops:[
+          {amt:amtFirst,boxes:boxCount(amtFirst),nd:first.loc,ndDist:distA<=distB?distA:distB,d:first.d},
+          {amt:amtSecond,boxes:boxCount(amtSecond),nd:second.loc,ndDist:dist3(first.loc,second.loc),d:second.d}
+        ]};
+        if(!bestOverall||cand.cost<bestOverall.cost)bestOverall=cand;
+      }
+    }
+
+    // ── Misión interestelar de verdad para ESTE material: ninguna
+    // entrega real de este material está en el mismo sistema que el
+    // pickup, y no se encontró nada arriba. No hay nada que "comparar"
+    // (solo hay un sistema al que ir), pero sigue siendo una misión
+    // real y válida — hay que armar el plan igual, sin inventar
+    // ninguna comparación de distancia entre sistemas.
+    if(!hasSameSystemOption&&bestOverall===bestOverallBefore){
+      allMatDrops.forEach(({d,loc})=>{
+        const cap=d.scu!=null?d.scu:Infinity;
+        if(cap>=target){
+          const amt=roundToBox(Math.min(info.scu,target));
+          if(amt<=0)return;
+          const cand={mat,cost:0,stops:[{amt,boxes:boxCount(amt),nd:loc,ndDist:dist3(pickLoc,loc),d,interstellar:true}]};
+          // Entre varias opciones interestelares reales, preferir la de
+          // menor capacidad (evita cargar de más) en vez de comparar
+          // distancia cruzando sistemas, que no tiene sentido con dist3
+          if(bestOverall===bestOverallBefore||cap<(bestOverall.stops[0].d.scu??Infinity))bestOverall=cand;
+        }
+      });
+    }
+
+    // Respaldo de mayor capacidad real disponible, EN CUALQUIER sistema
+    // (incluye interestelar) — por si nada alcanza el target ni solo
+    // ni combinado, en ningún sistema
+    allMatDrops.forEach(({d,loc})=>{
       if(d.scu!=null&&(!bestFallback||d.scu>bestFallback.cap)){
-        bestFallback={mat,cap:d.scu,nd:loc,ndDist:dd,avail:info.scu,pickLoc};
+        bestFallback={mat,cap:d.scu,nd:loc,ndDist:dist3(pickLoc,loc),avail:info.scu,pickLoc};
       }
     });
   });
 
-  if(best)return{target,best};
+  if(bestOverall){
+    bestOverall.stops.forEach(s=>{s.mat=bestOverall.mat;s.avail=byMat[bestOverall.mat]?.scu;s.pickLoc=locById(byMat[bestOverall.mat]?.locId);});
+    return{target,best:bestOverall.stops[0],stops:bestOverall.stops,splitAcross:bestOverall.stops.length>1};
+  }
 
-  // Respaldo: ningún destino real alcanza el 25% calculado — usar el de
-  // mayor capacidad disponible con SU propio monto máximo (no se puede
-  // forzar más de lo que ese lugar específico acepta)
+  // Respaldo: ni un solo destino ni una combinación de 2 alcanza el
+  // target — usar el de mayor capacidad disponible con su propio máximo
   if(bestFallback){
     const amt=roundToBox(Math.min(bestFallback.avail,bestFallback.cap));
     if(amt>0){
-      return{target,best:{mat:bestFallback.mat,amt,boxes:boxCount(amt),nd:bestFallback.nd,ndDist:bestFallback.ndDist,avail:bestFallback.avail,pickLoc:bestFallback.pickLoc,belowTarget:true}};
+      const stop={mat:bestFallback.mat,amt,boxes:boxCount(amt),nd:bestFallback.nd,ndDist:bestFallback.ndDist,avail:bestFallback.avail,pickLoc:bestFallback.pickLoc,belowTarget:true};
+      return{target,best:stop,stops:[stop],splitAcross:false};
     }
   }
   return null;
@@ -2773,7 +2846,7 @@ function computeClusters(){
   function modeAwareScu(m){
     if(deliveryMode==='partial'){
       const plan=bestCommodityPlan(m);
-      return plan?.best?.amt||0;
+      return(plan?.stops||[]).reduce((s,x)=>s+(x.amt||0),0)||plan?.best?.amt||0;
     }
     return missionssionTotal(m);
   }
@@ -3211,7 +3284,7 @@ function completeMission(id){
 
 function totalMissionScu(){
   if(oneBoxMode)return missions.reduce((s,m)=>s+m.pickups.length*oneBoxSize,0); // oneBoxSize SCU por pickup
-  if(deliveryMode==='partial')return missions.reduce((s,m)=>{const plan=bestCommodityPlan(m);return s+(plan?.best?.amt||0);},0);
+  if(deliveryMode==='partial')return missions.reduce((s,m)=>{const plan=bestCommodityPlan(m);const stopSum=(plan?.stops||[]).reduce((a,x)=>a+(x.amt||0),0);return s+(stopSum||plan?.best?.amt||0);},0);
   return missions.reduce((s,m)=>s+m.pickups.reduce((a,p)=>a+p.scu,0),0);
 }
 function renderCapacityAlert(){
@@ -3719,9 +3792,11 @@ function renderMissions(){
           if(d.scu!=null){_scuForThis=d.scu;_isExplicit=true;}
           else{_scuForThis=Math.floor(_total/_nd)+(di===_nd-1?_total-Math.floor(_total/_nd)*_nd:0);}
         } else {
-          // modo parcial (25%): solo va a la entrega nearest
+          // modo parcial (25%): mostrar el SCU si esta entrega es una
+          // de las paradas elegidas por el plan (puede ser 1 o 2)
           const _plan=bestCommodityPlan(m);
-          _scuForThis=isNearest&&_plan?.best?_plan.best.amt:0;
+          const _stop=_plan?.stops?.find(s=>s.nd?.id===d.locId);
+          _scuForThis=_stop?_stop.amt:0;
         }
         const _boxes=_scuForThis>0?boxesOptimal(_scuForThis):[];
         const _boxStr=_boxes.map(u=>u.n+'×'+u.size).join('+');
@@ -3959,31 +4034,35 @@ function buildNodes(){
       });
 
     } else {
-      // ── MODO PARCIAL (25%) — solo el lugar MÁS CERCANO ────────
-      // Igual que one-box pero con el SCU del plan óptimo
+      // ── MODO PARCIAL (25%) — usa las paradas que bestCommodityPlan
+      // decidió (1 o 2, según qué salga más corto) con el filtro de
+      // capacidad real (no el más cercano a secas — un lugar chico
+      // puede rechazar el monto calculado)
       const plan=bestCommodityPlan(m);
       if(!plan||!plan.best)return;
-      const b=plan.best;
-      const pk=m.pickups.find(p=>p.material===b.mat)||m.pickups[0];
+      const stops=plan.stops||[plan.best];
+      const pk=m.pickups.find(p=>p.material===stops[0].mat)||m.pickups[0];
       const pkLoc=pk?locById(pk.locId):null;
       if(!pkLoc)return;
 
-      // Buscar el nearest delivery explícitamente (no usar plan.best.nd que
-      // puede apuntar a cualquier lugar)
-      const nearestDeliv=sortedDeliveries[0];
-      const dropLoc=nearestDeliv?.loc||b.nd;
-      if(!dropLoc)return;
-
-      const boxes=boxesOptimal(b.amt,m.maxBoxSize);
-      const boxDetail=boxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
-      const pBoxes=boxesOptimal(b.amt,m.maxBoxSize);
+      const totalAmt=stops.reduce((s,x)=>s+x.amt,0);
+      const pBoxes=boxesOptimal(totalAmt,m.maxBoxSize);
       const pBoxDetail=pBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
       nodes.push({...pkLoc,role:'pickup',mid,mnum:mi+1,
-        scu:b.amt,material:b.mat,boxDetail:pBoxDetail});
-      nodes.push({...dropLoc,role:'dropoff',mid,mnum:mi+1,
-        scu:b.amt,material:nearestDeliv?.d?.material||b.mat,boxDetail,
-        _autoNearest:true,
-        _nearestDist:pickLoc?dist3(pkLoc,dropLoc):0});
+        scu:totalAmt,material:stops[0].mat,boxDetail:pBoxDetail});
+
+      stops.forEach((s,si)=>{
+        const dropLoc=s.nd;
+        if(!dropLoc)return;
+        const nearestDeliv=m.deliveries.find(d=>d.locId===dropLoc.id);
+        const boxes=boxesOptimal(s.amt,m.maxBoxSize);
+        const boxDetail=boxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
+        nodes.push({...dropLoc,role:'dropoff',mid,mnum:mi+1,
+          scu:s.amt,material:nearestDeliv?.material||s.mat,boxDetail,
+          _autoNearest:si===0,
+          _splitStop:stops.length>1,
+          _nearestDist:pkLoc?dist3(pkLoc,dropLoc):0});
+      });
     }
   });
   return nodes;
