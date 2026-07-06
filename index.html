@@ -2328,6 +2328,7 @@ function bestCommodityPlan(m){
   // esto se ignoraba y se inventaba un % arbitrario del total.
   const explicitDrops=drops.filter(x=>x.d.scu!=null&&x.d.scu>0);
   if(explicitDrops.length>0){
+    const target25=total*partialPct/100; // el "25% ideal" — usado para elegir ENTRE las entregas reales, nunca para inventar un número que no exista
     let best=null;
     Object.entries(byMat).forEach(([mat,info])=>{
       const pickLoc=locById(info.locId);
@@ -2339,8 +2340,14 @@ function bestCommodityPlan(m){
         if(amt<=0)return;
         const boxes=boxCount(amt);
         const dd=dist3(pickLoc,loc);
-        const cand={mat,amt,boxes,nd:loc,ndDist:dd,avail:info.scu,pickLoc};
-        if(!best||dd<best.ndDist)best=cand; // priorizar la entrega real más cercana
+        const distToTarget=Math.abs(amt-target25);
+        const cand={mat,amt,boxes,nd:loc,ndDist:dd,avail:info.scu,pickLoc,distToTarget};
+        // Priorizar la entrega real MÁS CERCANA al objetivo de 25% del
+        // total — nunca se inventa un número, siempre se usa una
+        // entrega real, pero entre las opciones reales se elige la que
+        // mejor representa "el 25%" en vez de la geográficamente más
+        // cercana (que podía ser mucho más carga de la necesaria).
+        if(!best||distToTarget<best.distToTarget||(distToTarget===best.distToTarget&&dd<best.ndDist))best=cand;
       });
     });
     if(best)return{target:best.amt,best};
