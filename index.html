@@ -6000,10 +6000,12 @@ async function init(){
         if(defDrive)driveSel.value=defDrive[0];
       }
     }
+    renderClusterOptions();refreshBoxes(); // la nave cambia la capacidad y velocidad usadas en los grupos
   });
   initShipSearch();
   $('ship-sel')?.addEventListener('change',refreshDriveOptions);
-  $('cap-input').addEventListener('input',e=>{$('cap-show').textContent=e.target.value;renderCapacityAlert();});
+  $('drive-sel')?.addEventListener('change',()=>{renderClusterOptions();refreshBoxes();});
+  $('cap-input').addEventListener('input',e=>{$('cap-show').textContent=e.target.value;renderCapacityAlert();renderClusterOptions();refreshBoxes();});
   $('btn-refresh').addEventListener('click',forceUpdate);
   $('btn-theme').addEventListener('click',cycleTheme);
   $('btn-help')?.addEventListener('click',showHelpModal);
@@ -6041,7 +6043,7 @@ async function init(){
   const rk=$('rank-sel');
   function fillRankSel(){rk.innerHTML='';RANK_ORDER.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r+' ('+CONTRACT_RANKS[r].scuMin+'–'+CONTRACT_RANKS[r].scuMax+' SCU)';rk.appendChild(o);});if(!RANK_ORDER.includes(currentRank))currentRank=RANK_ORDER[Math.floor(RANK_ORDER.length/2)];rk.value=currentRank;}
   fillRankSel();
-  rk.addEventListener('change',()=>{currentRank=rk.value;applyRank();renderRankGuide();updateXpHint();});
+  rk.addEventListener('change',()=>{currentRank=rk.value;applyRank();renderRankGuide();updateXpHint();renderClusterOptions();refreshBoxes();});
 
   function updateXpFactionLabel(){
     const lbl=$('xp-faction-label');
@@ -6081,6 +6083,7 @@ async function init(){
         const l=locById(id);
         if(l){localStorage.setItem('sc_last_pos_id',id);localStorage.setItem('sc_last_pos_label',l.label);}
         refreshCandidates();
+        renderClusterOptions();refreshBoxes(); // el origen cambia el sistema/distancia de los grupos
       }
     });
     oSearch.querySelector('.loc-input').style.fontSize='12px';
