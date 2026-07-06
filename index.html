@@ -2323,12 +2323,19 @@ function bestCommodityPlan(m){
   const drops=m.deliveries.map(d=>({d,loc:locById(d.locId)})).filter(x=>!!x.loc);
 
   // PRIORIDAD 1: si alguna entrega tiene SCU real conocido (escrito a
-  // mano o leído por OCR), usar EXACTAMENTE ese número — el juego no
-  // acepta más ni menos de lo que pide esa entrega específica. Antes
-  // esto se ignoraba y se inventaba un % arbitrario del total.
+  // mano o leído por OCR), usar ese número como referencia — el juego
+  // no acepta más de lo que existe realmente en cada entrega, PERO
+  // (confirmado por el usuario probándolo repetidas veces en el juego)
+  // sí acepta entregar MENOS del total pedido en una entrega única y
+  // de todas formas completa la misión. Por eso: si hay VARIAS entregas
+  // reales entre las que elegir, se sigue priorizando la más cercana al
+  // 25% ideal (no hace falta reducir más, ya elegís la más chica real).
+  // Si solo existe UNA entrega real (no hay opción entre la cual
+  // elegir), se aplica el % directamente sobre ese número real — no es
+  // inventar un valor sin base, es una fracción real de un número real.
   const explicitDrops=drops.filter(x=>x.d.scu!=null&&x.d.scu>0);
   if(explicitDrops.length>0){
-    const target25=total*partialPct/100; // el "25% ideal" — usado para elegir ENTRE las entregas reales, nunca para inventar un número que no exista
+    const target25=total*partialPct/100; // el "25% ideal" — usado para elegir ENTRE las entregas reales cuando hay varias
     let best=null;
     Object.entries(byMat).forEach(([mat,info])=>{
       const pickLoc=locById(info.locId);
@@ -2350,6 +2357,15 @@ function bestCommodityPlan(m){
         if(!best||distToTarget<best.distToTarget||(distToTarget===best.distToTarget&&dd<best.ndDist))best=cand;
       });
     });
+    // Si solo había UNA entrega real posible (sin opción entre la cual
+    // elegir), reducir esa cantidad al % configurado — confirmado que
+    // el juego acepta entrega parcial en un destino único
+    if(best&&explicitDrops.length===1&&deliveryMode==='partial'){
+      const reduced=roundToBox(best.amt*partialPct/100);
+      if(reduced>0){
+        best={...best,amt:reduced,boxes:boxCount(reduced),partialOfSingle:true};
+      }
+    }
     if(best)return{target:best.amt,best};
   }
 
