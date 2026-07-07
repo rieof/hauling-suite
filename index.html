@@ -4234,6 +4234,61 @@ async function calculate(){
   // normal, busca entregas que YA se pueden hacer (su pickup ya pasó) y
   // las adelanta hasta el punto del pico, para bajar el máximo cargado
   // sin tocar el algoritmo de rutas en sí. Si no ayuda, no cambia nada.
+  // ── Consolidación de visitas al mismo lugar (paso extra) ──────
+  // Si la ruta pasa por el mismo lugar más de una vez (ej. entregar de
+  // M1 en Starlight y por otro lado recoger de M5 también en Starlight),
+  // junta esas visitas en una sola parada para no volver — SIEMPRE que:
+  //  (1) no rompa el orden pickup→entrega de ninguna misión, y
+  //  (2) el pico de carga resultante siga entrando en la bodega.
+  // No cambia A DÓNDE vas, solo evita visitas repetidas al mismo sitio.
+  function peakLoad(seq){
+    let load=0,mx=0;
+    seq.forEach(n=>{
+      if(n.role==='pickup')load+=n.scu;
+      else if(n.role==='dropoff')load-=n.scu;
+      if(load>mx)mx=load;
+    });
+    return mx;
+  }
+  function consolidateStops(seq){
+    const locKey=n=>n.id||n.label;
+    let changed=true,guard=0;
+    while(changed&&guard++<40){
+      changed=false;
+      for(let i=0;i<seq.length&&!changed;i++){
+        const key=locKey(seq[i]);
+        // Buscar la próxima aparición del MISMO lugar más adelante
+        for(let j=i+2;j<seq.length;j++){ // i+2: tiene que haber al menos otra parada en el medio (si no, ya están juntas)
+          if(locKey(seq[j])!==key)continue;
+          // Intentar mover seq[j] justo después de seq[i] (agrupar)
+          const moved=seq[j];
+          // Validar orden pickup→entrega: si es un pickup, su entrega no
+          // puede estar entre i+1..j-1 (la estaríamos dejando antes del
+          // pickup). Si es entrega, su pickup no puede quedar después de i.
+          let breaksOrder=false;
+          if(moved.role==='pickup'){
+            for(let k=i+1;k<j;k++){
+              if(seq[k].role==='dropoff'&&seq[k].mid===moved.mid){breaksOrder=true;break;}
+            }
+          }else if(moved.role==='dropoff'){
+            // su pickup tiene que estar en 0..i (antes del punto donde lo insertamos)
+            const pkIdx=seq.findIndex(n=>n.role==='pickup'&&n.mid===moved.mid);
+            if(pkIdx>i){breaksOrder=true;}
+          }
+          if(breaksOrder)continue;
+          // Simular el movimiento y verificar que el pico siga entrando
+          const test=seq.slice();
+          test.splice(j,1);
+          test.splice(i+1,0,moved);
+          if(peakLoad(test)>cap)continue; // no entra en bodega, no consolidar
+          seq=test;changed=true;break;
+        }
+      }
+    }
+    return seq;
+  }
+  res.seq=consolidateStops(res.seq);
+
   function levelLoadPeaks(seq){
     let iterations=0;
     while(iterations++<20){
