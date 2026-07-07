@@ -28,7 +28,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const UEX_BASE = 'https://api.uexcorp.uk/2.0';
 const STARMAP_URL = 'https://raw.githubusercontent.com/StarCitizenWiki/scunpacked-data/refs/heads/master/starmap.json';
 const LOCATIONS_PATH = path.join(__dirname, '..', 'data', 'locations.json');
 
@@ -66,61 +65,52 @@ async function fetchOfficialLoadingDocks() {
   return confirmed;
 }
 
-async function fetchUexPositive() {
-  console.log('[update-efe] Descargando terminales de UEX (respaldo, menor prioridad)…');
-  const res = await fetch(`${UEX_BASE}/terminals`, { headers: { Accept: 'application/json' } });
-  if (!res.ok) throw new Error(`HTTP ${res.status} en /terminals`);
-  const json = await res.json();
-  if (json.status !== 'ok') throw new Error(`UEX status: ${json.status}`);
-  const confirmed = new Set();
-  for (const t of (json.data || [])) {
-    if (t.has_freight_elevator !== 1) continue;
-    const candidates = [t.space_station_name, t.outpost_name, t.city_name, t.displayname].filter(Boolean);
-    for (const name of candidates) confirmed.add(normName(name));
-  }
-  console.log(`[update-efe] ${confirmed.size} ubicaciones con freight elevator reportado en UEX (puede incluir interiores)`);
-  return confirmed;
-}
 
 async function main() {
-  let official = new Set(), uex = new Set();
+  let official = new Set();
   try { official = await fetchOfficialLoadingDocks(); }
   catch (e) { console.warn('[update-efe] ⚠ No se pudo leer starmap.json:', e.message); }
-  try { uex = await fetchUexPositive(); }
-  catch (e) { console.warn('[update-efe] ⚠ No se pudo leer UEX:', e.message); }
 
-  if (!official.size && !uex.size) {
-    console.log('[update-efe] Ninguna fuente disponible — no se toca locations.json');
+  if (!official.size) {
+    console.log('[update-efe] Fuente oficial no disponible — no se toca locations.json (evita corromper datos buenos)');
     return;
   }
 
   const data = JSON.parse(fs.readFileSync(LOCATIONS_PATH, 'utf-8'));
-  let updated = 0;
+  let toEfe = 0, toInt = 0;
 
   for (const loc of data.locations) {
     const overrideKey = loc.name.toLowerCase();
-    if (overrideKey in PAD_OVERRIDES) continue; // confirmado en el juego, no tocar
-    if (loc.pad === 'efe') continue; // ya está bien, no hace falta tocar
+    if (overrideKey in PAD_OVERRIDES) {
+      // Override manual confirmado en el juego — respetar, no tocar
+      loc.pad = PAD_OVERRIDES[overrideKey];
+      continue;
+    }
+    // Los OUTPOSTS mantienen su lógica propia (regla de juego: outpost = efe
+    // automático, definido en update-locations.js). No los tocamos acá.
+    if (loc.type === 'outpost') continue;
 
     const key = normName(loc.name);
-    // Prioridad: dato oficial del juego primero (más preciso, distingue
-    // exterior de interior); UEX solo si el oficial no dice nada de este lugar
-    const confirmedByOfficial = official.has(key);
-    const confirmedByUex = !confirmedByOfficial && uex.has(key);
-
-    if (confirmedByOfficial || confirmedByUex) {
-      console.log(`  ${loc.name}: ${loc.pad} → efe (confirmado ${confirmedByOfficial ? 'oficial' : 'UEX, respaldo'})`);
-      loc.pad = 'efe';
-      updated++;
+    // La lista oficial "Loading Dock" es AUTORITATIVA para estaciones:
+    // distingue freight elevator EXTERNO (Loading Dock) del INTERNO
+    // (solo "Freight Elevator" genérico, dentro del hangar). Si una
+    // estación NO está en Loading Dock, su elevator es interno → 'int'.
+    // Esto CORRIGE errores viejos (antes una fuente imprecisa marcaba
+    // EFE de más y nunca se revertía).
+    const shouldBeEfe = official.has(key);
+    const newPad = shouldBeEfe ? 'efe' : 'int';
+    if (loc.pad !== newPad) {
+      console.log(`  ${loc.name}: ${loc.pad} → ${newPad} (${shouldBeEfe ? 'Loading Dock oficial' : 'solo elevator interno / sin dock externo'})`);
+      loc.pad = newPad;
+      if (newPad === 'efe') toEfe++; else toInt++;
     }
-    // NUNCA se reclasifica a 'int' por ausencia — solo confirmación positiva
   }
 
-  data._meta.efe_sources = 'scunpacked-data starmap.json "Loading Dock" oficial (prioridad alta, distingue exterior/interior) + api.uexcorp.uk/2.0/terminals (respaldo de menor prioridad) — solo confirmación positiva, nunca marca int por ausencia';
+  data._meta.efe_sources = 'scunpacked-data starmap.json "Loading Dock" (AUTORITATIVO para estaciones — distingue freight elevator exterior del interior). Outposts mantienen efe automático. UEX ya NO se usa: marcaba EFE de más sin distinguir interior/exterior.';
   data._meta.efe_updated_at = new Date().toISOString();
 
   fs.writeFileSync(LOCATIONS_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  console.log(`\n[update-efe] ✓ ${updated} ubicaciones confirmadas como EFE con datos reales`);
+  console.log(`\n[update-efe] ✓ Estaciones reclasificadas: ${toEfe} → efe, ${toInt} → int (corregidas)`);
 }
 
 main().catch(err => {
