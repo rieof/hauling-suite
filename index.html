@@ -1942,15 +1942,29 @@ const workerCode=`
 
   function timeCost(a,b,qSpeed){
     const dist=dist3(a,b);
+    // Dos acciones seguidas en el MISMO lugar (ej. entregar de una misión y
+    // cargar otra en Ruin) no cuestan otro aterrizaje: ya estás ahí. Antes
+    // se cobraba el pad igual, lo que hacía que el tiempo total de pads
+    // fuera constante para cualquier orden — y por eso el modo tiempo daba
+    // siempre lo mismo que el modo distancia.
+    if(dist<1e-6)return 0;
     const qtTime=dist/qSpeed;
-    let padTime=150;
-    if(b.pad==='int')padTime=240;
-    else if(b.pad==='efe')padTime=90;
-    if(b.type==='outpost'||b.type==='habitat')padTime+=120;
-    // Penalización asimétrica: despegar y escapar la atmósfera de un
-    // outpost/habitat toma más tiempo que solo aterrizar — el costo de
-    // A→B ya no es igual al de B→A
-    if(a.type==='outpost'||a.type==='habitat')padTime+=180;
+    // Tiempos CALIBRADOS con mediciones reales del juego (jugador, jul 2026):
+    //  EFE (loading dock exterior, MEDIDO DIRECTO): aproximación sin hangar
+    //    90-120s + tránsito a pie 30-45s + llamar carga 30-45s → ~180s.
+    //    Sin compuertas ni maniobras en espacio cerrado; el "sweet spot".
+    //  Estación con hangar interno: + puertas + tránsito 45-60s → ~240s
+    //  Ciudad (habitat: Lorville/Area18/New Babbage): aproximación
+    //    atmosférica 3-5min + túneles 2-3min + elevador → ~450s
+    //  Outpost: bajar atmósfera 2-4min + correr 30s + llamar → ~240s
+    let padTime=210;
+    if(b.type==='outpost')padTime=240;
+    else if(b.type==='habitat')padTime=450;
+    else if(b.pad==='int')padTime=240;
+    else if(b.pad==='efe')padTime=180;
+    // Despegue asimétrico: salir de un outpost/ciudad exige ascender hasta
+    // poder calibrar el salto (~10-12 km): 2-3 min medidos → ~150s
+    if(a.type==='outpost'||a.type==='habitat')padTime+=150;
     return qtTime+padTime;
   }
   function distCost(a,b){
@@ -2425,10 +2439,16 @@ function _pairRelocate(r,dest,cap){
 }
 
 function _timeCostSync(a,b,qSpeed){
-  const d=dist3(a,b);const qtTime=d/qSpeed;
-  let padTime=150;if(b.pad==='int')padTime=240;else if(b.pad==='efe')padTime=90;
-  if(b.type==='outpost'||b.type==='habitat')padTime+=120;
-  if(a.type==='outpost'||a.type==='habitat')padTime+=180; // asimétrico: despegue > aterrizaje
+  const d=dist3(a,b);
+  if(d<1e-6)return 0; // mismo lugar: ya estás ahí, no hay otro aterrizaje
+  const qtTime=d/qSpeed;
+  // Calibrado con mediciones reales del juego (ver timeCost del worker)
+  let padTime=210;
+  if(b.type==='outpost')padTime=240;
+  else if(b.type==='habitat')padTime=450;
+  else if(b.pad==='int')padTime=240;
+  else if(b.pad==='efe')padTime=180;
+  if(a.type==='outpost'||a.type==='habitat')padTime+=150; // despegue+ascenso medido
   return qtTime+padTime;
 }
 function _distCostSync(a,b){return dist3(a,b)+(b.pad==='int'?0.05:0);}
@@ -2690,7 +2710,10 @@ function bestCommodityPlan(m){
         // destino ni lo que hay cargable en el pickup
         const cbox=boxesToReachTarget(target,d.maxBoxSize||m.maxBoxSize,Math.min(cap,availCap));
         if(cbox.amt<=0)return;
-        const cost=costFn(pickLoc,loc);
+        // En modo tiempo, cada caja cuesta ~20 s de manipulación (medido):
+        // un destino que permita menos cajas puede ganar aunque esté algo
+        // más lejos — exactamente la lógica de farmear XP rápido en 25%.
+        const cost=costFn(pickLoc,loc)+(optMode!=='dist'?cbox.boxes*20:0);
         const cand={mat,cost,stops:[{amt:cbox.amt,boxes:cbox.boxes,nd:loc,ndDist:dist3(pickLoc,loc),d}]};
         if(!bestOverall||cost<bestOverall.cost)bestOverall=cand;
       }
@@ -2725,7 +2748,8 @@ function bestCommodityPlan(m){
         // No se puede cargar más SCU del que hay en los pickups del material
         if(amtFirst+amtSecond>info.scu)continue;
 
-        const cost=costFn(pickLoc,first.loc)+costFn(first.loc,second.loc);
+        const cost=costFn(pickLoc,first.loc)+costFn(first.loc,second.loc)
+          +(optMode!=='dist'?(cboxFirst.boxes+cboxSecond.boxes)*20:0);
         const cand={mat,cost,stops:[
           {amt:amtFirst,boxes:cboxFirst.boxes,nd:first.loc,ndDist:distA<=distB?distA:distB,d:first.d},
           {amt:amtSecond,boxes:cboxSecond.boxes,nd:second.loc,ndDist:dist3(first.loc,second.loc),d:second.d}
@@ -4773,8 +4797,17 @@ async function calculate(){
     alertHTML=`<div class="alert ok"><i class="ti ti-circle-check"></i> All fits: max load ${maxLoad} de ${cap} SCU${deliveryMode!=='full'?` (modo ${partialPct}%)`:' (100%)'}.${jumps>0?` Includes ${jumps} jump${jumps!==1?'s':''} entre sistemas.`:''}</div>`;
   }
   $('alert-box').innerHTML=alertHTML;
-  const estMins=res.timeSeconds?Math.floor(res.timeSeconds/60):null;
-  const estSecs=res.timeSeconds?Math.round(res.timeSeconds%60):null;
+  // Tiempo de manipular cajas: ~20 s por caja (medido en el juego con
+  // tractor beam y nave con rampa). El total de cajas no cambia con el
+  // orden de la ruta, así que no afecta al optimizador — pero sí al ETA.
+  const BOX_HANDLING_S=20;
+  const totalBoxesRoute=res.seq.reduce((a,n)=>{
+    if(!n.boxDetail)return a;
+    return a+(n.boxDetail.match(/(\d+)×/g)||[]).reduce((s,m)=>s+parseInt(m),0);
+  },0);
+  const timeWithBoxes=(res.timeSeconds||0)+totalBoxesRoute*BOX_HANDLING_S;
+  const estMins=res.timeSeconds?Math.floor(timeWithBoxes/60):null;
+  const estSecs=res.timeSeconds?Math.round(timeWithBoxes%60):null;
   const timeStr=estMins!==null?`${estMins}m ${estSecs}s`:'—';
   const optLabel=optMode==='dist'?'📏 By distance':'⏱ By time';
   const distHighlight=optMode==='dist'?' style="color:var(--c-blue);font-weight:700"':'';
