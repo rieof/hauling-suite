@@ -5,7 +5,7 @@
     "note": "Solo incluye ubicaciones con coincidencia EXACTA de nombre contra locations.json, y solo materiales que existen en nuestra lista curada (materials.json). No se adivina ninguna asociación.",
     "totalActiveInSource": 684,
     "matchedToOurLocations": 132,
-    "generated": "2026-07-07T14:46:58.295Z"
+    "generated": "2026-07-09T15:35:51.653Z"
   },
   "rules": {
     "Dupree Industrial Manufacturing Facility": {
