@@ -1104,7 +1104,7 @@ function L(label,pos,type,pad){
 
 // --- AUTOGEN LOCS START ---
 const DATA={
-  "Unknown":{
+  "Nyx":{
     "Nyx":{locs:[
     {label:"Levski",x:-9.6417,y:-11.4907,z:-0.0001,type:"station",pad:'int'},
     {label:"People's Service Station Alpha",x:-45.8043,y:-14.3513,z:0,type:"station",pad:'int'},
@@ -1113,7 +1113,9 @@ const DATA={
     {label:"People's Service Station Theta",x:40.4727,y:-25.8063,z:0,type:"station",pad:'int'},
     {label:"Pyro Gateway",x:-12,y:20.7846,z:0,type:"station",pad:'efe'},
     {label:"Stanton Gateway",x:-13.4999,y:-23.3827,z:0,type:"station",pad:'efe'},
-    ]},
+    ]}
+  },
+  "Pyro":{
     "Adir":{locs:[
     {label:"Prophet's Peak",x:42.2636,y:-7.356,z:0.0002,type:"outpost",pad:'efe'},
     ]},
@@ -1201,7 +1203,9 @@ const DATA={
     ]},
     "Vatra":{locs:[
     {label:"Seer's Canyon",x:42.2168,y:-7.4258,z:-0.0001,type:"outpost",pad:'efe'},
-    ]},
+    ]}
+  },
+  "Stanton":{
     "Aberdeen":{locs:[
     {label:"Barton Flats Aid Shelter",x:12.9058,y:0.0412,z:-0.0002,type:"outpost",pad:'efe'},
     {label:"Boondoggle",x:12.9059,y:0.0408,z:-0.0001,type:"outpost",pad:'efe'},
@@ -2746,12 +2750,18 @@ function missionValidationIssues(m){
       issues.push('Un pickup tiene SCU en 0 o inválido.');
     }
   });
-  // 3. Suma de entregas mayor que lo que se recoge (imposible entregar más de lo cargado)
-  if(m.pickups.length===1&&m.deliveries.some(d=>d.scu!=null)){
-    const totalPick=m.pickups[0].scu||0;
+  // 3. Suma de entregas mayor que lo que se recoge (imposible entregar más
+  //    de lo cargado). Vale para CUALQUIER cantidad de pickups: antes esta
+  //    comprobación solo corría con un único pickup, así que misiones con
+  //    varios pickups (ej. 4×11=44 recogidos pero 45 a entregar) pasaban sin
+  //    aviso — y luego la entrega se descartaba en silencio de la ruta.
+  const someDelivHasScu=m.deliveries.some(d=>d.scu!=null);
+  const allPickHaveScu=m.pickups.length>0&&m.pickups.every(p=>p.scu!=null);
+  if(someDelivHasScu&&allPickHaveScu){
+    const totalPick=m.pickups.reduce((s,p)=>s+(p.scu||0),0);
     const totalDeliv=m.deliveries.reduce((s,d)=>s+(d.scu||0),0);
     if(totalDeliv>totalPick){
-      issues.push(`Las entregas suman ${totalDeliv} SCU pero el pickup solo carga ${totalPick} — no cuadra.`);
+      issues.push(`Las entregas suman ${totalDeliv} SCU pero los pickups solo cargan ${totalPick} — no cuadra (esa entrega se va a descartar de la ruta).`);
     }
   }
   return issues;
@@ -6267,7 +6277,7 @@ function renderCommodityGuide(seq){
   seq.forEach(n=>{
     if(n.role==='pickup'||n.role==='dropoff'){
       const key=n.label;
-      if(!stops[key])stops[key]={label:n.label,pickups:[],dropoffs:[]};
+      if(!stops[key])stops[key]={label:n.label,pad:n.pad,pickups:[],dropoffs:[]};
       if(n.role==='pickup')stops[key].pickups.push({scu:n.scu,mat:n.material,mnum:n.mnum});
       if(n.role==='dropoff')stops[key].dropoffs.push({scu:n.scu,mat:n.material,mnum:n.mnum});
     }
