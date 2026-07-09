@@ -46,11 +46,15 @@ function replaceBlock(html, startMarker, endMarker, newInner) {
 // ── Generar el bloque LOCS (const DATA) desde locations.json ──────────
 // Formato de destino: DATA[sistema][planeta] = {locs:[{label,x,y,z,type,pad}]}
 function genLocsBlock(locations) {
-  // Agrupar por sistema → planeta
+  // Agrupar por sistema → planeta.
+  // OJO: en data/locations.json los campos son "system", "parent" y "name"
+  // (NO "sys"/"planet"/"label"). Usar los nombres equivocados manda todas
+  // las ubicaciones a un sistema falso "Unknown" y rompe la detección de
+  // sistemas (saltos interestelares, filtro de mismo sistema del modo 25%).
   const bySys = {};
   for (const l of locations.locations) {
-    const sys = l.sys || 'Unknown';
-    const planet = l.planet || l.parent || 'Other';
+    const sys = l.system || 'Unknown';
+    const planet = l.parent || 'Other';
     (bySys[sys] = bySys[sys] || {});
     (bySys[sys][planet] = bySys[sys][planet] || []);
     bySys[sys][planet].push(l);
