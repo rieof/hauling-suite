@@ -2067,60 +2067,122 @@ const workerCode=`
     }return r;
   }
 
-  // multiStartInsertion: construye la ruta insertando cada par pickup+entrega
-  // en su posición más barata (cheapest insertion), probando MUCHOS órdenes
-  // de inserción distintos y quedándose con el mejor. Esto escapa de los
-  // óptimos locales donde 2-opt/or-opt quedan atrapados (el clásico "recoger
-  // todo primero y entregar todo al final" que hace cruzar el mapa dos veces).
+  // multiStartInsertion: construye la ruta insertando cada misión completa
+  // (TODOS sus pickups y TODAS sus entregas) en su posición más barata,
+  // probando muchos órdenes de misión y quedándose con la mejor ruta.
+  // Escapa de los óptimos locales donde 2-opt/or-opt quedan atrapados
+  // (el clásico "recoger todo primero y entregar todo al final").
+  // OJO: una misión puede tener VARIOS pickups y VARIAS entregas — hay que
+  // insertarlos todos. Emparejar solo 1 pickup con 1 entrega hacía perder
+  // nodos silenciosamente (la ruta quedaba más corta y ganaba la comparación).
   function multiStartInsertion(o,dest,nodes,cap,qSpeed,opt){
-    // Emparejar pickup con su dropoff por mid
-    const byMid={};
-    nodes.forEach(n=>{(byMid[n.mid]=byMid[n.mid]||{})[n.role]=n;});
-    const pairs=Object.values(byMid).filter(x=>x.pickup&&x.dropoff).map(x=>({p:x.pickup,d:x.dropoff}));
-    // Nodos que no forman par (raro, pero por robustez) van al final tal cual
-    const unpaired=nodes.filter(n=>!(byMid[n.mid]&&byMid[n.mid].pickup&&byMid[n.mid].dropoff));
-    if(!pairs.length)return null;
+    const groups={};
+    nodes.forEach(n=>{
+      const k=(n.mid===undefined||n.mid===null)?('_solo_'+(n.label||'')):('m'+n.mid);
+      const g=(groups[k]=groups[k]||{picks:[],drops:[],others:[]});
+      if(n.role==='pickup')g.picks.push(n);
+      else if(n.role==='dropoff')g.drops.push(n);
+      else g.others.push(n);
+    });
+    const glist=Object.values(groups);
+    if(!glist.length)return null;
+    const lf=dest?1:0;
+    const expected=nodes.length+(dest?2:1);
 
-    function insertPair(route,pair){
-      let best=null;const lf=dest?1:0;
+    function insertNode(route,node){
+      let best=null;
+      // Costo incremental: solo el tramo que se rompe y los dos nuevos.
+      // (Recalcular la ruta entera en cada candidato hacía esto O(n³).)
       for(let a=1;a<=route.length-lf;a++){
-        const withP=[...route.slice(0,a),pair.p,...route.slice(a)];
-        for(let b=a+1;b<=withP.length-lf;b++){
-          const c=[...withP.slice(0,b),pair.d,...withP.slice(b)];
-          if(!vs(c,cap))continue;
-          const dd=rdCost(c,qSpeed,opt);
-          if(!best||dd<best.dd)best={c,dd};
-        }
+        const prev=route[a-1], next=(a<route.length)?route[a]:null;
+        const delta=getCost(prev,node,qSpeed,opt)+(next?getCost(node,next,qSpeed,opt)-getCost(prev,next,qSpeed,opt):0);
+        if(best&&delta>=best.delta)continue; // ya tenemos una posición mejor
+        const c=[...route.slice(0,a),node,...route.slice(a)];
+        if(!vs(c,cap))continue;
+        best={c,delta};
       }
       return best?best.c:null;
     }
     function build(order){
       let route=dest?[o,dest]:[o];
-      for(const pair of order){const r=insertPair(route,pair);if(r)route=r;else return null;}
-      // Insertar sueltos por robustez
-      for(const n of unpaired){let best=null;const lf=dest?1:0;for(let a=1;a<=route.length-lf;a++){const c=[...route.slice(0,a),n,...route.slice(a)];if(!vs(c,cap))continue;const dd=rdCost(c,qSpeed,opt);if(!best||dd<best.dd)best={c,dd};}if(best)route=best.c;}
+      for(const g of order){
+        // pickups primero (una entrega no puede ir antes de tener carga)
+        for(const p of g.picks){const r=insertNode(route,p);if(!r)return null;route=r;}
+        for(const d of g.drops){const r=insertNode(route,d);if(!r)return null;route=r;}
+        for(const x of g.others){const r=insertNode(route,x);if(!r)return null;route=r;}
+      }
       return route;
     }
 
-    // Órdenes de arranque: heurísticos + varios pseudo-aleatorios deterministas
+    const refOf=g=>(g.picks[0]||g.drops[0]||g.others[0]);
     const starts=[];
-    starts.push([...pairs].sort((a,b)=>getCost(o,a.p,qSpeed,opt)-getCost(o,b.p,qSpeed,opt)));
-    starts.push([...pairs].sort((a,b)=>getCost(o,a.d,qSpeed,opt)-getCost(o,b.d,qSpeed,opt)));
-    starts.push([...pairs].sort((a,b)=>getCost(a.p,a.d,qSpeed,opt)-getCost(b.p,b.d,qSpeed,opt)));
-    const RUNS=Math.min(30,Math.max(8,pairs.length*3));
+    starts.push([...glist].sort((a,b)=>getCost(o,refOf(a),qSpeed,opt)-getCost(o,refOf(b),qSpeed,opt)));
+    starts.push([...glist].sort((a,b)=>(b.picks.length+b.drops.length)-(a.picks.length+a.drops.length)));
+    starts.push([...glist].sort((a,b)=>getCost(o,refOf(b),qSpeed,opt)-getCost(o,refOf(a),qSpeed,opt)));
+    // Menos arranques cuando hay muchos nodos: cada uno cuesta O(n²)
+    const n=nodes.length;
+    const RUNS=n<=20?30:(n<=30?12:6);
     for(let k=0;k<RUNS;k++){
-      const sh=[...pairs];
+      const sh=[...glist];
       for(let i=sh.length-1;i>0;i--){const j=(k*31+i*17+7)%(i+1);[sh[i],sh[j]]=[sh[j],sh[i]];}
       starts.push(sh);
     }
-    let best=null,bd=Infinity;
+    // 1) Construir todos los arranques (barato) y quedarse con los mejores
+    const built=[];
     for(const order of starts){
-      let r=build(order);
-      if(!r)continue;
-      // Pulir cada arranque
+      const r=build(order);
+      if(!r||r.length!==expected)continue;
+      built.push({r,c:rdCost(r,qSpeed,opt)});
+    }
+    if(!built.length)return null;
+    built.sort((a,b)=>a.c-b.c);
+    // 2) Pulir SOLO los 3 mejores (el pulido es lo caro)
+    let best=null,bd=Infinity;
+    for(const cand of built.slice(0,3)){
+      let r=cand.r;
       r=twoOpt(r,dest,cap,qSpeed,opt);r=orOpt(r,dest,cap,qSpeed,opt);r=pairRelocate(r,dest,cap,qSpeed,opt);
+      if(r.length!==expected)continue;
       const d=rdCost(r,qSpeed,opt);
       if(d<bd){bd=d;best=r;}
+    }
+    return best;
+  }
+
+  // ILS (búsqueda local iterada): perturba un poco la mejor ruta encontrada,
+  // vuelve a optimizarla localmente y se queda con el resultado sólo si mejora.
+  // Esto saca al optimizador de óptimos locales que 2-opt/or-opt no pueden
+  // dejar por sí solos. Nunca empeora (sólo acepta mejoras) y nunca pierde
+  // nodos (se valida el largo). Corta por presupuesto de tiempo.
+  function ils(o,dest,nodes,cap,qSpeed,opt,seq,budgetMs){
+    const lf=dest?1:0;
+    const expected=seq.length;
+    let best=seq.slice(),bestC=rdCost(best,qSpeed,opt);
+    let cur=best.slice();
+    let seed=2166136261;
+    const rand=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+    const t0=Date.now();
+    let it=0;
+    while(Date.now()-t0<budgetMs&&it<400){
+      it++;
+      // Perturbación: reubicar 2 nodos al azar (sin tocar origen ni destino)
+      let c=cur.slice();
+      let ok=true;
+      for(let k=0;k<2;k++){
+        const hi=c.length-lf;           // posiciones movibles: 1..hi-1
+        if(hi<=2){ok=false;break;}
+        const i=1+Math.floor(rand()*(hi-1));
+        const node=c[i];
+        const wo=c.slice(0,i).concat(c.slice(i+1));
+        const j=1+Math.floor(rand()*(wo.length-lf));
+        c=wo.slice(0,j).concat([node],wo.slice(j));
+      }
+      if(!ok||c.length!==expected||!vs(c,cap))continue;
+      c=twoOpt(c,dest,cap,qSpeed,opt);
+      c=orOpt(c,dest,cap,qSpeed,opt);
+      c=pairRelocate(c,dest,cap,qSpeed,opt);
+      if(c.length!==expected||!vs(c,cap))continue;
+      const cc=rdCost(c,qSpeed,opt);
+      if(cc<bestC-1e-9){best=c.slice();bestC=cc;cur=c.slice();}
     }
     return best;
   }
@@ -2142,7 +2204,13 @@ const workerCode=`
     // distintos y se queda con la mejor. Resuelve el "ir y volver" que las
     // técnicas locales no pueden. Se compara con lo anterior y gana el menor.
     const rMulti=multiStartInsertion(o,dest,nodes,cap,qSpeed,opt);
-    if(rMulti&&vs(rMulti,cap)&&rdCost(rMulti,qSpeed,opt)<rdCost(r,qSpeed,opt))r=rMulti;
+    // Sólo aceptarla si conserva TODOS los nodos y es factible y más barata
+    if(rMulti&&rMulti.length===r.length&&vs(rMulti,cap)&&rdCost(rMulti,qSpeed,opt)<rdCost(r,qSpeed,opt))r=rMulti;
+    // Pulido final con ILS. Presupuesto según tamaño: los casos chicos ya
+    // salen óptimos y no necesitan tiempo; los grandes son los que ganan.
+    const budget=nodes.length<=10?150:nodes.length<=20?600:1500;
+    const rIls=ils(o,dest,nodes,cap,qSpeed,opt,r,budget);
+    if(rIls&&rIls.length===r.length&&vs(rIls,cap)&&rdCost(rIls,qSpeed,opt)<rdCost(r,qSpeed,opt))r=rIls;
     return{seq:r,dist:rdPhysical(r),timeSeconds:rdTime(r,qSpeed),feasible:f};
   }
   self.onmessage=function(e){self.postMessage(optimize(e.data.o,e.data.dest,e.data.nodes,e.data.cap,e.data.qSpeed,e.data.opt));};
@@ -2366,46 +2434,100 @@ function _timeCostSync(a,b,qSpeed){
 function _distCostSync(a,b){return dist3(a,b)+(b.pad==='int'?0.05:0);}
 
 
-// Respaldo sincrónico de multiStartInsertion (misma técnica que en el worker)
+// Respaldo sincrónico de multiStartInsertion (misma técnica que en el worker).
+// Inserta TODOS los pickups y entregas de cada misión — emparejar solo uno de
+// cada perdía nodos en misiones con varios pickups/entregas.
 function _multiStartInsertion(o,dest,nodes,cap){
-  const byMid={};
-  nodes.forEach(n=>{(byMid[n.mid]=byMid[n.mid]||{})[n.role]=n;});
-  const pairs=Object.values(byMid).filter(x=>x.pickup&&x.dropoff).map(x=>({p:x.pickup,d:x.dropoff}));
-  const unpaired=nodes.filter(n=>!(byMid[n.mid]&&byMid[n.mid].pickup&&byMid[n.mid].dropoff));
-  if(!pairs.length)return null;
+  const groups={};
+  nodes.forEach(n=>{
+    const k=(n.mid===undefined||n.mid===null)?('_solo_'+(n.label||'')):('m'+n.mid);
+    const g=(groups[k]=groups[k]||{picks:[],drops:[],others:[]});
+    if(n.role==='pickup')g.picks.push(n);
+    else if(n.role==='dropoff')g.drops.push(n);
+    else g.others.push(n);
+  });
+  const glist=Object.values(groups);
+  if(!glist.length)return null;
   const lf=dest?1:0;
-  function insertPair(route,pair){
+  const expected=nodes.length+(dest?2:1);
+
+  function insertNode(route,node){
     let best=null;
     for(let a=1;a<=route.length-lf;a++){
-      const withP=[...route.slice(0,a),pair.p,...route.slice(a)];
-      for(let b=a+1;b<=withP.length-lf;b++){
-        const c=[...withP.slice(0,b),pair.d,...withP.slice(b)];
-        if(!_vs(c,cap))continue;
-        const dd=_rd(c);
-        if(!best||dd<best.dd)best={c,dd};
-      }
+      const prev=route[a-1], next=(a<route.length)?route[a]:null;
+      const delta=distWithPadPenalty(prev,node)+(next?distWithPadPenalty(node,next)-distWithPadPenalty(prev,next):0);
+      if(best&&delta>=best.delta)continue;
+      const c=[...route.slice(0,a),node,...route.slice(a)];
+      if(!_vs(c,cap))continue;
+      best={c,delta};
     }
     return best?best.c:null;
   }
   function build(order){
     let route=dest?[o,dest]:[o];
-    for(const pair of order){const r=insertPair(route,pair);if(r)route=r;else return null;}
-    for(const n of unpaired){let best=null;for(let a=1;a<=route.length-lf;a++){const c=[...route.slice(0,a),n,...route.slice(a)];if(!_vs(c,cap))continue;const dd=_rd(c);if(!best||dd<best.dd)best={c,dd};}if(best)route=best.c;}
+    for(const g of order){
+      for(const p of g.picks){const r=insertNode(route,p);if(!r)return null;route=r;}
+      for(const d of g.drops){const r=insertNode(route,d);if(!r)return null;route=r;}
+      for(const x of g.others){const r=insertNode(route,x);if(!r)return null;route=r;}
+    }
     return route;
   }
+
+  const refOf=g=>(g.picks[0]||g.drops[0]||g.others[0]);
   const starts=[];
-  starts.push([...pairs].sort((a,b)=>dist3(o,a.p)-dist3(o,b.p)));
-  starts.push([...pairs].sort((a,b)=>dist3(o,a.d)-dist3(o,b.d)));
-  starts.push([...pairs].sort((a,b)=>dist3(a.p,a.d)-dist3(b.p,b.d)));
-  const RUNS=Math.min(30,Math.max(8,pairs.length*3));
-  for(let k=0;k<RUNS;k++){const sh=[...pairs];for(let i=sh.length-1;i>0;i--){const j=(k*31+i*17+7)%(i+1);[sh[i],sh[j]]=[sh[j],sh[i]];}starts.push(sh);}
-  let best=null,bd=Infinity;
+  starts.push([...glist].sort((a,b)=>dist3(o,refOf(a))-dist3(o,refOf(b))));
+  starts.push([...glist].sort((a,b)=>(b.picks.length+b.drops.length)-(a.picks.length+a.drops.length)));
+  starts.push([...glist].sort((a,b)=>dist3(o,refOf(b))-dist3(o,refOf(a))));
+  const n=nodes.length;
+  const RUNS=n<=20?30:(n<=30?12:6);
+  for(let k=0;k<RUNS;k++){const sh=[...glist];for(let i=sh.length-1;i>0;i--){const j=(k*31+i*17+7)%(i+1);[sh[i],sh[j]]=[sh[j],sh[i]];}starts.push(sh);}
+  const built=[];
   for(const order of starts){
-    let r=build(order);
-    if(!r)continue;
+    const r=build(order);
+    if(!r||r.length!==expected)continue;
+    built.push({r,c:_rd(r)});
+  }
+  if(!built.length)return null;
+  built.sort((a,b)=>a.c-b.c);
+  let best=null,bd=Infinity;
+  for(const cand of built.slice(0,3)){
+    let r=cand.r;
     r=_2o(r,dest,cap);r=_orOpt(r,dest,cap);r=_pairRelocate(r,dest,cap);
+    if(r.length!==expected)continue;
     const d=_rd(r);
     if(d<bd){bd=d;best=r;}
+  }
+  return best;
+}
+
+// ILS sincrónica (misma técnica que en el worker). Presupuesto MÁS CHICO:
+// esta versión corre en el hilo principal y bloquearía la interfaz.
+function _ils(o,dest,nodes,cap,seq,budgetMs){
+  const lf=dest?1:0;
+  const expected=seq.length;
+  let best=seq.slice(),bestC=_rd(best);
+  let cur=best.slice();
+  let seed=2166136261;
+  const rand=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+  const t0=Date.now();
+  let it=0;
+  while(Date.now()-t0<budgetMs&&it<200){
+    it++;
+    let c=cur.slice(),ok=true;
+    for(let k=0;k<2;k++){
+      const hi=c.length-lf;
+      if(hi<=2){ok=false;break;}
+      const i=1+Math.floor(rand()*(hi-1));
+      const node=c[i];
+      const wo=c.slice(0,i).concat(c.slice(i+1));
+      const j=1+Math.floor(rand()*(wo.length-lf));
+      c=wo.slice(0,j).concat([node],wo.slice(j));
+    }
+    if(!ok||c.length!==expected||!_vs(c,cap))continue;
+    c=_2o(c,dest,cap);c=_orOpt(c,dest,cap);c=_pairRelocate(c,dest,cap);
+    if(c.length!==expected||!_vs(c,cap))continue;
+    const cc=_rd(c);
+    if(cc<bestC-1e-9){best=c.slice();bestC=cc;cur=c.slice();}
   }
   return best;
 }
@@ -2428,7 +2550,11 @@ function optimizeSync(o,dest,nodes,cap,qSpeed,opt){
   r=_orOpt(r,dest,cap);
   // 7. Multi-arranque por inserción: se queda con la mejor de muchas rutas
   const rMulti=_multiStartInsertion(o,dest,nodes,cap);
-  if(rMulti&&_vs(rMulti,cap)&&_rd(rMulti)<_rd(r))r=rMulti;
+  // Sólo aceptarla si conserva TODOS los nodos, es factible y más corta
+  if(rMulti&&rMulti.length===r.length&&_vs(rMulti,cap)&&_rd(rMulti)<_rd(r))r=rMulti;
+  // 8. Pulido ILS (presupuesto corto: bloquea el hilo principal)
+  const rIls=_ils(o,dest,nodes,cap,r,nodes.length<=10?80:250);
+  if(rIls&&rIls.length===r.length&&_vs(rIls,cap)&&_rd(rIls)<_rd(r))r=rIls;
   let timeSeconds=0;for(let i=0;i<r.length-1;i++)timeSeconds+=_timeCostSync(r[i],r[i+1],qSpeed||0.18);
   return{seq:r,dist:_rd(r),timeSeconds,feasible:f};
 }
@@ -2512,7 +2638,10 @@ function boxesToReachTarget(target, contractMaxBox, destCap){
 
 function bestCommodityPlan(m){
   const total=missionssionTotal(m);if(!total)return null;
-  const byMat={};m.pickups.forEach(p=>{(byMat[p.material]=byMat[p.material]||{scu:0,locId:p.locId});byMat[p.material].scu+=p.scu;});
+  const byMat={};m.pickups.forEach(p=>{
+    const e=(byMat[p.material]=byMat[p.material]||{scu:0,locId:p.locId,firstScu:p.scu||0});
+    e.scu+=p.scu;
+  });
   const drops=m.deliveries.map(d=>({d,loc:locById(d.locId)})).filter(x=>!!x.loc);
 
   // Confirmado jugando (usuario, repetidas veces): el juego acepta
@@ -2547,12 +2676,19 @@ function bestCommodityPlan(m){
     const hasSameSystemOption=matDrops.length>0;
 
     const bestOverallBefore=bestOverall;
+    // Tope de carga real: no se puede sacar más SCU del que hay en el
+    // pickup. Si el PRIMER pickup ya alcanza el target, alcanza con esa
+    // parada (no forzamos otra). Si no alcanza, el tope es el total del
+    // material repartido entre sus pickups (buildNodes junta de varios).
+    const availCap=(info.firstScu>=target)?info.firstScu:info.scu;
+
     // ── Opción A: un solo destino cuya capacidad alcance el target ──
     matDrops.forEach(({d,loc})=>{
       const cap=d.scu!=null?d.scu:Infinity;
       if(cap>=target){
-        // Cajas reales del destino hasta pasar el 25% (no un nº sintético)
-        const cbox=boxesToReachTarget(target,d.maxBoxSize||m.maxBoxSize,cap);
+        // Cajas reales hasta pasar el 25%, sin exceder ni lo que pide el
+        // destino ni lo que hay cargable en el pickup
+        const cbox=boxesToReachTarget(target,d.maxBoxSize||m.maxBoxSize,Math.min(cap,availCap));
         if(cbox.amt<=0)return;
         const cost=costFn(pickLoc,loc);
         const cand={mat,cost,stops:[{amt:cbox.amt,boxes:cbox.boxes,nd:loc,ndDist:dist3(pickLoc,loc),d}]};
@@ -2586,6 +2722,8 @@ function bestCommodityPlan(m){
         const amtSecond=cboxSecond.amt;
         if(amtSecond<=0)continue;
         if(amtFirst+amtSecond<target)continue; // combinados con cajas reales no llegan al 25%
+        // No se puede cargar más SCU del que hay en los pickups del material
+        if(amtFirst+amtSecond>info.scu)continue;
 
         const cost=costFn(pickLoc,first.loc)+costFn(first.loc,second.loc);
         const cand={mat,cost,stops:[
@@ -2606,7 +2744,7 @@ function bestCommodityPlan(m){
       allMatDrops.forEach(({d,loc})=>{
         const cap=d.scu!=null?d.scu:Infinity;
         if(cap>=target){
-          const cbox=boxesToReachTarget(target,d.maxBoxSize||m.maxBoxSize,cap);
+          const cbox=boxesToReachTarget(target,d.maxBoxSize||m.maxBoxSize,Math.min(cap,availCap));
           if(cbox.amt<=0)return;
           const cand={mat,cost:0,stops:[{amt:cbox.amt,boxes:cbox.boxes,nd:loc,ndDist:dist3(pickLoc,loc),d,interstellar:true}]};
           // Entre varias opciones interestelares reales, preferir la de
@@ -4331,10 +4469,26 @@ function buildNodes(){
       if(!pkLoc)return;
 
       const totalAmt=stops.reduce((s,x)=>s+x.amt,0);
-      const pBoxes=boxesOptimal(totalAmt,m.maxBoxSize);
-      const pBoxDetail=pBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ');
-      nodes.push({...pkLoc,role:'pickup',mid,mnum:mi+1,
-        scu:totalAmt,material:stops[0].mat,boxDetail:pBoxDetail});
+      // Sacar la carga de los pickups REALES de ese material, en orden, sin
+      // pedirle a ninguno más SCU del que tiene. Antes se creaba un único
+      // nodo de pickup con el total, lo que pedía (por ejemplo) 16 SCU en un
+      // lugar que solo tiene 12 — imposible en el juego.
+      const matPicks=m.pickups.filter(p=>p.material===stops[0].mat);
+      const pickList=(matPicks.length?matPicks:m.pickups).filter(p=>locById(p.locId));
+      if(!pickList.length)return;
+      let remaining=totalAmt;
+      pickList.forEach(p=>{
+        if(remaining<=0)return;
+        const pl=locById(p.locId);
+        const take=Math.min(p.scu||0,remaining);
+        if(take<=0)return;
+        remaining-=take;
+        const pBoxes=boxesOptimal(take,m.maxBoxSize);
+        nodes.push({...pl,role:'pickup',mid,mnum:mi+1,
+          scu:take,material:stops[0].mat,
+          boxDetail:pBoxes.map(u=>u.n+'×'+u.size+' SCU').join(' + ')});
+      });
+      if(remaining>0)return; // no hay carga suficiente en los pickups: misión inviable
 
       stops.forEach((s,si)=>{
         const dropLoc=s.nd;
