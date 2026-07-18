@@ -5,7 +5,7 @@
     "note": "Solo incluye ubicaciones con coincidencia EXACTA de nombre contra locations.json, y solo materiales que existen en nuestra lista curada (materials.json). No se adivina ninguna asociación.",
     "totalActiveInSource": 684,
     "matchedToOurLocations": 132,
-    "generated": "2026-07-13T09:18:45.975Z"
+    "generated": "2026-07-18T17:01:42.891Z"
   },
   "rules": {
     "Dupree Industrial Manufacturing Facility": {
@@ -829,7 +829,8 @@
     "Barton Flats Aid Shelter": {
       "produces": [
         "Waste",
-        "Medical Supplies"
+        "Medical Supplies",
+        "Organs"
       ],
       "consumes": [
         "Medical Supplies"
@@ -1664,6 +1665,7 @@
         "Fluorine",
         "HLX99 Hyperprocessors",
         "Virus Cultures",
+        "Organs",
         "Biological Samples"
       ],
       "consumes": [

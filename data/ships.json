@@ -3,8 +3,8 @@
     "version": "4.8.2",
     "source": "api.star-citizen.wiki/api/vehicles — campo real quantum.quantum_fuel_capacity (SCU), confirmado en vivo",
     "note": "SCU y qFuel desde la API en vivo. qFuel en las mismas unidades (SCU) que fuel_consumption_scu_per_gm de drives.json — combinan directo sin factor de escala.",
-    "generated": "2026-07-13T09:17:51.152Z",
-    "total": 133
+    "generated": "2026-07-18T17:00:43.153Z",
+    "total": 135
   },
   "ships": [
     {
@@ -295,6 +295,13 @@
       "manufacturer": "Drake Interplanetary"
     },
     {
+      "name": "Clipper Wikelo War Special",
+      "scu": 12,
+      "qFuel": 1.7,
+      "size": 2,
+      "manufacturer": "Drake Interplanetary"
+    },
+    {
       "name": "Cutlass Blue",
       "scu": 12,
       "qFuel": 1.8,
@@ -373,6 +380,13 @@
     },
     {
       "name": "MOLE",
+      "scu": 32,
+      "qFuel": 2.6,
+      "size": 2,
+      "manufacturer": "Argo Astronautics"
+    },
+    {
+      "name": "MOLE Alliance",
       "scu": 32,
       "qFuel": 2.6,
       "size": 2,

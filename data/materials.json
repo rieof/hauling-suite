@@ -2,8 +2,8 @@
   "_meta": {
     "version": "4.8.2",
     "source": "api.star-citizen.wiki/api/commodities — auto-updated weekly via GitHub Action",
-    "generated": "2026-07-13T09:17:54.907Z",
-    "total": 202
+    "generated": "2026-07-18T17:00:47.707Z",
+    "total": 204
   },
   "materials": [
     "— Select commodity —",
@@ -129,6 +129,7 @@
     "Nitrogen",
     "Omnapoxy",
     "Organics",
+    "Organs",
     "Osoian Hides",
     "Ouratite",
     "Oxygen",
@@ -199,12 +200,13 @@
     "Tungsten",
     "Tungsten (Ore)",
     "Uncut SLAM",
+    "Valakkar Fang",
     "Virus Cultures",
-    "Vlk_Fang",
     "Waste",
     "WiDoW",
     "Xa'Pyen",
     "Year of the Rat Envelope",
+    "Yormandi Eye",
     "Zeta-Prolanide",
     "Zip",
     "mobyGlass Personal Computers"

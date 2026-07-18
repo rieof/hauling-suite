@@ -3,11 +3,11 @@
     "version": "4.8.2",
     "source": "StarCitizenWiki/scunpacked-data (auto-updated weekly via GitHub Action)",
     "source_url": "https://github.com/StarCitizenWiki/scunpacked-data",
-    "generated": "2026-07-13T09:17:48.187Z",
-    "total": 432,
+    "generated": "2026-07-18T17:00:38.706Z",
+    "total": 440,
     "note": "Coordinates in Gm (gigameters). Each system has its own coordinate space.",
     "efe_sources": "scunpacked-data starmap.json \"Loading Dock\" (AUTORITATIVO para estaciones — distingue freight elevator exterior del interior). Outposts mantienen efe automático. UEX ya NO se usa: marcaba EFE de más sin distinguir interior/exterior.",
-    "efe_updated_at": "2026-07-13T09:17:48.561Z"
+    "efe_updated_at": "2026-07-18T17:00:39.804Z"
   },
   "locations": [
     {
@@ -83,6 +83,66 @@
       "uuid": "a66119fa-6d93-4e56-bcd1-c9bd2c50beb7"
     },
     {
+      "name": "QV Breaker Station BRK-127",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 47.2704,
+      "y": -8.335,
+      "z": 0,
+      "uuid": "8d962d6c-4af2-490c-b1fa-d7fa24225969"
+    },
+    {
+      "name": "QV Breaker Station BRK-204",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": -45.105,
+      "y": 16.4169,
+      "z": 0,
+      "uuid": "8cf3eb9c-a3cb-402e-b7fe-6c84ef9fffe1"
+    },
+    {
+      "name": "QV Breaker Station BRK-320",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": -27.5312,
+      "y": 39.3186,
+      "z": 0,
+      "uuid": "fac812bf-ea31-48b6-81b1-9b54cf4442b9"
+    },
+    {
+      "name": "QV Breaker Station BRK-425",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 27.531,
+      "y": -39.3184,
+      "z": 0,
+      "uuid": "0e7ad495-0fef-4141-b074-9c9210baa156"
+    },
+    {
+      "name": "QV Breaker Station BRK-546",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 16.4169,
+      "y": 45.1052,
+      "z": 0,
+      "uuid": "9dadcb6f-d551-4b56-adbd-63099bb82ce0"
+    },
+    {
       "name": "Stanton Gateway",
       "system": "Nyx",
       "parent": "Nyx",
@@ -93,6 +153,42 @@
       "y": -23.3827,
       "z": 0,
       "uuid": "6396623a-61bd-4ced-9c8b-77c47753ef8f"
+    },
+    {
+      "name": "Transit Point Glaciem Alpha",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": -13.5924,
+      "y": 6.3382,
+      "z": 0,
+      "uuid": "296dd332-13da-485a-b6c2-7ab09b60ec36"
+    },
+    {
+      "name": "Transit Point Glaciem Bravo",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 9.6402,
+      "y": -11.4888,
+      "z": 0,
+      "uuid": "dcdafcd8-df76-447d-a10e-63373052545e"
+    },
+    {
+      "name": "Transit Point Glaciem Charlie",
+      "system": "Nyx",
+      "parent": "Nyx",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 9.6402,
+      "y": 11.4888,
+      "z": 0,
+      "uuid": "fff3fb38-bcbf-44b4-907c-b2e584372249"
     },
     {
       "name": "Prophet's Peak",
