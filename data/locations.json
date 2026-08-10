@@ -3,11 +3,11 @@
     "version": "4.8.2",
     "source": "StarCitizenWiki/scunpacked-data (auto-updated weekly via GitHub Action)",
     "source_url": "https://github.com/StarCitizenWiki/scunpacked-data",
-    "generated": "2026-08-03T09:35:06.352Z",
+    "generated": "2026-08-10T07:22:48.898Z",
     "total": 440,
     "note": "Coordinates in Gm (gigameters). Each system has its own coordinate space.",
     "efe_sources": "scunpacked-data starmap.json \"Loading Dock\" (AUTORITATIVO para estaciones — distingue freight elevator exterior del interior). Outposts mantienen efe automático. UEX ya NO se usa: marcaba EFE de más sin distinguir interior/exterior.",
-    "efe_updated_at": "2026-08-03T09:35:06.693Z"
+    "efe_updated_at": "2026-08-10T07:22:49.488Z"
   },
   "locations": [
     {
