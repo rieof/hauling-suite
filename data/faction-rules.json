@@ -6,7 +6,7 @@
       "api.star-citizen.wiki/api/missions (min_standing — umbrales de rango acumulados reales)"
     ],
     "note": "minScu/maxScu/maxContainer/repPerMission vienen de contratos reales de hauling (freight elevator). rankThresholds.hauling = solo los 7 rangos reales de la carrera Hauling (Trainee..Master), filtrados de la respuesta cruda de la API que mezcla 3 escaleras distintas (Afinidad general, Delivery/Courier viejo, y Hauling). rankThresholds.raw conserva todo sin filtrar por si hace falta cruzar manualmente. missingFromThisFaction avisa qué rangos de Hauling no aparecieron en la muestra de esa facción específica (puede inferirse de otra facción si la escalera resulta ser universal — verificar antes de asumir). Combinaciones con menos de 3 muestras se omiten — no se inventa ningún número.",
-    "generated": "2026-08-10T07:24:00.836Z"
+    "generated": "2026-08-17T06:44:24.142Z"
   },
   "haulingByGradeAndRank": {
     "Covalex": {
