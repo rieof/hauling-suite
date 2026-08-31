@@ -3,7 +3,7 @@
     "version": "4.8.2",
     "source": "api.star-citizen.wiki/api/vehicles — campo real quantum.quantum_fuel_capacity (SCU), confirmado en vivo",
     "note": "SCU y qFuel desde la API en vivo. qFuel en las mismas unidades (SCU) que fuel_consumption_scu_per_gm de drives.json — combinan directo sin factor de escala.",
-    "generated": "2026-08-24T06:48:00.616Z",
+    "generated": "2026-08-31T12:32:23.293Z",
     "total": 135
   },
   "ships": [
@@ -24,7 +24,7 @@
     {
       "name": "MISC Reliant Tana",
       "scu": 1,
-      "qFuel": 1.3,
+      "qFuel": 0.7,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
@@ -38,14 +38,14 @@
     {
       "name": "Redeemer",
       "scu": 2,
-      "qFuel": 1.8,
+      "qFuel": 6.3,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "F7C Hornet Mk II",
       "scu": 2,
-      "qFuel": 1.3,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Anvil Aerospace"
     },
@@ -59,91 +59,91 @@
     {
       "name": "Cutter Rambler",
       "scu": 2,
-      "qFuel": 2.2,
+      "qFuel": 1.7,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutter Scout",
       "scu": 2,
-      "qFuel": 1.1,
+      "qFuel": 0.8,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "100i",
       "scu": 2,
-      "qFuel": 1.3,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "125a",
       "scu": 2,
-      "qFuel": 1.3,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "M80",
       "scu": 2,
-      "qFuel": 1.9,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "Aurora Mk II",
       "scu": 2,
-      "qFuel": 1.5,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Aurora Mk I ES",
       "scu": 3,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Aurora Mk I LN",
       "scu": 3,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Aurora Mk I LX",
       "scu": 3,
-      "qFuel": 1.8,
+      "qFuel": 1,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Aurora Mk I MR",
       "scu": 3,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "C8 Pisces",
       "scu": 4,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "C8X Pisces Expedition",
       "scu": 4,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "Paladin",
       "scu": 4,
-      "qFuel": 3.85,
+      "qFuel": 7,
       "size": 2,
       "manufacturer": "Anvil Aerospace"
     },
@@ -157,189 +157,189 @@
     {
       "name": "Mustang Alpha",
       "scu": 4,
-      "qFuel": 1.1,
+      "qFuel": 0.6,
       "size": 1,
       "manufacturer": "Consolidated Outland"
     },
     {
       "name": "Mustang CitizenCon 2948 Edition",
       "scu": 4,
-      "qFuel": 1.1,
+      "qFuel": 0.6,
       "size": 2,
       "manufacturer": "Consolidated Outland"
     },
     {
       "name": "Cutter",
       "scu": 4,
-      "qFuel": 1.1,
+      "qFuel": 0.8,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "325a",
       "scu": 4,
-      "qFuel": 1.3,
+      "qFuel": 0.7,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "350r",
       "scu": 4,
-      "qFuel": 1.3,
+      "qFuel": 0.6,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "Syulen",
       "scu": 6,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Gatac Manufacture"
     },
     {
       "name": "MISC Reliant Kore",
       "scu": 6,
-      "qFuel": 1.3,
+      "qFuel": 0.7,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "135c",
       "scu": 6,
-      "qFuel": 1.3,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "Aurora Mk I CL",
       "scu": 6,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Aurora Mk I SE",
       "scu": 6,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Salvation",
       "scu": 6,
-      "qFuel": 1,
+      "qFuel": 0.8,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Syulen PYAM Exec",
       "scu": 6,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Gatac Manufacture"
     },
     {
       "name": "Syulen PYAM Exec",
       "scu": 6,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Gatac Manufacture"
     },
     {
       "name": "Avenger Titan",
       "scu": 8,
-      "qFuel": 1.1,
+      "qFuel": 0.6,
       "size": 1,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Avenger Titan Renegade",
       "scu": 8,
-      "qFuel": 1.1,
+      "qFuel": 0.6,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Intrepid",
       "scu": 8,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "Intrepid Wikelo Work Special",
       "scu": 8,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "300i",
       "scu": 8,
-      "qFuel": 1.3,
+      "qFuel": 0.7,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "SRV",
       "scu": 12,
-      "qFuel": 3.1,
+      "qFuel": 6.4,
       "size": 2,
       "manufacturer": "Argo Astronautics"
     },
     {
       "name": "Clipper",
       "scu": 12,
-      "qFuel": 1.7,
+      "qFuel": 1,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Clipper Wikelo War Special",
       "scu": 12,
-      "qFuel": 1.7,
+      "qFuel": 1,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Blue",
       "scu": 12,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Blue",
       "scu": 12,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Red",
       "scu": 12,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Red",
       "scu": 12,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Vulture",
       "scu": 12,
-      "qFuel": 1.1,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "315p",
       "scu": 12,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
@@ -353,203 +353,203 @@
     {
       "name": "MISC Fortune",
       "scu": 16,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "MISC Fortune Wikelo Special",
       "scu": 16,
-      "qFuel": 1.8,
+      "qFuel": 0.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "600i Touring",
       "scu": 20,
-      "qFuel": 5.1,
+      "qFuel": 9.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "Nomad",
       "scu": 24,
-      "qFuel": 1.3,
+      "qFuel": 1,
       "size": 1,
       "manufacturer": "Consolidated Outland"
     },
     {
       "name": "MOLE",
       "scu": 32,
-      "qFuel": 2.6,
+      "qFuel": 6.4,
       "size": 2,
       "manufacturer": "Argo Astronautics"
     },
     {
       "name": "MOLE Alliance",
       "scu": 32,
-      "qFuel": 2.6,
+      "qFuel": 6.4,
       "size": 2,
       "manufacturer": "Argo Astronautics"
     },
     {
       "name": "Prowler Utility",
       "scu": 32,
-      "qFuel": 2.25,
+      "qFuel": 7.5,
       "size": 2,
       "manufacturer": "Esperia"
     },
     {
       "name": "Prowler Utility Wikelo Work Special",
       "scu": 32,
-      "qFuel": 2.25,
+      "qFuel": 7.5,
       "size": 2,
       "manufacturer": "Esperia"
     },
     {
       "name": "Shiv",
       "scu": 32,
-      "qFuel": 1.65,
+      "qFuel": 4.1,
       "size": 2,
       "manufacturer": "Grey's Market"
     },
     {
       "name": "Apollo Medivac",
       "scu": 32,
-      "qFuel": 4.5,
+      "qFuel": 9.4,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Apollo Triage",
       "scu": 32,
-      "qFuel": 4.35,
+      "qFuel": 9.4,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Apollo Triage Wikelo Sneak Special",
       "scu": 32,
-      "qFuel": 4.35,
+      "qFuel": 9.4,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Zeus Mk II ES",
       "scu": 32,
-      "qFuel": 2.6,
+      "qFuel": 6.7,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Zeus Mk II ES Wikelo Work Special",
       "scu": 32,
-      "qFuel": 2.6,
+      "qFuel": 6.7,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "MISC Freelancer DUR",
       "scu": 36,
-      "qFuel": 2.4,
+      "qFuel": 6.7,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "MISC Freelancer MIS",
       "scu": 36,
-      "qFuel": 1.8,
+      "qFuel": 5.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "Hammerhead",
       "scu": 40,
-      "qFuel": 6.6,
+      "qFuel": 19,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "400i",
       "scu": 42,
-      "qFuel": 3.6,
+      "qFuel": 8.1,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "600i",
       "scu": 44,
-      "qFuel": 5.1,
+      "qFuel": 9.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "600i 2951 BIS",
       "scu": 44,
-      "qFuel": 5.1,
+      "qFuel": 9.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "600i Executive Edition",
       "scu": 44,
-      "qFuel": 5.1,
+      "qFuel": 9.9,
       "size": 2,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "Cutlass Black PYAM Exec",
       "scu": 46,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Black PYAM Exec",
       "scu": 46,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Black",
       "scu": 46,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Cutlass Black",
       "scu": 46,
-      "qFuel": 1.8,
+      "qFuel": 4.6,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Hammerhead",
       "scu": 64,
-      "qFuel": 6.6,
+      "qFuel": 19,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Tiburon",
       "scu": 64,
-      "qFuel": 6.7,
+      "qFuel": 19,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "C1 Spirit",
       "scu": 64,
-      "qFuel": 1.8,
+      "qFuel": 5.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "C1 Spirit Wikelo Special",
       "scu": 64,
-      "qFuel": 1.8,
+      "qFuel": 5.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
@@ -563,385 +563,385 @@
     {
       "name": "MISC Hull A",
       "scu": 64,
-      "qFuel": 1.8,
+      "qFuel": 1.2,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "MISC Freelancer",
       "scu": 66,
-      "qFuel": 1.8,
+      "qFuel": 5.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "Corsair PYAM Exec",
       "scu": 72,
-      "qFuel": 5.2,
+      "qFuel": 8.1,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Corsair PYAM Exec",
       "scu": 72,
-      "qFuel": 5.2,
+      "qFuel": 8.1,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Corsair",
       "scu": 72,
-      "qFuel": 5.2,
+      "qFuel": 8.1,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Constellation Phoenix",
       "scu": 80,
-      "qFuel": 4.1,
+      "qFuel": 7,
       "size": 3,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Constellation Phoenix Emerald",
       "scu": 80,
-      "qFuel": 4.1,
+      "qFuel": 7,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Valkyrie",
       "scu": 90,
-      "qFuel": 1.8,
+      "qFuel": 7.7,
       "size": 3,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "Valkyrie",
       "scu": 90,
-      "qFuel": 1.8,
+      "qFuel": 7.7,
       "size": 3,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "Tyilui",
       "scu": 96,
-      "qFuel": 5.3,
+      "qFuel": 9.2,
       "size": 2,
       "manufacturer": "Gatac Manufacture"
     },
     {
       "name": "MISC Starlancer TAC",
       "scu": 96,
-      "qFuel": 3.35,
+      "qFuel": 8.6,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "MISC Starlancer TAC Wikelo War Special",
       "scu": 96,
-      "qFuel": 3.35,
+      "qFuel": 8.6,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "Constellation Andromeda",
       "scu": 96,
-      "qFuel": 4.1,
+      "qFuel": 7,
       "size": 3,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Constellation Aquila",
       "scu": 96,
-      "qFuel": 5.6,
+      "qFuel": 8.1,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Perseus",
       "scu": 96,
-      "qFuel": 7,
+      "qFuel": 19.8,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Mercury Star Runner",
       "scu": 114,
-      "qFuel": 3.2,
+      "qFuel": 8.1,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "MISC Freelancer MAX",
       "scu": 120,
-      "qFuel": 1.8,
+      "qFuel": 6.4,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "Zeus Mk II CL",
       "scu": 128,
-      "qFuel": 1.8,
+      "qFuel": 6.4,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Zeus Mk II CL",
       "scu": 128,
-      "qFuel": 1.8,
+      "qFuel": 6.4,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Constellation Taurus",
       "scu": 174,
-      "qFuel": 4.1,
+      "qFuel": 7.7,
       "size": 3,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Constellation Taurus Wikelo War Special",
       "scu": 174,
-      "qFuel": 4.1,
+      "qFuel": 7.7,
       "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Asgard",
       "scu": 180,
-      "qFuel": 1.85,
+      "qFuel": 7.7,
       "size": 3,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "Asgard Wikelo War Special",
       "scu": 180,
-      "qFuel": 1.85,
+      "qFuel": 7.7,
       "size": 2,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "RAFT",
       "scu": 192,
-      "qFuel": 1.8,
+      "qFuel": 7.2,
       "size": 2,
       "manufacturer": "Argo Astronautics"
     },
     {
       "name": "RAFT Wikelo Work Special",
       "scu": 192,
-      "qFuel": 1.8,
+      "qFuel": 7.2,
       "size": 2,
       "manufacturer": "Argo Astronautics"
     },
     {
       "name": "A2 Hercules Starlifter",
       "scu": 216,
-      "qFuel": 6.6,
+      "qFuel": 20.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "A2 Hercules Starlifter Wikelo War Special",
       "scu": 216,
-      "qFuel": 6.6,
+      "qFuel": 20.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "MOTH",
       "scu": 224,
-      "qFuel": 2.6,
+      "qFuel": 6.4,
       "size": 1,
       "manufacturer": "Argo Astronautics"
     },
     {
       "name": "MISC Starlancer MAX",
       "scu": 224,
-      "qFuel": 3.6,
+      "qFuel": 8.6,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "MISC Starlancer MAX Wikelo Work Special",
       "scu": 224,
-      "qFuel": 3.6,
+      "qFuel": 8.6,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "Hermes",
       "scu": 288,
-      "qFuel": 4.65,
+      "qFuel": 9.4,
       "size": 3,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "MISC Starfarer",
       "scu": 291,
-      "qFuel": 8.6,
+      "qFuel": 19,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "MISC Starfarer Gemini",
       "scu": 291,
-      "qFuel": 8.6,
+      "qFuel": 19,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "890 Jump",
       "scu": 388,
-      "qFuel": 14.6,
+      "qFuel": 33.1,
       "size": 3,
       "manufacturer": "Origin Jumpworks"
     },
     {
       "name": "Reclaimer",
       "scu": 420,
-      "qFuel": 8.6,
+      "qFuel": 21.8,
       "size": 3,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Reclaimer 2949 Best In Show Edition",
       "scu": 420,
-      "qFuel": 8.6,
+      "qFuel": 21.8,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Carrack",
       "scu": 456,
-      "qFuel": 10.6,
+      "qFuel": 20.9,
       "size": 3,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "Carrack",
       "scu": 456,
-      "qFuel": 10.6,
+      "qFuel": 20.9,
       "size": 3,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "Carrack Expedition",
       "scu": 456,
-      "qFuel": 10.6,
+      "qFuel": 20.9,
       "size": 2,
       "manufacturer": "Anvil Aerospace"
     },
     {
       "name": "MISC Hull B",
       "scu": 512,
-      "qFuel": 5.7,
+      "qFuel": 8.4,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
       "name": "M2 Hercules Starlifter",
       "scu": 522,
-      "qFuel": 6.6,
+      "qFuel": 20.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "Caterpillar",
       "scu": 576,
-      "qFuel": 8.6,
+      "qFuel": 18.8,
       "size": 3,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Caterpillar Pirate",
       "scu": 576,
-      "qFuel": 8.6,
+      "qFuel": 18.8,
       "size": 2,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Polaris",
       "scu": 576,
-      "qFuel": 12.6,
+      "qFuel": 21.6,
       "size": 3,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Polaris",
       "scu": 576,
-      "qFuel": 12.6,
+      "qFuel": 21.6,
       "size": 3,
       "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Railen",
       "scu": 640,
-      "qFuel": 5.1,
+      "qFuel": 8.8,
       "size": 3,
       "manufacturer": "Gatac Manufacture"
     },
     {
       "name": "C2 Hercules Starlifter",
       "scu": 696,
-      "qFuel": 6.6,
+      "qFuel": 20.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
     },
     {
       "name": "Idris-M",
       "scu": 1326,
-      "qFuel": 120,
+      "qFuel": 31.5,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Idris-P",
       "scu": 1374,
-      "qFuel": 120,
+      "qFuel": 31.5,
       "size": 3,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Idris-P",
       "scu": 1374,
-      "qFuel": 120,
+      "qFuel": 31.5,
       "size": 3,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Idris-P",
       "scu": 1374,
-      "qFuel": 120,
+      "qFuel": 31.5,
       "size": 3,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Idris-P Wikelo War Special",
       "scu": 1374,
-      "qFuel": 120,
+      "qFuel": 31.5,
       "size": 2,
       "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "Ironclad Assault",
       "scu": 1440,
-      "qFuel": 10,
+      "qFuel": 20.9,
       "size": 3,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "Ironclad",
       "scu": 2200,
-      "qFuel": 11,
+      "qFuel": 20.9,
       "size": 3,
       "manufacturer": "Drake Interplanetary"
     },
     {
       "name": "MISC Hull C",
       "scu": 4608,
-      "qFuel": 8.6,
+      "qFuel": 21.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
