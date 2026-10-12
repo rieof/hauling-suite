@@ -3,11 +3,11 @@
     "version": "4.8.2",
     "source": "StarCitizenWiki/scunpacked-data (auto-updated weekly via GitHub Action)",
     "source_url": "https://github.com/StarCitizenWiki/scunpacked-data",
-    "generated": "2026-10-05T13:26:43.800Z",
-    "total": 440,
+    "generated": "2026-10-12T14:16:18.238Z",
+    "total": 489,
     "note": "Coordinates in Gm (gigameters). Each system has its own coordinate space.",
     "efe_sources": "scunpacked-data starmap.json \"Loading Dock\" (AUTORITATIVO para estaciones — distingue freight elevator exterior del interior). Outposts mantienen efe automático. UEX ya NO se usa: marcaba EFE de más sin distinguir interior/exterior.",
-    "efe_updated_at": "2026-10-05T13:26:44.191Z"
+    "efe_updated_at": "2026-10-12T14:16:18.627Z"
   },
   "locations": [
     {
@@ -1079,6 +1079,54 @@
       "uuid": "b9b1a547-c415-44cb-826b-6c28cbd0c0bb"
     },
     {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Aberdeen",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.9057,
+      "y": 0.0407,
+      "z": 0.0002,
+      "uuid": "3dff9502-c1f7-4612-b4c9-d161fdb7642f"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Aberdeen",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.9057,
+      "y": 0.0409,
+      "z": -0.0003,
+      "uuid": "b374f34d-60f5-4e72-9068-dd4951489056"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Aberdeen",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.9057,
+      "y": 0.0412,
+      "z": 0.0002,
+      "uuid": "02a373c1-566a-475f-9534-113d3d742d6a"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Aberdeen",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.906,
+      "y": 0.0409,
+      "z": -0.0001,
+      "uuid": "85ef0977-d65e-4481-85a4-b4bfae906865"
+    },
+    {
       "name": "Ruptura OLP",
       "system": "Stanton",
       "parent": "Aberdeen",
@@ -1280,6 +1328,66 @@
       "y": -0.0314,
       "z": 0.0001,
       "uuid": "6c29dbcd-3acb-465d-ae29-400b9b2e3325"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Arial",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8925,
+      "y": -0.0318,
+      "z": 0.0001,
+      "uuid": "f81954c0-8d17-40b5-8c41-d3c38b1e1894"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Arial",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8925,
+      "y": -0.0316,
+      "z": -0.0003,
+      "uuid": "ea2e87f5-8c81-4975-9d37-60538a04e973"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Arial",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8929,
+      "y": -0.0314,
+      "z": -0.0002,
+      "uuid": "2d3044be-6670-4d2f-bd60-3302ef4b2da3"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Arial",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8925,
+      "y": -0.0312,
+      "z": 0.0001,
+      "uuid": "fe3950f6-0244-4c83-a50f-9a329877ffe1"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Arial",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8929,
+      "y": -0.0316,
+      "z": 0.0002,
+      "uuid": "ad9d5e93-0bef-4905-b8bd-97283f0ba110"
     },
     {
       "name": "Smokestack",
@@ -1640,6 +1748,54 @@
       "y": 37.2029,
       "z": -0.0001,
       "uuid": "2a93560b-5549-49aa-9f3c-3555d7cea851"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Calliope",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.5256,
+      "y": 37.2027,
+      "z": -0.0001,
+      "uuid": "23acf075-46f1-4bc3-810f-2b18fe53e3cd"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Calliope",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.5259,
+      "y": 37.2028,
+      "z": -0.0002,
+      "uuid": "d68e500c-386b-4d06-9d88-57f90460220f"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Calliope",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.5258,
+      "y": 37.2027,
+      "z": 0.0002,
+      "uuid": "e3006016-96b4-4739-a2a4-531556dd23bc"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Calliope",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.5257,
+      "y": 37.2024,
+      "z": 0,
+      "uuid": "f4e3c68e-d5bd-44c3-b94a-34e4964e1d59"
     },
     {
       "name": "Shubin Mining Facility SMCa-6",
@@ -2048,6 +2204,54 @@
       "y": 37.2804,
       "z": 0,
       "uuid": "9d750a06-8d64-41d4-8265-c2d8591c62a4"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Clio",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4472,
+      "y": 37.2804,
+      "z": -0.0003,
+      "uuid": "c77c3bfb-2bc3-4cd0-b5b1-571f7927fb7e"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Clio",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4476,
+      "y": 37.2806,
+      "z": -0.0003,
+      "uuid": "f063a522-876f-4f21-bd72-7cba335d84e7"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Clio",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4471,
+      "y": 37.2806,
+      "z": 0.0001,
+      "uuid": "9e5dea5c-f389-48e1-a8bd-f416176bd606"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Clio",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4475,
+      "y": 37.2807,
+      "z": 0.0003,
+      "uuid": "2e22f64a-3f01-41b7-bc21-04b25e91090d"
     },
     {
       "name": "Tremonte",
@@ -2552,6 +2756,54 @@
       "y": 37.2906,
       "z": 0,
       "uuid": "ac4eff81-cea3-4dc8-9a2f-a7a4ed665fb2"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Euterpe",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4361,
+      "y": 37.2902,
+      "z": 0,
+      "uuid": "5c4d4202-00e1-4909-9482-685eca657687"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Euterpe",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.436,
+      "y": 37.2904,
+      "z": 0.0002,
+      "uuid": "adfed0c9-2184-4f11-ab92-0f0cc96b6fa3"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Euterpe",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4363,
+      "y": 37.2904,
+      "z": -0.0001,
+      "uuid": "18f212c9-6c79-4b8a-a6ac-ea501bade318"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Euterpe",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4361,
+      "y": 37.2906,
+      "z": 0,
+      "uuid": "94af4aae-6c8d-483f-9142-1f3a7ef15e2d"
     },
     {
       "name": "Shanks",
@@ -3310,6 +3562,66 @@
       "uuid": "8f78ebfc-cecb-4933-86b3-80f3e34cf40a"
     },
     {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Hurston",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8498,
+      "y": -0.0007,
+      "z": -0.0003,
+      "uuid": "3a32ad75-197f-4ef0-a555-0330f4a5175a"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Hurston",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8504,
+      "y": -0.0006,
+      "z": 0.0008,
+      "uuid": "6e1132cc-8abd-429a-8008-2bd1278d4656"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Hurston",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8508,
+      "y": -0.0003,
+      "z": -0.0009,
+      "uuid": "74dbf4cb-5e47-4348-b431-cbff17a364b0"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Hurston",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8514,
+      "y": 0.0003,
+      "z": 0.0001,
+      "uuid": "dfa1d3c8-005c-4c14-b149-a34e3277c95c"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Hurston",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8499,
+      "y": 0.0009,
+      "z": 0,
+      "uuid": "2e6bd23f-2c90-4398-aba9-2827ad62b6f2"
+    },
+    {
       "name": "Sakura Sun Magnolia Workcenter",
       "system": "Stanton",
       "parent": "Hurston",
@@ -3392,6 +3704,54 @@
       "y": 0.1151,
       "z": 0.0002,
       "uuid": "9689acd1-464f-4a02-95fc-10b42be3c190"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Ita",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8302,
+      "y": 0.1147,
+      "z": 0.0003,
+      "uuid": "7fbdf13c-307f-4917-9053-6e2ed10c975a"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Ita",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8305,
+      "y": 0.1148,
+      "z": -0.0001,
+      "uuid": "bdbc57f9-0aa8-445e-81fc-a4dd54f96396"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Ita",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8299,
+      "y": 0.1149,
+      "z": -0.0002,
+      "uuid": "a818883e-1d83-4ee0-9032-67fe2b35692c"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Ita",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.8301,
+      "y": 0.1152,
+      "z": 0.0001,
+      "uuid": "8308cafb-3018-466c-9566-2130dc002ffa"
     },
     {
       "name": "The Shades",
@@ -3694,6 +4054,66 @@
       "uuid": "0c5e44b1-2ef3-4e62-98c9-37bb4e49f43d"
     },
     {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Lyria",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.7037,
+      "y": -22.1215,
+      "z": 0.0001,
+      "uuid": "b25b53ea-a3a1-43c3-aa4d-2777a01eb667"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Lyria",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.7037,
+      "y": -22.1219,
+      "z": -0.0001,
+      "uuid": "647d4ee7-f5a0-4a56-bc62-922b1b9031ee"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Lyria",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.7036,
+      "y": -22.1218,
+      "z": 0.0001,
+      "uuid": "380db38a-adbd-42b8-8234-b95a6864d313"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Lyria",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.7035,
+      "y": -22.1216,
+      "z": -0.0002,
+      "uuid": "2f1c0110-6340-4332-b804-f7848cfeb022"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Lyria",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.7035,
+      "y": -22.1214,
+      "z": 0,
+      "uuid": "639d7adf-860b-4c0c-b0bf-10e16d5dad88"
+    },
+    {
       "name": "Shubin Mining Facility SAL-2",
       "system": "Stanton",
       "parent": "Lyria",
@@ -3884,6 +4304,54 @@
       "y": -0.0746,
       "z": 0.0002,
       "uuid": "7fccba09-4fa8-4038-a056-cff8d8244e47"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Magda",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.7925,
+      "y": -0.0742,
+      "z": 0.0002,
+      "uuid": "bb3751f4-c194-4597-8294-95db19ffd771"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Magda",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.7926,
+      "y": -0.0748,
+      "z": -0.0001,
+      "uuid": "51207d0f-a361-4f84-ba59-faacd6c8618c"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Magda",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.7924,
+      "y": -0.0744,
+      "z": -0.0002,
+      "uuid": "5d966ec0-49b6-4bd0-9634-62883757fa8e"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Magda",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 12.793,
+      "y": -0.0745,
+      "z": 0.0002,
+      "uuid": "8308ecc9-76ae-4ec5-9c47-55ea1c5a9b22"
     },
     {
       "name": "Astor's Clearing",
@@ -4304,6 +4772,66 @@
       "y": 37.1851,
       "z": 0.0003,
       "uuid": "5a4e54f1-4f15-4a71-987b-e2c0baf4282f"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "microTech",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4611,
+      "y": 37.1857,
+      "z": 0,
+      "uuid": "3f7f974e-cbf4-422c-a856-e6efde9e7512"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "microTech",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4624,
+      "y": 37.1849,
+      "z": 0.0005,
+      "uuid": "4f42ced7-7ecc-4acc-b8c5-fbdd337ea052"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "microTech",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4616,
+      "y": 37.1866,
+      "z": 0.0002,
+      "uuid": "e1fc6660-cf55-4db0-b477-d7c8c05fbe82"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "microTech",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4623,
+      "y": 37.1854,
+      "z": -0.0009,
+      "uuid": "876c8a56-fdb0-4fcf-9e84-0387e0655611"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "microTech",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 22.4624,
+      "y": 37.186,
+      "z": 0.0009,
+      "uuid": "2c3a5644-3f2e-465d-8f13-3de08b776e60"
     },
     {
       "name": "Sakura Sun Goldenrod Workcenter",
@@ -4928,6 +5456,66 @@
       "y": -22.0007,
       "z": 0.0002,
       "uuid": "32c39b0d-2fc3-48a4-8aac-7109c6e491bd"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Wala",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.3794,
+      "y": -22.0004,
+      "z": -0.0002,
+      "uuid": "90952bc0-39db-4a1c-a63e-5622fe796cb4"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Wala",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.3796,
+      "y": -22.0002,
+      "z": 0.0001,
+      "uuid": "7ce20eb9-9720-41ae-a7de-1b6d167108e4"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Wala",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.3794,
+      "y": -22.0005,
+      "z": 0.0001,
+      "uuid": "87355510-d265-4438-8f8e-f24e94ddb872"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Wala",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.3799,
+      "y": -22.0004,
+      "z": -0.0002,
+      "uuid": "04ed3779-3103-44e7-9cd2-e546b86980f3"
+    },
+    {
+      "name": "RSI Event Platform",
+      "system": "Stanton",
+      "parent": "Wala",
+      "type": "station",
+      "pad": "int",
+      "qt_valid": true,
+      "x": 18.3798,
+      "y": -22.0006,
+      "z": -0.0001,
+      "uuid": "a5204b4c-34e1-42ae-a043-297ae70126fb"
     },
     {
       "name": "Samson & Son's Salvage Center",

@@ -3,8 +3,8 @@
     "version": "4.8.2",
     "source": "api.star-citizen.wiki/api/vehicles — campo real quantum.quantum_fuel_capacity (SCU), confirmado en vivo",
     "note": "SCU y qFuel desde la API en vivo. qFuel en las mismas unidades (SCU) que fuel_consumption_scu_per_gm de drives.json — combinan directo sin factor de escala.",
-    "generated": "2026-10-05T13:26:46.698Z",
-    "total": 135
+    "generated": "2026-10-12T14:16:26.803Z",
+    "total": 143
   },
   "ships": [
     {
@@ -596,14 +596,21 @@
       "manufacturer": "Drake Interplanetary"
     },
     {
-      "name": "Constellation Phoenix",
+      "name": "Constellation Mk IV Phoenix",
       "scu": 80,
       "qFuel": 7,
-      "size": 3,
+      "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
-      "name": "Constellation Phoenix Emerald",
+      "name": "Constellation Mk IV Phoenix",
+      "scu": 80,
+      "qFuel": 7,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk IV Phoenix Emerald",
       "scu": 80,
       "qFuel": 7,
       "size": 2,
@@ -645,14 +652,35 @@
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
-      "name": "Constellation Andromeda",
+      "name": "Constellation Mk IV Andromeda",
       "scu": 96,
       "qFuel": 7,
-      "size": 3,
+      "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
-      "name": "Constellation Aquila",
+      "name": "Constellation Mk IV Andromeda",
+      "scu": 96,
+      "qFuel": 7,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk IV Andromeda",
+      "scu": 96,
+      "qFuel": 7,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk IV Aquila",
+      "scu": 96,
+      "qFuel": 8.1,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk IV Aquila",
       "scu": 96,
       "qFuel": 8.1,
       "size": 2,
@@ -694,14 +722,28 @@
       "manufacturer": "Roberts Space Industries"
     },
     {
-      "name": "Constellation Taurus",
+      "name": "Constellation Mk IV Taurus",
       "scu": 174,
       "qFuel": 7.7,
-      "size": 3,
+      "size": 2,
       "manufacturer": "Roberts Space Industries"
     },
     {
-      "name": "Constellation Taurus Wikelo War Special",
+      "name": "Constellation Mk IV Taurus",
+      "scu": 174,
+      "qFuel": 7.7,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk IV Taurus Wikelo War Special",
+      "scu": 174,
+      "qFuel": 7.7,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk IV Taurus Wikelo War Special",
       "scu": 174,
       "qFuel": 7.7,
       "size": 2,
@@ -769,6 +811,20 @@
       "qFuel": 8.6,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
+    },
+    {
+      "name": "Constellation Mk V Centaurus",
+      "scu": 240,
+      "qFuel": 8.6,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
+      "name": "Constellation Mk V Centaurus",
+      "scu": 240,
+      "qFuel": 8.6,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Hermes",
