@@ -3,8 +3,8 @@
     "version": "4.8.2",
     "source": "api.star-citizen.wiki/api/vehicles — campo real quantum.quantum_fuel_capacity (SCU), confirmado en vivo",
     "note": "SCU y qFuel desde la API en vivo. qFuel en las mismas unidades (SCU) que fuel_consumption_scu_per_gm de drives.json — combinan directo sin factor de escala.",
-    "generated": "2026-11-09T14:59:42.310Z",
-    "total": 143
+    "generated": "2026-11-16T14:36:51.792Z",
+    "total": 144
   },
   "ships": [
     {
@@ -407,6 +407,13 @@
       "manufacturer": "Esperia"
     },
     {
+      "name": "Hyun",
+      "scu": 32,
+      "qFuel": 5.9,
+      "size": 2,
+      "manufacturer": "Gatac Manufacture"
+    },
+    {
       "name": "Shiv",
       "scu": 32,
       "qFuel": 4.1,
@@ -461,13 +468,6 @@
       "qFuel": 5.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
-    },
-    {
-      "name": "Hammerhead",
-      "scu": 40,
-      "qFuel": 19,
-      "size": 2,
-      "manufacturer": "Aegis Dynamics"
     },
     {
       "name": "400i",
@@ -568,11 +568,25 @@
       "manufacturer": "Musashi Industrial and Starflight Concern"
     },
     {
+      "name": "Galaxy",
+      "scu": 64,
+      "qFuel": 20.9,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
+    },
+    {
       "name": "MISC Freelancer",
       "scu": 66,
       "qFuel": 5.9,
       "size": 2,
       "manufacturer": "Musashi Industrial and Starflight Concern"
+    },
+    {
+      "name": "Galaxy",
+      "scu": 68,
+      "qFuel": 20.9,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Corsair PYAM Exec",
@@ -604,13 +618,6 @@
     },
     {
       "name": "Constellation Mk IV Phoenix",
-      "scu": 80,
-      "qFuel": 7,
-      "size": 2,
-      "manufacturer": "Roberts Space Industries"
-    },
-    {
-      "name": "Constellation Mk IV Phoenix Emerald",
       "scu": 80,
       "qFuel": 7,
       "size": 2,
@@ -666,20 +673,6 @@
       "manufacturer": "Roberts Space Industries"
     },
     {
-      "name": "Constellation Mk IV Andromeda",
-      "scu": 96,
-      "qFuel": 7,
-      "size": 2,
-      "manufacturer": "Roberts Space Industries"
-    },
-    {
-      "name": "Constellation Mk IV Aquila",
-      "scu": 96,
-      "qFuel": 8.1,
-      "size": 2,
-      "manufacturer": "Roberts Space Industries"
-    },
-    {
       "name": "Constellation Mk IV Aquila",
       "scu": 96,
       "qFuel": 8.1,
@@ -730,13 +723,6 @@
     },
     {
       "name": "Constellation Mk IV Taurus",
-      "scu": 174,
-      "qFuel": 7.7,
-      "size": 2,
-      "manufacturer": "Roberts Space Industries"
-    },
-    {
-      "name": "Constellation Mk IV Taurus Wikelo War Special",
       "scu": 174,
       "qFuel": 7.7,
       "size": 2,
@@ -855,6 +841,13 @@
       "manufacturer": "Origin Jumpworks"
     },
     {
+      "name": "Liberator",
+      "scu": 400,
+      "qFuel": 17.3,
+      "size": 2,
+      "manufacturer": "Anvil Aerospace"
+    },
+    {
       "name": "Reclaimer",
       "scu": 420,
       "qFuel": 21.8,
@@ -911,6 +904,13 @@
       "manufacturer": "Drake Interplanetary"
     },
     {
+      "name": "Caterpillar",
+      "scu": 576,
+      "qFuel": 18.8,
+      "size": 3,
+      "manufacturer": "Drake Interplanetary"
+    },
+    {
       "name": "Caterpillar Pirate",
       "scu": 576,
       "qFuel": 18.8,
@@ -944,6 +944,13 @@
       "qFuel": 20.9,
       "size": 2,
       "manufacturer": "Crusader Industries"
+    },
+    {
+      "name": "Galaxy",
+      "scu": 720,
+      "qFuel": 20.9,
+      "size": 2,
+      "manufacturer": "Roberts Space Industries"
     },
     {
       "name": "Idris-M",
